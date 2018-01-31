@@ -94,8 +94,9 @@
                 <configuration>
                     <repository>forsrc/${project.artifactId}</repository>
                     <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                        <RES_FILE>src/main/resources</RES_FILE>
+                        <ARG_JAR_FILE>target/${project.build.finalName}.jar</ARG_JAR_FILE>
+                        <ARG_RES_FILE>src/main/resources</ARG_RES_FILE>
+                        <ARG_PORT>10010</ARG_PORT>
                     </buildArgs>
                 </configuration>
             </plugin>
