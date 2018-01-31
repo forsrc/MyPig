@@ -20,6 +20,11 @@
 
     <modules>
         <module>user</module>
+        <module>springboot-api-gateway</module>
+        <module>springboot-sso-server</module>
+        <module>springboot-eureka-server</module>
+        <module>springboot-config-server</module>
+        <module>springboot-admin</module>
     </modules>
 
     <properties>
