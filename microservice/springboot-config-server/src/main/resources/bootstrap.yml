@@ -1,7 +1,9 @@
 spring:
   application:
     name: springboot-config-server
-
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
 
 
 server:
