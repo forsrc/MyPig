@@ -1,0 +1,23 @@
+server:
+  port: 8888
+  context-path: /ui
+
+spring:
+  application:
+    name: microservice-ui
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+    
+
+management:
+  security:
+    enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka

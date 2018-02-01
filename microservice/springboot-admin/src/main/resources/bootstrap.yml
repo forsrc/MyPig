@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: springboot-admin
+#  cloud:
+#    config:
+#      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
+      turbine:
+        clusters: default
+        location: turbine
+      username: forsrc
+      password: forsrc
+      client:
+        metadata:
+          user.name:     forsrc
+          user.password: forsrc
+
+management:
+  security:
+    enabled: false
+
+server:
+  port: 13000
+  context-path: /admin
+
+

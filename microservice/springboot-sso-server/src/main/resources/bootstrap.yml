@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: springboot-sso-server
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+server:
+  port: 10000
+  context-path: /sso

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: springboot-eureka-server
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+server:
+  port: 11100
+  context-path: /eureka
+
+
