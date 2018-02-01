@@ -12,7 +12,7 @@
     ui                       | 8888
     springboot-api-gateway   | 8088
     springboot-sso-server    | 10000
-    springboot-eureka-server | 11000
+    springboot-eureka-server | 11100
     springboot-config-server | 12000
     springboot-admin         | 13000
     user                     | 10010    
