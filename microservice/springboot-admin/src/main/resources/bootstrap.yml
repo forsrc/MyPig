@@ -4,7 +4,14 @@ spring:
   cloud:
     config:
       uri: http://forsrc.local:12000/config
-
+  boot:
+    admin:
+      username: forsrc
+      password: forsrc
+      client:
+        metadata:
+          user.name:     forsrc
+          user.password: forsrc
 
 
 server:
