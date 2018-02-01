@@ -1,0 +1,7 @@
+server:
+  port: 11000
+  context-path: /eureka
+
+spring:
+  application:
+    name: springboot-eureka-server
