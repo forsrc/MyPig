@@ -1,0 +1,7 @@
+server:
+  port: 8888
+  context-path: /ui
+
+spring:
+  application:
+    name: microservice-ui
