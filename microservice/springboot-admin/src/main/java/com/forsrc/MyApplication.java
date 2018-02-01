@@ -10,7 +10,7 @@ import de.codecentric.boot.admin.config.EnableAdminServer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @EnableAdminServer
 @EnableDiscoveryClient
 public class MyApplication {

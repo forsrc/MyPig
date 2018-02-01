@@ -1,9 +1,9 @@
 spring:
   application:
     name: springboot-admin
-  cloud:
-    config:
-      uri: http://forsrc.local:12000/config
+#  cloud:
+#    config:
+#      uri: http://forsrc.local:12000/config
   boot:
     admin:
       url: http://forsrc.local:13000/admin
