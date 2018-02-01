@@ -1,12 +1,13 @@
-
-
 spring:
   application:
-    name: microservice-user
+    name: springboot-eureka-server
   cloud:
     config:
       uri: http://forsrc.local:12000/config
 
+
 server:
-  port: 10010
-  context-path: /user
+  port: 11000
+  context-path: /eureka
+
+

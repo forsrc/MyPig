@@ -1,12 +1,14 @@
-
-
 spring:
   application:
-    name: microservice-user
+    name: springboot-admin
   cloud:
     config:
       uri: http://forsrc.local:12000/config
 
+
+
 server:
-  port: 10010
-  context-path: /user
+  port: 13000
+  context-path: /admin
+
+
