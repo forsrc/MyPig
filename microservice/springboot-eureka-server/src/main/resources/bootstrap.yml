@@ -1,8 +1,6 @@
-
-
 spring:
   application:
-    name: microservice-user
+    name: springboot-eureka-server
   cloud:
     config:
       uri: http://forsrc.local:12000/config
@@ -10,12 +8,8 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
-
 server:
-  port: 10010
-  context-path: /user
+  port: 11100
+  context-path: /eureka
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka/eureka
+

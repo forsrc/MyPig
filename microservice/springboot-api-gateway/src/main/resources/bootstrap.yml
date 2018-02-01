@@ -1,8 +1,6 @@
-
-
 spring:
   application:
-    name: microservice-user
+    name: springboot-api-gateway
   cloud:
     config:
       uri: http://forsrc.local:12000/config
@@ -10,12 +8,8 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
-
 server:
-  port: 10010
-  context-path: /user
+  port: 8088
+  context-path: /api
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka/eureka
+

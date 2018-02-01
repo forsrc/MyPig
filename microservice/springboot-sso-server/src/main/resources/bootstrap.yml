@@ -1,8 +1,7 @@
 
-
 spring:
   application:
-    name: microservice-user
+    name: springboot-sso-server
   cloud:
     config:
       uri: http://forsrc.local:12000/config
@@ -10,12 +9,6 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
-
 server:
-  port: 10010
-  context-path: /user
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka/eureka
+  port: 10000
+  context-path: /sso
