@@ -1,0 +1,8 @@
+
+server:
+  port: 10010
+  context-path: /user
+
+spring:
+  application:
+    name: microservice-user
