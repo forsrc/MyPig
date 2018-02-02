@@ -10,9 +10,9 @@
     microservice             | port  | start order |
     ------------------------ | ----- | ----------- |
     ui                       | 8888  | 99          |
-    springboot-api-gateway   | 8088  | 4           |
-    springboot-sso-server    | 10000 | 3           |
-    springboot-eureka-server | 11100 | 2           |
-    springboot-config-server | 12000 | 1           |
-    springboot-admin         | 13000 | 0           |
-    user                     | 10010 | 5           |
+    springboot-api-gateway   | 8088  | 5           |
+    springboot-sso-server    | 10000 | 4           |
+    springboot-eureka-server | 11100 | 3           |
+    springboot-config-server | 12000 | 2           |
+    springboot-admin         | 13000 | 1           |
+    user                     | 10010 | 6           |
