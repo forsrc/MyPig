@@ -16,4 +16,22 @@ server:
   port: 8088
   context-path: /api
 
+zuul:
+  routes:
+    ui:
+      path: /ui/**
+      stripPrefix: true
+      url: http://forsrc.local:8888/ui
+    user:
+      path: /user/**
+      stripPrefix: true
+      url: http://forsrc.local:10010/user
+    sso:
+      path: /sso/**
+      stripPrefix: true
+      url: http://forsrc.local:10000/sso
+
+
+
+
 
