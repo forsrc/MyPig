@@ -10,6 +10,9 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
+management:
+  security:
+    enabled: false
 
 server:
   port: 10010
