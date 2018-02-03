@@ -28,7 +28,6 @@ security:
     role:     ADMIN
   basic:
     enabled: false
-
   oauth2:
     authorization:
       token-key-access: permitAll()
@@ -44,4 +43,8 @@ server:
 
 
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka
 

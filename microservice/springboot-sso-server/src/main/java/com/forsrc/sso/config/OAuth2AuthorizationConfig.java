@@ -1,8 +1,12 @@
 package com.forsrc.sso.config;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -19,13 +23,19 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Configuration
 @EnableAuthorizationServer
-public class SsoConfig extends AuthorizationServerConfigurerAdapter {
+@SessionAttributes("authorizationRequest")
+@EnableConfigurationProperties({ AuthorizationServerProperties.class })
+public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    AuthorizationServerProperties authorizationServerProperties;
 
     @Autowired
     private DataSource dataSource;
@@ -46,6 +56,7 @@ public class SsoConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerSecurityConfigurer security)
             throws Exception {
         security.passwordEncoder(passwordEncoder);
+        security.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess());
     }
 
     @Override
@@ -65,14 +76,14 @@ public class SsoConfig extends AuthorizationServerConfigurerAdapter {
         // @formatter:off
         clients.jdbc(dataSource)
                 .passwordEncoder(passwordEncoder)
-                .withClient("client")
+                .withClient("forsrc")
                 .authorizedGrantTypes("authorization_code", "client_credentials", 
                         "refresh_token","password", "implicit")
                 .authorities("ROLE_USER", "ROLE_ADMIN")
                 .resourceIds("forsrc")
                 .scopes("read", "write")
-                .secret("secret")
-                .accessTokenValiditySeconds(300);
+                .secret("forsrc")
+                .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1));
         // @formatter:on
 
     }

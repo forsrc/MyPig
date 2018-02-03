@@ -8,6 +8,28 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
+
+security:
+  user:
+    name: forsrc
+    password: forsrc
+    role: ADMIN
+  basic:
+    enabled: false
+  oauth2:
+    sso:
+      home:
+        secure: false
+        path: /,/**/*.html,/**/*.js
+    client:
+      accessTokenUri:       http://forsrc.local:10000/sso/oauth/token
+      userAuthorizationUri: http://forsrc.local:10000/sso/oauth/authorize
+      clientId:             forsrc
+      clientSecret:         forsrc
+    resource:
+      userInfoUri:          http://forsrc.local:10000/sso/me
+      preferTokenInfo:      false
+
 management:
   security:
     enabled: false
@@ -18,20 +40,25 @@ server:
 
 zuul:
   routes:
-    ui:
-      path: /ui/**
-      stripPrefix: true
-      url: http://forsrc.local:8888/ui
-    user:
-      path: /user/**
-      stripPrefix: true
-      url: http://forsrc.local:10010/user
+#    ui:
+#      path:        /ui/**
+#      stripPrefix: true
+#      url:         http://forsrc.local:8888/ui
+#    user:
+#      path:        /user/**
+#      stripPrefix: true
+#      url:         http://forsrc.local:10010/user
+    microservice-ui:   /api/ui/**
+    microservice-user: /api/user/**
     sso:
-      path: /sso/**
+      path:        /sso/**
       stripPrefix: true
-      url: http://forsrc.local:10000/sso
+      url:         http://forsrc.local:10000/sso
 
-
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka
 
 
 
