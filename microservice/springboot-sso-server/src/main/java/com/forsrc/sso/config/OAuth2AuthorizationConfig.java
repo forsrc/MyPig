@@ -55,8 +55,10 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security)
             throws Exception {
-        security.passwordEncoder(passwordEncoder);
-        security.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess());
+        security.passwordEncoder(passwordEncoder)
+                .tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
+                .checkTokenAccess("isAuthenticated()")
+            ;
     }
 
     @Override
@@ -66,7 +68,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         endpoints.authorizationCodeServices(authorizationCodeServices())
                  .authenticationManager(authenticationManager)
                  .tokenStore(tokenStore())
-                 .approvalStoreDisabled();
+                 .approvalStoreDisabled()
+                 ;
         // @formatter:off
     }
 
@@ -101,7 +104,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
             // @formatter:off
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .withUser("forsrc")
+                .withUser("forsrc@gmail.com")
                 .password("forsrc")
                 .roles("ADMIN");
             auth.jdbcAuthentication()

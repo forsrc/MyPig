@@ -23,7 +23,7 @@ spring:
 
 security:
   user:
-    name:     forsrc
+    name:     forsrc@gmail.com
     password: forsrc
     role:     ADMIN
   basic:

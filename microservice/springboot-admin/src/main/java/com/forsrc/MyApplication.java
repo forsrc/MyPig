@@ -12,9 +12,9 @@ import de.codecentric.boot.admin.config.EnableAdminServer;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 //@EnableAutoConfiguration
-@EnableAdminServer
 //@EnableEurekaClient
 //@EnableDiscoveryClient
+@EnableAdminServer
 public class MyApplication {
 
     public static void main(String[] args) {

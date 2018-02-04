@@ -56,19 +56,19 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-security</artifactId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
 
@@ -104,6 +104,8 @@
                             <tasks>
                                 <mkdir dir="src/main/java/com/forsrc" />
                                 <mkdir dir="src/main/resources" />
+                                <mkdir dir="src/main/resources/static" />
+                                <mkdir dir="src/main/resources/templates" />
                                 <mkdir dir="src/test/java/com/forsrc" />
                                 <mkdir dir="src/test/resources" />
                             </tasks>
