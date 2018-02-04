@@ -20,14 +20,16 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Configuration
 @EnableAuthorizationServer
-@SessionAttributes("authorizationRequest")
+//@SessionAttributes("authorizationRequest")
 @EnableConfigurationProperties({ AuthorizationServerProperties.class })
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
@@ -90,6 +92,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         // @formatter:on
 
     }
+
 
     @Configuration
     @Order(Ordered.LOWEST_PRECEDENCE - 20)
