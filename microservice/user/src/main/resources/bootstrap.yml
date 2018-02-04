@@ -11,6 +11,7 @@ spring:
       url: http://forsrc.local:13000/admin
 
 management:
+  context-path: /mgmt
   security:
     enabled: false
 
