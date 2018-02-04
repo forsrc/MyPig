@@ -26,7 +26,6 @@ security:
       scope:                read, write
     resource:
       userInfoUri:          http://forsrc.local:10000/sso/me
-      #preferTokenInfo:      false
       id:                   forsrc
       token-info-uri:       http://forsrc.local:10000/sso/oauth/check_token
 
