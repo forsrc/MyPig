@@ -10,8 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
+@SessionAttributes("authorizationRequest")
 public class SsoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SsoController.class);
@@ -27,7 +29,7 @@ public class SsoController {
     @RequestMapping("/api/test")
     @ResponseBody
     @PreAuthorize("isAuthenticated()")
-    @Secured({ "ROLE_USER"}) 
+    @Secured({ "ROLE_USER" })
     public long test() {
         LOGGER.info("--> test: {}", System.currentTimeMillis());
         return System.currentTimeMillis();

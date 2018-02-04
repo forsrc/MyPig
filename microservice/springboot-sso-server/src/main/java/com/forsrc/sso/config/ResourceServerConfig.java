@@ -23,8 +23,8 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-//@Configuration
-//@EnableResourceServer
+@Configuration
+@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
@@ -55,6 +55,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .and()
                 .addFilterAfter(this.createCSRFHeaderFilter(), CsrfFilter.class)
                 ;
+        http.authorizeRequests()
+            .antMatchers("/mgmt/**")
+            .permitAll()
+            ;
     }
 
     private Filter createCSRFHeaderFilter() {

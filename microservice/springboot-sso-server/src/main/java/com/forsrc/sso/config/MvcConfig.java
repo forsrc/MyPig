@@ -17,6 +17,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/login").setViewName("html/login/login");
         registry.addViewController("/index").setViewName("html/index");
         registry.addViewController("/").setViewName("html/index");
+        registry.addViewController("/oauth/confirm_access").setViewName("authorize");
     }
 
     @Override
