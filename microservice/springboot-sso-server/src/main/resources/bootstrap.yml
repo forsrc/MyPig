@@ -25,7 +25,9 @@ security:
   user:
     name:     forsrc@gmail.com
     password: forsrc
-    role:     ADMIN
+    role:
+    -         ADMIN
+    -         USER
   oauth2:
     #sso:
       #filter-order: 3
