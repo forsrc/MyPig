@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -25,16 +27,20 @@ import org.springframework.web.util.WebUtils;
 
 @Configuration
 @EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Order(-5)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
+                .antMatcher("/me").authorizeRequests()
+            .and()
                 .authorizeRequests()
                 //.antMatchers("/api/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET,     "/api/**").access("#oauth2.hasScope('read')")
-                .antMatchers(HttpMethod.OPTIONS, "/api/**").access("#oauth2.hasScope('read')")
+                .antMatchers(HttpMethod.OPTIONS, "/api/**").access("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
                 .antMatchers(HttpMethod.POST,    "/api/**").access("#oauth2.hasScope('write')")
                 .antMatchers(HttpMethod.PUT,     "/api/**").access("#oauth2.hasScope('write')")
                 .antMatchers(HttpMethod.PATCH,   "/api/**").access("#oauth2.hasScope('write')")
