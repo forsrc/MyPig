@@ -26,14 +26,14 @@ security:
     name:     forsrc@gmail.com
     password: forsrc
     role:     ADMIN
-  basic:
-    enabled: false
   oauth2:
-    sso:
-      filter-order: 3
+    #sso:
+      #filter-order: 3
     authorization:
       token-key-access: permitAll()
-
+    resource:
+      user-info-uri: "/me"
+      filter-order: 3
 
 management:
   context-path: /mgmt
