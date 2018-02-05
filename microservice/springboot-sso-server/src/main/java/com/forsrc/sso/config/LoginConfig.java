@@ -9,17 +9,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -33,55 +28,28 @@ import org.springframework.web.util.WebUtils;
 
 @Configuration
 @Order(-20)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
 
-        http
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                 .and()
-                    .logout()
-                    .deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true)
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/login?logout")
-                    .permitAll()
-                .and()
-                    .requestMatchers()
-                    .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
-                .and()
-                    .authorizeRequests()
-                    .antMatchers("/test", "/oauth/token")
-                    .permitAll()
-                .and()
-                    .csrf()
-                    .ignoringAntMatchers("/test", "/oauth/token")
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                    .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
-                    ;
+        http.formLogin().loginPage("/login").permitAll().and().logout().deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout").permitAll().and().requestMatchers()
+                .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test").and()
+                .authorizeRequests().antMatchers("/test", "/oauth/token").permitAll().and().csrf()
+                .ignoringAntMatchers("/test", "/oauth/token")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().authorizeRequests()
+                .anyRequest().authenticated();
 
-        http
-                .authorizeRequests()
-                    .antMatchers("/mgmt/**")
-                    .permitAll()
-                .anyRequest()
-                    .authenticated()
-                .and()
-                    .csrf().ignoringAntMatchers("/mgmt/**")
-                    .csrfTokenRepository(csrfTokenRepository())
-                .and()
-                    .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+        http.authorizeRequests().antMatchers("/mgmt/**").permitAll().anyRequest().authenticated().and().csrf()
+                .ignoringAntMatchers("/mgmt/**").csrfTokenRepository(csrfTokenRepository()).and()
+                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 
         // @formatter:on
     }
-
 
     @Override
     public void configure(WebSecurity web) throws Exception {

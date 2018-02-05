@@ -28,8 +28,8 @@ public class SsoController {
 
     @RequestMapping("/api/test")
     @ResponseBody
-    @PreAuthorize("isAuthenticated()")
-    @Secured({ "ROLE_USER" })
+    @Secured({ "ROLE_ADMIN" })
+    @PreAuthorize("hasRole('ADMIN')")
     public long test() {
         LOGGER.info("--> test: {}", System.currentTimeMillis());
         return System.currentTimeMillis();
