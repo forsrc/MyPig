@@ -33,7 +33,6 @@ import org.springframework.web.util.WebUtils;
 
 @Configuration
 @Order(-20)
-@EnableWebSecurity
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Override
