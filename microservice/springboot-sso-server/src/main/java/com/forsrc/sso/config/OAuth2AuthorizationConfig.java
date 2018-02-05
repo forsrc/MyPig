@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +30,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Configuration
 @EnableAuthorizationServer
-//@SessionAttributes("authorizationRequest")
 @EnableConfigurationProperties({ AuthorizationServerProperties.class })
+@Order(-10)
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -55,22 +56,20 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security)
-            throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        // @formatter:off
         security.passwordEncoder(passwordEncoder)
                 .tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
-                //.checkTokenAccess("isAuthenticated()")
-            ;
+                .checkTokenAccess("isAuthenticated()");
+        // @formatter:on
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-            throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         // @formatter:off
         endpoints.authorizationCodeServices(authorizationCodeServices())
                  .authenticationManager(authenticationManager)
                  .tokenStore(tokenStore())
-                 .approvalStoreDisabled()
                  ;
         // @formatter:off
     }
@@ -84,20 +83,20 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .withClient("forsrc")
                 .authorizedGrantTypes("authorization_code", "client_credentials", 
                         "refresh_token","password", "implicit")
-                .authorities("ROLE_USER", "ROLE_ADMIN")
+                //.authorities("ROLE_USER", "ROLE_ADMIN")
                 .resourceIds("forsrc")
                 .scopes("read", "write")
                 .secret("forsrc")
-                .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1));
+                .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
+                .autoApprove(true);
+                ;
         // @formatter:on
 
     }
 
-
     @Configuration
     @Order(Ordered.LOWEST_PRECEDENCE - 20)
-    protected static class AuthenticationManagerConfiguration extends
-            GlobalAuthenticationConfigurerAdapter {
+    protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
         @Autowired
         private DataSource dataSource;
@@ -109,7 +108,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .dataSource(dataSource)
                 .withUser("forsrc@gmail.com")
                 .password("forsrc")
-                .roles("ADMIN");
+                .roles("ADMIN", "USER");
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .withUser("user")
