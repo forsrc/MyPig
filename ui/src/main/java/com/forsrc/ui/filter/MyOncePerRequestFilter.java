@@ -14,20 +14,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MyOncePerRequestFilter extends OncePerRequestFilter {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyOncePerRequestFilter.class);
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = request.getParameter("access_token");
         if (token != null) {
+            LOGGER.info("--> access_token: {}", token);
             token = URLDecoder.decode(token, "UTF-8");
             HeaderMapRequestWrapper requestWrapper = new HeaderMapRequestWrapper(request);
             requestWrapper.addHeader("Authorization", "Bearer " + token);

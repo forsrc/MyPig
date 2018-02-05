@@ -20,6 +20,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  aop:
+    proxy-target-class: true
 
 security:
   user:

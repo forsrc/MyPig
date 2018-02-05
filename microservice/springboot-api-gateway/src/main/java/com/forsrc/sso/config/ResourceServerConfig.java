@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -39,6 +41,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,  "/**").access("#oauth2.hasScope('write')")
             .and()
                 .csrf()
+                .ignoringAntMatchers("/me")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .and()
+                .csrf()
                 .csrfTokenRepository(this.getCSRFTokenRepository())
             .and()
                 .addFilterAfter(this.createCSRFHeaderFilter(), CsrfFilter.class)
@@ -48,6 +54,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .permitAll()
             .anyRequest()
             .authenticated();
+    }
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+         resources.resourceId("forsrc");
     }
 
     private Filter createCSRFHeaderFilter() {

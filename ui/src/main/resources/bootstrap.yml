@@ -13,8 +13,6 @@ spring:
       url: http://forsrc.local:13000/admin
 
 security:
-  basic:
-    enabled: false
   oauth2:
     client:
       access-token-uri:       http://forsrc.local:10000/sso/oauth/token
@@ -23,6 +21,7 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
+      filter-order:           3
       userInfoUri:            http://forsrc.local:10000/sso/me
       preferTokenInfo:        true
       id:                     forsrc

@@ -10,24 +10,19 @@ spring:
 
 
 security:
-  user:
-    name: forsrc
-    password: forsrc
-    role: ADMIN
-  basic:
-    enabled: false
-  enable-csrf: false
   oauth2:
     client:
-      accessTokenUri:       http://forsrc.local:10000/sso/oauth/token
-      userAuthorizationUri: http://forsrc.local:10000/sso/oauth/authorize
-      clientId:             forsrc
-      clientSecret:         forsrc
-      scope:                read, write
+      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
+      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      client-id:              forsrc
+      client-secret:          forsrc
+      scope:                  read, write
     resource:
-      userInfoUri:          http://forsrc.local:10000/sso/me
-      id:                   forsrc
-      token-info-uri:       http://forsrc.local:10000/sso/oauth/check_token
+      filter-order:           3
+      userInfoUri:            http://forsrc.local:10000/sso/me
+      preferTokenInfo:        true
+      id:                     forsrc
+      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
 
 management:
   context-path: /mgmt

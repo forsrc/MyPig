@@ -6,3 +6,7 @@ server:
 spring:
   application:
     name: microservice-ui
+
+logging:
+  level:
+     org.springframework.security: DEBUG

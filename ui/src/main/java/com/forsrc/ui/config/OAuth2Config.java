@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 public class OAuth2Config {
 
     @Bean
-    OAuth2RestTemplate oauth2RestTemplate(OAuth2ClientContext oauth2ClientContext, OAuth2ProtectedResourceDetails details) {
+    public OAuth2RestTemplate oauth2RestTemplate(OAuth2ClientContext oauth2ClientContext, OAuth2ProtectedResourceDetails details) {
         return new OAuth2RestTemplate(details, oauth2ClientContext);
     }
 }
