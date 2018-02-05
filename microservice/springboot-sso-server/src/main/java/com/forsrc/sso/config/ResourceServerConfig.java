@@ -25,10 +25,10 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-@Configuration
-@EnableResourceServer
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(-5)
+//@Configuration
+//@EnableResourceServer
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+//@Order(-5)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
