@@ -12,19 +12,42 @@ spring:
       turbine:
         clusters: default
         location: turbine
-      username: forsrc
+      username: forsrc@gmail.com
       password: forsrc
       client:
         metadata:
-          user.name:     forsrc
+          user.name:     forsrc@gmail.com
           user.password: forsrc
+  aop:
+    proxy-target-class: true
 
 management:
+  context-path: /mgmt
   security:
     enabled: false
+
+security:
+  basic:
+    enabled: false
+  oauth2:
+    client:
+      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
+      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      client-id:              forsrc
+      client-secret:          forsrc
+      scope:                  read, write
+    resource:
+      userInfoUri:            http://forsrc.local:10000/sso/me
+      preferTokenInfo:        true
+      id:                     forsrc
+      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
 
 server:
   port: 13000
   context-path: /admin
 
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka

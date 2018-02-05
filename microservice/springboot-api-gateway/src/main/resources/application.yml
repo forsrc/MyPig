@@ -5,3 +5,9 @@ server:
 spring:
   application:
     name: springboot-api-gateway
+
+
+
+logging:
+  level:
+     org.springframework.security: DEBUG

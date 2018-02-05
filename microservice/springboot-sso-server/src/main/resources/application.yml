@@ -5,3 +5,7 @@ server:
 spring:
   application:
     name: springboot-sso-server
+
+logging:
+  level:
+     org.springframework.security: DEBUG

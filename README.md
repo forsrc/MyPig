@@ -2,7 +2,7 @@
 
 
 
-![plantuml](http://www.plantuml.com/plantuml/png/lPRTQeCm5CVlVOfS6uelK4hJROp1O0DlPP2Pj4Wx7L4xHa_VVIRH-LLTqCm3QZJ9B__pOSWspQZ8M9HHwgoMDCTnKDT0th0DEXw00_8_HHGVK7ZA6PfeyD_A9GXtu6qh1i4bkSAW0jnvAjwOm4OVhaTgDRYd1iZhK_dg-o_g-PnGLlN3NHBlemFokJXpqGcLpi1xacGWHn_f_aXbJ5qbmaNhXg8DFDACVz5lEK_3O4TFD0wv0EtHe5EOi8yehZJZLcL0djQwe1tagWKX8UJNeuTSy4BdJO_QfU4Lae9UtVNepG-cYN5ACUPql5vjPBMuI5-ceWR_7wjJoWnEcmbvjEoQqnQhMvvAOZ0B8ty9LRj_Rq8tju16-4QTCji8YojG2tXpCAMzMM201SPvBcCyp-Q-kFSx5-7P63k10IJBpW86NTBhR4nLTGkVMROyPkgiz0C0)
+![plantuml](http://www.plantuml.com/plantuml/png/nLVlQu906FxkNt7WjsxIQciGH6IRn23OIFPX4C7jj2Or7MgDqTl_llFKVlWhTMOl6Ez9zzpxFlVSemuSbzYkPhY425AT8GW2YWPuFxWIU9o23aZzjWrpWUXghI4w7B-X4W5NgHtNGSo7PRb8rhuC4z7HH2d2YjY2QrIEByZ9esNEZGLITNkZsyK9QKDVRFjvxSNZIt6Yh6rzIKfn8junGbetOhlUcZrfUhk14WPH2Gj-5JW6CGkk-E0qPWm1jjOEKdl3-_oGXGiU_oiZS0O3MCAnya5-VGw7eAel2FKaa61i4OtVv9Fxi3Ou2TtkGRT9xeUMPCuKGD-LyO6vpYqx_GrMWYGr67fG3uST4LV_8R_-uhviM3OaAs9ItGw80ZfHdeu9Bzuvcxfs6FYfNWz3Y6LXafDsG1DTCvnevzptcgpPQPJs_Uc0VHvVF6TaTGwdQ5cTKrcMYoyEoeeuha5LdTZqCo10xBIzpXl8ln8MPpfWCcCQYD2EUy6zVtUUx55vzZmZIkEMd5XH7zozgW2QLO7Jv7iqpGt57Mb_ytYV-_wnFaUJs0cXnFlKgdoRyVpjx3FesAVJqBp57egzzk1ag2bto-PPkbACAUSEddd2uhnlkaLZKmLEjgAA-PblB9L0POgpH5LLGMsTNILGeJ9h_a0SwAR6Fqp_0000)
 
 
 * microservice
@@ -10,9 +10,9 @@
     microservice             | port  | start order |
     ------------------------ | ----- | ----------- |
     ui                       | 8888  | 99          |
-    springboot-api-gateway   | 8088  | 4           |
-    springboot-sso-server    | 10000 | 3           |
-    springboot-eureka-server | 11100 | 2           |
-    springboot-config-server | 12000 | 1           |
-    springboot-admin         | 13000 | 0           |
-    user                     | 10010 | 5           |
+    springboot-api-gateway   | 8088  | 5           |
+    springboot-sso-server    | 10000 | 4           |
+    springboot-eureka-server | 11100 | 3           |
+    springboot-config-server | 12000 | 2           |
+    springboot-admin         | 13000 | 1           |
+    user                     | 10010 | 6           |
