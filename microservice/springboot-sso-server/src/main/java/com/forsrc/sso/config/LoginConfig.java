@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -33,15 +34,12 @@ import org.springframework.web.util.WebUtils;
 @Configuration
 @Order(-20)
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class LoginConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        // @formatter:off
+
         http
                 .formLogin()
                     .loginPage("/login")
@@ -69,17 +67,26 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest()
                     .authenticated()
                     ;
+
         http
-            .authorizeRequests()
-                .antMatchers("/mgmt/**")
-                .permitAll()
-            .anyRequest()
-                .authenticated()
-            .and()
-                .csrf().ignoringAntMatchers("/mgmt/**")
-                .csrfTokenRepository(csrfTokenRepository())
-            .and()
-                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+                .authorizeRequests()
+                    .antMatchers("/mgmt/**")
+                    .permitAll()
+                .anyRequest()
+                    .authenticated()
+                .and()
+                    .csrf().ignoringAntMatchers("/mgmt/**")
+                    .csrfTokenRepository(csrfTokenRepository())
+                .and()
+                    .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+
+        // @formatter:on
+    }
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/mgmt/**");
     }
 
     @Bean
@@ -103,18 +110,12 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
- 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(authenticationManager);
-    }
 
     private Filter csrfHeaderFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(HttpServletRequest request,
-                    HttpServletResponse response, FilterChain filterChain)
-                            throws ServletException, IOException {
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                    FilterChain filterChain) throws ServletException, IOException {
                 CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
                 if (csrf != null) {
                     Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
