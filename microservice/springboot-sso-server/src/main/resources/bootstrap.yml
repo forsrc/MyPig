@@ -29,6 +29,8 @@ security:
   basic:
     enabled: false
   oauth2:
+    sso:
+      filter-order: 3
     authorization:
       token-key-access: permitAll()
 
