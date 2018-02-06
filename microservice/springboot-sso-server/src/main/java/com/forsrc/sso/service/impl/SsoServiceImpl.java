@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.forsrc.sso.dao.AuthoritieDao;
+import com.forsrc.sso.dao.AuthorityDao;
 import com.forsrc.sso.dao.UserDao;
 import com.forsrc.sso.domain.entity.Authority;
 import com.forsrc.sso.domain.entity.User;
