@@ -12,7 +12,7 @@ import javax.persistence.UniqueConstraint;
             @Index(name = "index_authorities_username", columnList = "username") },
             uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "authority" })}
         )
-public class Authoritie implements java.io.Serializable {
+public class Authority implements java.io.Serializable {
 
     private static final long serialVersionUID = -1985182093016989312L;
 
