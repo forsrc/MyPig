@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import com.forsrc.sso.dao.AuthorityDao;
+import com.forsrc.sso.dao.AuthoritieDao;
 import com.forsrc.sso.dao.UserDao;
 import com.forsrc.sso.domain.entity.Authority;
 import com.forsrc.sso.domain.entity.User;
@@ -22,7 +22,7 @@ public class SsoServiceImpl implements SsoService {
     private UserDao userDao;
 
     @Autowired
-    private AuthorityDao authorityDao;
+    private AuthoritieDao authoritiesDao;
 
     @Override
     public void save(User entity) {
@@ -37,12 +37,12 @@ public class SsoServiceImpl implements SsoService {
 
     @Override
     public void save(Authority entity) {
-        authorityDao.save(entity);
+        authoritiesDao.save(entity);
     }
 
     @Override
     public void update(Authority entity) {
-        authorityDao.save(entity);
+        authoritiesDao.save(entity);
 
     }
 
@@ -52,11 +52,11 @@ public class SsoServiceImpl implements SsoService {
     }
 
     @Override
-    public List<Authority> getAuthoritieByUsername(String username) {
+    public List<Authority> getAuthorityByUsername(String username) {
         Authority entity = new Authority();                         
         entity.setUsername(username);                          
         Example<Authority> example = Example.of(entity);
-        return authorityDao.findAll(example);
+        return authoritiesDao.findAll(example);
     }
 
 }
