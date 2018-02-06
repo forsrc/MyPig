@@ -55,10 +55,28 @@ public class SsoServiceImpl implements SsoService {
     @Override
     @Transactional(readOnly = true)
     public List<Authority> getAuthorityByUsername(String username) {
-        Authority entity = new Authority();                         
-        entity.setUsername(username);                          
+        Authority entity = new Authority();
+        entity.setUsername(username);
         Example<Authority> example = Example.of(entity);
         return authorityDao.findAll(example);
+    }
+
+    @Override
+    public void deleteAuthority(String username) {
+        List<Authority> list = getAuthorityByUsername(username);
+        for (Authority authority : list) {
+            authorityDao.delete(authority);
+        }
+    }
+
+    @Override
+    public void update(List<Authority> list) {
+        authorityDao.save(list);
+    }
+
+    @Override
+    public void save(List<Authority> list) {
+        authorityDao.save(list);
     }
 
 }

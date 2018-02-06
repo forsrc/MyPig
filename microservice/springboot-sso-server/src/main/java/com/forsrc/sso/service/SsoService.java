@@ -25,6 +25,12 @@ public interface SsoService {
 
     public void save(Authority entity);
 
+    public void save(List<Authority> list);
+
     public void update(Authority entity);
+
+    public void update(List<Authority> list);
+
+    public void deleteAuthority(String username);
 
 }
