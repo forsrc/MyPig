@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.forsrc.sso.domain.entity.Authoritie;
+import com.forsrc.sso.domain.entity.Authority;
 import com.forsrc.sso.domain.entity.User;
 
 @Service
@@ -19,10 +19,10 @@ public interface SsoService {
 
     public void update(User entity);
 
-    public List<Authoritie> getAuthoritieByUsername(String username);
+    public List<Authority> getAuthoritieByUsername(String username);
 
-    public void save(Authoritie entity);
+    public void save(Authority entity);
 
-    public void update(Authoritie entity);
+    public void update(Authority entity);
 
 }
