@@ -1,0 +1,38 @@
+server:
+  port: 8888
+  context-path: /ui
+
+spring:
+  application:
+    name: microservice-ui
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+security:
+  oauth2:
+    client:
+      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
+      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      client-id:              forsrc
+      client-secret:          forsrc
+      scope:                  read, write
+    resource:
+      filter-order:           3
+      userInfoUri:            http://forsrc.local:10000/sso/me
+      preferTokenInfo:        true
+      id:                     forsrc
+      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
+
+management:
+  context-path: /mgmt
+  security:
+    enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka

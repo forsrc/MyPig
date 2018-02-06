@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>SSO Login</title>
+</head>
+
+<body>
+
+    <div>
+        <div style="width: 250px;">
+            <h1>Login Form</h1>
+
+            <p th:if="${param.error}">Login failed ...</p>
+
+            <p th:if="${param.logout}">Logout succeeded.</p>
+
+            <form method="post" th:action="@{/login}">
+                <div>
+                    <input type="text" placeholder="Username"
+                        name="username" value="forsrc@gmail.com" />
+                </div>
+                <div>
+                    <input type="password" placeholder="Password"
+                        name="password" value="forsrc" />
+                </div>
+                <div>
+                    <button>Login</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</body>
+</html>

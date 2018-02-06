@@ -1,0 +1,13 @@
+server:
+  port: 8088
+  context-path: /api
+
+spring:
+  application:
+    name: springboot-api-gateway
+
+
+
+logging:
+  level:
+     org.springframework.security: DEBUG

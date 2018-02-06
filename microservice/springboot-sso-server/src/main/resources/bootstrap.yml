@@ -1,0 +1,63 @@
+
+spring:
+  application:
+    name: springboot-sso-server
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+  datasource:
+    url: jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
+    username: sa
+    password: sa
+    driver-class: org.h2.Driver
+    schema:
+    - classpath:schema.sql
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  aop:
+    proxy-target-class: true
+
+  cache:
+    type: redis
+  redis:
+    host: forsrc.local
+    port: 6379
+ 
+security:
+  user:
+    name:     forsrc@gmail.com
+    password: forsrc
+    role:
+    -         ADMIN
+    -         USER
+  oauth2:
+    #sso:
+      #filter-order: 3
+    authorization:
+      token-key-access: permitAll()
+    resource:
+      user-info-uri: "/me"
+      filter-order: 3
+
+management:
+  context-path: /mgmt
+  security:
+    enabled: false
+
+server:
+  port: 10000
+  context-path: /sso
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka
+

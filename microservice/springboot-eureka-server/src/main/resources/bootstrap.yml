@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: springboot-eureka-server
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+eureka:
+  instance:
+    hostname: forsrc.local
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/${server.context-path}/eureka/ 
+
+management:
+  context-path: /mgmt
+  security:
+    enabled: false
+
+server:
+  port: 11100
+  context-path: /eureka
+
+
