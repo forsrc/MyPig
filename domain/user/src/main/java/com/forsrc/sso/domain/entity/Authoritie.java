@@ -20,7 +20,7 @@ public class Authoritie implements java.io.Serializable {
     @Column(name = "username", unique = false, length = 200, nullable = false)
     private String username;
 
-    @Column(name = "password", unique = false, length = 200, nullable = false)
+    @Column(name = "authority", unique = false, length = 200, nullable = false)
     private String authority;
 
     public String getUsername() {
