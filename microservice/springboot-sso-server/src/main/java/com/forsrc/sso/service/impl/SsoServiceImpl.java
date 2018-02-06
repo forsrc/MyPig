@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import com.forsrc.sso.dao.AuthoritieDao;
+import com.forsrc.sso.dao.AuthorityDao;
 import com.forsrc.sso.dao.UserDao;
-import com.forsrc.sso.domain.entity.Authoritie;
+import com.forsrc.sso.domain.entity.Authority;
 import com.forsrc.sso.domain.entity.User;
 import com.forsrc.sso.service.SsoService;
 
@@ -22,7 +22,7 @@ public class SsoServiceImpl implements SsoService {
     private UserDao userDao;
 
     @Autowired
-    private AuthoritieDao authoritiesDao;
+    private AuthorityDao authorityDao;
 
     @Override
     public void save(User entity) {
@@ -36,13 +36,13 @@ public class SsoServiceImpl implements SsoService {
     }
 
     @Override
-    public void save(Authoritie entity) {
-        authoritiesDao.save(entity);
+    public void save(Authority entity) {
+        authorityDao.save(entity);
     }
 
     @Override
-    public void update(Authoritie entity) {
-        authoritiesDao.save(entity);
+    public void update(Authority entity) {
+        authorityDao.save(entity);
 
     }
 
@@ -52,11 +52,11 @@ public class SsoServiceImpl implements SsoService {
     }
 
     @Override
-    public List<Authoritie> getAuthoritieByUsername(String username) {
-        Authoritie entity = new Authoritie();                         
+    public List<Authority> getAuthoritieByUsername(String username) {
+        Authority entity = new Authority();                         
         entity.setUsername(username);                          
-        Example<Authoritie> example = Example.of(entity);
-        return authoritiesDao.findAll(example);
+        Example<Authority> example = Example.of(entity);
+        return authorityDao.findAll(example);
     }
 
 }
