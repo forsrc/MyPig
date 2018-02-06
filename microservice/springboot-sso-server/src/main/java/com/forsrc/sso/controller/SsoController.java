@@ -41,7 +41,7 @@ public class SsoController {
 
     @RequestMapping("/api/authority/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Authority> authoritie(@PathVariable("username") String username) {
+    public List<Authority> authority(@PathVariable("username") String username) {
         List<Authority> list = ssoService.getAuthoritieByUsername(username);
         LOGGER.info("--> {} : {}", username, list);
         return list;
