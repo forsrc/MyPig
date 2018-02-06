@@ -22,7 +22,7 @@ public class SsoServiceImpl implements SsoService {
     private UserDao userDao;
 
     @Autowired
-    private AuthoritieDao authoritiesDao;
+    private AuthorityDao authorityDao;
 
     @Override
     public void save(User entity) {
@@ -37,12 +37,12 @@ public class SsoServiceImpl implements SsoService {
 
     @Override
     public void save(Authority entity) {
-        authoritiesDao.save(entity);
+        authorityDao.save(entity);
     }
 
     @Override
     public void update(Authority entity) {
-        authoritiesDao.save(entity);
+        authorityDao.save(entity);
 
     }
 
@@ -58,7 +58,7 @@ public class SsoServiceImpl implements SsoService {
         Authority entity = new Authority();                         
         entity.setUsername(username);                          
         Example<Authority> example = Example.of(entity);
-        return authoritiesDao.findAll(example);
+        return authorityDao.findAll(example);
     }
 
 }
