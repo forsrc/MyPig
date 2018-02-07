@@ -3,6 +3,7 @@ package com.forsrc.sso.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -54,6 +55,7 @@ public class SsoServiceImpl implements SsoService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "spring/cache/Authority", key = "#username")
     public List<Authority> getAuthorityByUsername(String username) {
         Authority entity = new Authority();
         entity.setUsername(username);
