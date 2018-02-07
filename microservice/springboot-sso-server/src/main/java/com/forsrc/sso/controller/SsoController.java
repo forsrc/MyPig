@@ -65,9 +65,9 @@ public class SsoController {
     @PostMapping("/api/authority/{username}")
     public ResponseEntity<Authority> save(@PathVariable("username") String username, @RequestBody Authority entity) {
         Assert.notNull(entity, "save: Authority is null");
-        Assert.notNull(username, "update: username is null");
+        Assert.notNull(username, "save: username is null");
         String authority = entity.getAuthority();
-        Assert.notNull(authority, "update: authority is null");
+        Assert.notNull(authority, "save: authority is null");
         List<Authority> list = new ArrayList<>();
         if(authority.indexOf(",") > 0) {
             String[] authorities = authority.split(",");
@@ -82,8 +82,8 @@ public class SsoController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/authority")
     public ResponseEntity<List<Authority>> save(@RequestBody Authority[] Authorities) {
-        Assert.notNull(Authorities, "update: Authority is null");
-        Assert.isTrue(Authorities.length == 0, "update: Authority is empty");
+        Assert.notNull(Authorities, "save: Authority is null");
+        Assert.isTrue(Authorities.length > 0, "save: Authority is empty");
         List<Authority> list = Arrays.asList(Authorities);
         ssoService.update(list);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -112,7 +112,7 @@ public class SsoController {
     @PutMapping("/api/authority")
     public ResponseEntity<List<Authority>> update(@RequestBody Authority[] Authorities) {
         Assert.notNull(Authorities, "update: Authority is null");
-        Assert.isTrue(Authorities.length == 0, "update: Authority is empty");
+        Assert.isTrue(Authorities.length > 0, "update: Authority is empty");
         List<Authority> list = Arrays.asList(Authorities);
         ssoService.update(list);
         return new ResponseEntity<>(list, HttpStatus.OK);
