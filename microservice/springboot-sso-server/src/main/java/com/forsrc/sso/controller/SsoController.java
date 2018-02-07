@@ -2,11 +2,14 @@ package com.forsrc.sso.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,9 +45,12 @@ public class SsoController {
     @GetMapping("/api/test")
     //@Secured({ "ROLE_ADMIN" })
     @PreAuthorize("hasRole('ADMIN')")
-    public long test() {
+    public ResponseEntity<Long> test() {
         LOGGER.info("--> test: {}", System.currentTimeMillis());
-        return System.currentTimeMillis();
+        CacheControl cacheControl = CacheControl.maxAge(2, TimeUnit.SECONDS);
+        return ResponseEntity.ok()
+                .cacheControl(cacheControl)
+                .body(System.currentTimeMillis());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -56,10 +62,9 @@ public class SsoController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/api/authority")
-    public ResponseEntity<Authority> save(@RequestBody Authority entity) {
+    @PostMapping("/api/authority/{username}")
+    public ResponseEntity<Authority> save(@PathVariable("username") String username, @RequestBody Authority entity) {
         Assert.notNull(entity, "save: Authority is null");
-        String username = entity.getUsername();
         Assert.notNull(username, "update: username is null");
         String authority = entity.getAuthority();
         Assert.notNull(authority, "update: authority is null");
@@ -72,6 +77,16 @@ public class SsoController {
         }
         ssoService.save(list);
         return new ResponseEntity<>(entity, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/api/authority")
+    public ResponseEntity<List<Authority>> save(@RequestBody Authority[] Authorities) {
+        Assert.notNull(Authorities, "update: Authority is null");
+        Assert.isTrue(Authorities.length == 0, "update: Authority is empty");
+        List<Authority> list = Arrays.asList(Authorities);
+        ssoService.update(list);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -91,6 +106,16 @@ public class SsoController {
         }
         ssoService.update(list);
         return new ResponseEntity<>(entity, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/api/authority")
+    public ResponseEntity<List<Authority>> update(@RequestBody Authority[] Authorities) {
+        Assert.notNull(Authorities, "update: Authority is null");
+        Assert.isTrue(Authorities.length == 0, "update: Authority is empty");
+        List<Authority> list = Arrays.asList(Authorities);
+        ssoService.update(list);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
