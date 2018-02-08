@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.forsrc.sso.domain.entity.Authority;
+import com.forsrc.sso.domain.entity.User;
 import com.forsrc.sso.service.SsoService;
 
 @RestController
@@ -65,9 +68,9 @@ public class SsoController {
     @PostMapping("/api/authority/{username}")
     public ResponseEntity<Authority> save(@PathVariable("username") String username, @RequestBody Authority entity) {
         Assert.notNull(entity, "save: Authority is null");
-        Assert.notNull(username, "save: username is null");
+        Assert.notNull(username, "update: username is null");
         String authority = entity.getAuthority();
-        Assert.notNull(authority, "save: authority is null");
+        Assert.notNull(authority, "update: authority is null");
         List<Authority> list = new ArrayList<>();
         if(authority.indexOf(",") > 0) {
             String[] authorities = authority.split(",");
@@ -125,4 +128,43 @@ public class SsoController {
         ssoService.deleteAuthority(username);
         return new ResponseEntity<>(String.format("delete: %s", username), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/api/user/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        User user = ssoService.getUserByUsername(username);
+        LOGGER.info("--> {} : {}", username, user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/api/user")
+    public ResponseEntity<Page<User>> getUsers(@RequestParam(name = "page", required = false) Integer page,
+                @RequestParam(name = "size", required = false) Integer size) {
+        page = page == null || page.intValue() == 0 ? 0 : page;
+        size = size == null || size.intValue() == 0 ? 10 : size;
+        size = size.intValue() >= 1000 ? 1000 : size;
+        Page<User> list = ssoService.getUser(page.intValue(), size.intValue());
+        LOGGER.info("--> getUsers({}, {}) : {}", page, size, list);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/api/user")
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
+        Assert.notNull(user, "save: User is null");
+        Assert.notNull(user.getUsername(), "save: username is nul");
+        user = ssoService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/api/user")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        Assert.notNull(user, "save: User is null");
+        Assert.notNull(user.getUsername(), "save: username is nul");
+        user = ssoService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
 }
