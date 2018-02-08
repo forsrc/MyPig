@@ -31,12 +31,14 @@ public class SsoServiceImpl implements SsoService {
 
     @Override
     @CachePut(value = "spring/cache/sso/User", key = "#user.username")
+    @CacheEvict(value = "spring/cache/sso/User/Page")
     public User save(User user) {
        return userDao.save(user);
     }
 
     @Override
     @CachePut(value = "spring/cache/sso/User", key = "#user.username")
+    @CacheEvict(value = "spring/cache/sso/User/Page")
     public User update(User user) {
         return userDao.save(user);
     }
