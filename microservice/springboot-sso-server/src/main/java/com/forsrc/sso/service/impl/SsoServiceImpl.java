@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,6 +89,13 @@ public class SsoServiceImpl implements SsoService {
     @CachePut(value = "spring/cache/sso/Authority", key = "#list.get(0).username")
     public List<Authority> save(List<Authority> list) {
         return authorityDao.save(list);
+    }
+
+    @Override
+    @Cacheable(value = "spring/cache/sso/User/Page", key = "#page + '-' + #size")
+    public Page<User> getUser(int page, int size) {
+        Page<User> p = userDao.findAll(new PageRequest(page, size));
+        return p;
     }
 
 }
