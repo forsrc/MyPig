@@ -2,6 +2,7 @@ package com.forsrc.sso.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +41,7 @@ public interface SsoService {
     public List<Authority> update(List<Authority> list);
 
     public void deleteAuthority(String username);
+
+    public Page<User> getUser(int page, int size);
 
 }
