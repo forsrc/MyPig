@@ -3,6 +3,8 @@ package com.forsrc.sso.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -26,36 +28,27 @@ public class SsoServiceImpl implements SsoService {
     private AuthorityDao authorityDao;
 
     @Override
-    public void save(User entity) {
-        userDao.save(entity);
-
+    @CachePut(value = "spring/cache/sso/User", key = "#user.username")
+    public User save(User user) {
+       return userDao.save(user);
     }
 
     @Override
-    public void update(User entity) {
-        userDao.save(entity);
-    }
-
-    @Override
-    public void save(Authority entity) {
-        authorityDao.save(entity);
-    }
-
-    @Override
-    public void update(Authority entity) {
-        authorityDao.save(entity);
-
+    @CachePut(value = "spring/cache/sso/User", key = "#user.username")
+    public User update(User user) {
+        return userDao.save(user);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "spring/cache/sso/User", key = "#username")
     public User getUserByUsername(String username) {
         return userDao.findOne(username);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "spring/cache/Authority", key = "#username")
+    @Cacheable(value = "spring/cache/sso/Authority", key = "#username")
     public List<Authority> getAuthorityByUsername(String username) {
         Authority entity = new Authority();
         entity.setUsername(username);
@@ -64,6 +57,7 @@ public class SsoServiceImpl implements SsoService {
     }
 
     @Override
+    @CacheEvict(value = "spring/cache/sso/Authority", key = "#username")
     public void deleteAuthority(String username) {
         List<Authority> list = getAuthorityByUsername(username);
         for (Authority authority : list) {
@@ -72,13 +66,27 @@ public class SsoServiceImpl implements SsoService {
     }
 
     @Override
-    public void update(List<Authority> list) {
-        authorityDao.save(list);
+    /**
+     * update Authorities<br/>
+     * * all the username must be the same
+     * @param list
+     * @return
+     */
+    @CachePut(value = "spring/cache/sso/Authority", key = "#list.get(0).username")
+    public List<Authority> update(List<Authority> list) {
+       return authorityDao.save(list);
     }
 
     @Override
-    public void save(List<Authority> list) {
-        authorityDao.save(list);
+    /**
+     * save Authorities<br/>
+     * * all the username must be the same
+     * @param list
+     * @return
+     */
+    @CachePut(value = "spring/cache/sso/Authority", key = "#list.get(0).username")
+    public List<Authority> save(List<Authority> list) {
+        return authorityDao.save(list);
     }
 
 }
