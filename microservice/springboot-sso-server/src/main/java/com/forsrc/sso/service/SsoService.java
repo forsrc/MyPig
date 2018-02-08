@@ -16,20 +16,28 @@ public interface SsoService {
     @Transactional(readOnly = true)
     public User getUserByUsername(String username);
 
-    public void save(User entity);
+    public User save(User user);
 
-    public void update(User entity);
+    public User update(User user);
 
     @Transactional(readOnly = true)
     public List<Authority> getAuthorityByUsername(String username);
 
-    public void save(Authority entity);
+    /**
+     * save Authorities<br/>
+     * * all the username must be the same
+     * @param list
+     * @return
+     */
+    public List<Authority> save(List<Authority> list);
 
-    public void save(List<Authority> list);
-
-    public void update(Authority entity);
-
-    public void update(List<Authority> list);
+    /**
+     * update Authorities<br/>
+     * * all the username must be the same
+     * @param list
+     * @return
+     */
+    public List<Authority> update(List<Authority> list);
 
     public void deleteAuthority(String username);
 
