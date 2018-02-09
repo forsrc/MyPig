@@ -2,7 +2,7 @@
 
 @startditaa
 
-                    |1. bppkTrip                          +------------+
+                    |1. bookTrip                          +------------+
                     v                                     |            |
               +-----------------+ 1.3 PUT /confirm (R1,R2)| Transaction|
               | Booking Process |------------------------>| Coordinator|
@@ -11,7 +11,7 @@
                   |          |          |                 +------------+
                   |          |          |                             |
         +---------+          +--------------------+                   |
-        |1.1 R1=/bookibg/A              |         |1.2 R1=/bookibg/B  |
+        |1.1 R1=/booking/A              |         |1.2 R1=/booking/B  |
         v                               |         v                   |
    +------------+                       |     +------------+          |
    |            |                       |     |            |          |
