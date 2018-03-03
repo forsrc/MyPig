@@ -26,3 +26,8 @@ nbdist/
 */target/*
 */transaction-logs
 *logs
+
+**/mypig/platforms/*
+**/mypig/plugins/*
+**/mypig/node_modules/*
+**/mypig/package-lock.json

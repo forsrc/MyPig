@@ -9,7 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
-
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 @EnableAutoConfiguration
@@ -17,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableDiscoveryClient
 @EnableResourceServer
 @EnableWebSecurity
+//@EnableCaching(mode = AdviceMode.PROXY)
 public class MyApplication {
 
     public static void main(String[] args) {

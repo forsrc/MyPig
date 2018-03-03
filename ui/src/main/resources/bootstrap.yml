@@ -17,14 +17,14 @@ security:
     client:
       access-token-uri:       http://forsrc.local:10000/sso/oauth/token
       user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
-      client-id:              forsrc
+      client-id:              ui
       client-secret:          forsrc
       scope:                  read, write
     resource:
       filter-order:           3
       userInfoUri:            http://forsrc.local:10000/sso/me
       preferTokenInfo:        true
-      id:                     forsrc
+      id:                     ui
       token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
 
 management:

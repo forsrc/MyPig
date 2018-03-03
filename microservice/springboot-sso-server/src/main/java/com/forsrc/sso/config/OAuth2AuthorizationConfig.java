@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,18 +14,18 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Configuration
 @EnableAuthorizationServer
@@ -38,16 +37,27 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    AuthorizationServerProperties authorizationServerProperties;
+    private AuthorizationServerProperties authorizationServerProperties;
 
     @Autowired
     private DataSource dataSource;
 
-    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     @Bean
     public JdbcTokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
+    }
+
+    @Bean
+    public ApprovalStore approvalStore() throws Exception {
+        TokenApprovalStore store = new TokenApprovalStore();
+        store.setTokenStore(tokenStore());
+        return store;
+    }
+
+
+    @Bean
+    public ClientDetailsService clientDetails() {
+        return new JdbcClientDetailsService(dataSource);
     }
 
     @Bean
@@ -58,9 +68,10 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
-        security.passwordEncoder(passwordEncoder)
+        security.passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 .tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
-                .checkTokenAccess("isAuthenticated()");
+                .checkTokenAccess("isAuthenticated()")
+                ;
         // @formatter:on
     }
 
@@ -74,27 +85,33 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         // @formatter:off
     }
 
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
         // @formatter:off
         clients.jdbc(dataSource)
-                .passwordEncoder(passwordEncoder)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                ;
+ 
+        clients.jdbc(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 .withClient("forsrc")
                 .authorizedGrantTypes("authorization_code", "client_credentials", 
                         "refresh_token","password", "implicit")
                 //.authorities("ROLE_USER", "ROLE_ADMIN")
                 .resourceIds("forsrc")
-                .scopes("read", "write")
                 .secret("forsrc")
+                .scopes("forsrc", "read", "write")
                 .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
-                .autoApprove(true);
+                .autoApprove(true)
                 ;
+
         // @formatter:on
 
     }
 
-    @Configuration
+    //@Configuration
     @Order(Ordered.LOWEST_PRECEDENCE - 20)
     protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
@@ -106,14 +123,28 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
             // @formatter:off
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 .withUser("forsrc@gmail.com")
-                .password("forsrc")
+                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("forsrc"))
                 .roles("ADMIN", "USER");
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 .withUser("user")
-                .password("password")
+                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("password"))
                 .roles("USER");
+            auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .withUser("tcc")
+                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("tcc"))
+                .roles("TCC");
+            auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .withUser("test")
+                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("test"))
+                .roles("TEST");
             // @formatter:on
         }
     }

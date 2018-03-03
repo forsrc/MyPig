@@ -15,36 +15,48 @@ spring:
     driver-class: org.h2.Driver
     schema:
     - classpath:schema.sql
+    data:
+    - classpath:data.sql
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
   aop:
     proxy-target-class: true
 
   cache:
     type: redis
   redis:
-    host: forsrc.local
+    host: 127.0.0.1
     port: 6379
- 
+  thymeleaf:
+    prefix: 'classpath:public/mypig/www/'
+    suffix: .html
+    cache: false
+    
+
 security:
-  user:
-    name:     forsrc@gmail.com
-    password: forsrc
-    role:
-    -         ADMIN
-    -         USER
   oauth2:
     #sso:
       #filter-order: 3
     authorization:
       token-key-access: permitAll()
+    client:
+      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
+      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      client-id:              sso
+      client-secret:          forsrc
+      scope:                  read, write
     resource:
-      user-info-uri: "/me"
-      filter-order: 3
-
+      filter-order:           3
+      userInfoUri:            /me
+      preferTokenInfo:        false
+      id:                     forsrc
+      token-info-uri:         /oauth/check_token
 management:
   context-path: /mgmt
   security:
@@ -60,4 +72,3 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka/eureka
-

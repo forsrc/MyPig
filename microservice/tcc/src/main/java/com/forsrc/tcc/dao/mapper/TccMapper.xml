@@ -1,0 +1,55 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forsrc.tcc.dao.mapper.TccMapper">
+
+    <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.Tcc">
+        <id property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <result property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <result property="expire" column="expire" />
+        <result property="create" column="create" />
+        <result property="update" column="update" />
+        <result property="status" column="status" />
+        <collection property="links"
+            javaType="ArrayList"
+            ofType="com.forsrc.tcc.domain.entity.TccLink"
+            column="links_tcc_id"
+            typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler">
+
+            <result property="tccId" column="links_tcc_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+            <result property="id" column="links_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+            <result property="uri" column="links_uri" />
+            <result property="entityId" column="links_entity_id" />
+            <result property="expire" column="links_expire" />
+            <result property="create" column="links_create" />
+            <result property="update" column="links_update" />
+            <result property="status" column="links_status" />
+        </collection>
+    </resultMap>
+
+    <select id="getTryStatusList" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            TCC.*,
+            TCC_LINK.tcc_id    AS links_tcc_id,
+            TCC_LINK.id        AS links_id,
+            TCC_LINK.uri       AS links_uri,
+            TCC_LINK.entity_id AS links_entity_id,
+            TCC_LINK.expire    AS links_expire,
+            TCC_LINK.create    AS links_create,
+            TCC_LINK.update    AS links_update,
+            TCC_LINK.status    AS links_status
+        FROM
+            t_tcc TCC
+        LEFT JOIN
+            t_tcc_link TCC_LINK
+        WHERE
+            TCC.status = 0
+        AND
+            TCC.id = TCC_LINK.tcc_id
+        AND
+            NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)   
+    </select>
+
+
+</mapper>

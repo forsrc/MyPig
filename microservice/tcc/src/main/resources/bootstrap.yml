@@ -1,0 +1,84 @@
+
+
+spring:
+  application:
+    name: microservice-tcc
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+  datasource:
+    url: jdbc:h2:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
+    username: sa
+    password: sa
+    driver-class: org.h2.Driver
+    schema:
+    - classpath:schema.sql
+    data:
+    - classpath:data.sql
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+
+  artemis:
+    embedded:
+      queues: jms/queues/tcc
+
+com.atomikos:
+  icatch.service: com.atomikos.icatch.standalone.UserTransactionServiceFactory
+
+
+security:
+  oauth2:
+    client:
+      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
+      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      client-id:              tcc
+      client-secret:          forsrc
+      scope:                  read, write
+    resource:
+      filter-order:           3
+      userInfoUri:            http://forsrc.local:10000/sso/me
+      preferTokenInfo:        false
+      id:                     forsrc
+      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
+
+management:
+  context-path: /mgmt
+  security:
+    enabled: false
+
+server:
+  port: 10020
+  context-path: /tcc
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka
+
+springboot-sso-server:
+  ribbon:
+    eureka:
+      enabled: true
+    listOfServers: forsrc.local:10000
+    ServerListRefreshInterval: 15000
+
+
+logging:
+  level:
+    org.springframework.jms.listener.DefaultMessageListenerContainer: WARN

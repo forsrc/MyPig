@@ -9,16 +9,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -26,46 +22,77 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 //@Configuration
-//@EnableResourceServer
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-//@Order(-5)
+@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+    @Autowired
+    private TokenStore tokenStore;
+
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        resources.resourceId("forsrc")
+            .tokenStore(tokenStore)
+            ;
+    }
+
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-                .antMatcher("/me").authorizeRequests()
-            .and()
-                .authorizeRequests()
-                //.antMatchers("/api/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET,     "/api/**").access("#oauth2.hasScope('read')")
-                .antMatchers(HttpMethod.OPTIONS, "/api/**").access("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
-                .antMatchers(HttpMethod.POST,    "/api/**").access("#oauth2.hasScope('write')")
-                .antMatchers(HttpMethod.PUT,     "/api/**").access("#oauth2.hasScope('write')")
-                .antMatchers(HttpMethod.PATCH,   "/api/**").access("#oauth2.hasScope('write')")
-                .antMatchers(HttpMethod.DELETE,  "/api/**").access("#oauth2.hasScope('write')")
-            .and()
-                .requestMatchers()
+        super.configure(http);
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//            .and()
+//                .antMatcher("/me").authorizeRequests()
+//            .and()
+//                .authorizeRequests()
+//                //.antMatchers("/api/**").hasRole("USER")
+//                .antMatchers(HttpMethod.GET,     "/api/**").access("#oauth2.hasScope('read')")
+//                .antMatchers(HttpMethod.OPTIONS, "/api/**").access("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.POST,    "/api/**").access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.PUT,     "/api/**").access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.PATCH,   "/api/**").access("#oauth2.hasScope('write')")
+//                .antMatchers(HttpMethod.DELETE,  "/api/**").access("#oauth2.hasScope('write')")
+//            .and()
+//                .requestMatchers()
+//                .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
+//            .and()
+//                .authorizeRequests()
+//                .antMatchers("/test", "/oauth/token")
+//                .permitAll()
+//            .and()
+//                .exceptionHandling()
+//                .accessDeniedHandler(new OAuth2AccessDeniedHandler())
+//            .and()
+//                .csrf()
+//                .csrfTokenRepository(this.getCSRFTokenRepository())
+//            .and()
+//                .addFilterAfter(this.createCSRFHeaderFilter(), CsrfFilter.class)
+//                ;
+        
+
+        http.requestMatchers()
                 .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
             .and()
-                .authorizeRequests()
-                .antMatchers("/test", "/oauth/token")
-                .permitAll()
-            .and()
-                .exceptionHandling()
-                .accessDeniedHandler(new OAuth2AccessDeniedHandler())
-            .and()
-                .csrf()
-                .csrfTokenRepository(this.getCSRFTokenRepository())
-            .and()
-                .addFilterAfter(this.createCSRFHeaderFilter(), CsrfFilter.class)
-                ;
+              .authorizeRequests()
+              .antMatchers("/test", "/oauth/token")
+              .permitAll();
+
         http.authorizeRequests()
-            .antMatchers("/mgmt/**")
-            .permitAll()
-            ;
+                .antMatchers("/api/*", "/me")
+                .authenticated()
+             .and()
+                 .authorizeRequests()
+                 .antMatchers("/api/test")
+                 .permitAll()
+             ;
+
+        http.authorizeRequests()
+                .antMatchers("/mgmt/**")
+                .permitAll()
+                ;
     }
+
+
 
     private Filter createCSRFHeaderFilter() {
         return new OncePerRequestFilter() {

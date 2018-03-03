@@ -8,13 +8,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -22,38 +27,102 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 @Configuration
-@Order(-20)
+@Order(-200)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 public class LoginConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
 
-        http.formLogin().loginPage("/login").permitAll().and().logout().deleteCookies("JSESSIONID")
-                .invalidateHttpSession(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll().and().requestMatchers()
-                .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test").and()
-                .authorizeRequests().antMatchers("/test", "/oauth/token").permitAll().and().csrf()
+        http
+            .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+            .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+            .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            .and()
+                .requestMatchers()
+                .antMatchers("/", "/static/**", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
+            .and()
+                .authorizeRequests()
+                .antMatchers("/test", "/**/test", "/oauth/token")
+                .permitAll()
+            .and()
+                .csrf()
                 .ignoringAntMatchers("/test", "/oauth/token")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().authorizeRequests()
-                .anyRequest().authenticated();
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                ;
 
-        http.authorizeRequests().antMatchers("/mgmt/**").permitAll().anyRequest().authenticated().and().csrf()
-                .ignoringAntMatchers("/mgmt/**").csrfTokenRepository(csrfTokenRepository()).and()
+        http.authorizeRequests()
+                .antMatchers("/mgmt/**")
+                .permitAll()
+            .and()
+                .csrf()
+                .ignoringAntMatchers("/mgmt/**")
+                .csrfTokenRepository(csrfTokenRepository())
+            .and()
                 .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 
         // @formatter:on
     }
 
     @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.parentAuthenticationManager(authenticationManager)
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .usersByUsernameQuery("select username,password,enabled from users where username = ?")
+                .authoritiesByUsernameQuery("select username,authority from authorities where username = ?")
+                ;
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        // /oauth/token
+        auth
+                .userDetailsService(userDetailsService())
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER);
+    }
+
+    @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/mgmt/**");
+        web.ignoring().antMatchers("/mgmt/**", "/static/**", "/ui/**");
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean

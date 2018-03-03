@@ -7,6 +7,8 @@ spring:
   boot:
     admin:
       url: http://forsrc.local:13000/admin
+  aop:
+    proxy-target-class: true
 
 
 security:
@@ -20,11 +22,13 @@ security:
     resource:
       filter-order:           3
       userInfoUri:            http://forsrc.local:10000/sso/me
-      preferTokenInfo:        true
+      preferTokenInfo:        false
       id:                     forsrc
       token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
 
+
 management:
+  
   context-path: /mgmt
   security:
     enabled: false
@@ -34,21 +38,26 @@ server:
   context-path: /api
 
 zuul:
+  sensitive-headers: Cookie,Set-Cookie,Authorization
   routes:
+    microservice-ui:        /app/**
+    microservice-user:      /app/**
+    springboot-sso-server:  /app/**
 #    ui:
 #      path:        /ui/**
 #      stripPrefix: true
+#      service-id:  microservice-ui
 #      url:         http://forsrc.local:8888/ui
 #    user:
 #      path:        /user/**
 #      stripPrefix: true
-#      url:         http://forsrc.local:10010/user
-    microservice-ui:   /api/ui/**
-    microservice-user: /api/user/**
-    sso:
-      path:        /sso/**
-      stripPrefix: true
-      url:         http://forsrc.local:10000/sso
+#      service-id:  microservice-user
+#      #url:         http://forsrc.local:10010/user
+#    sso:
+#      path:        /sso/**
+#      stripPrefix: true
+#      service-id:  springboot-sso-server
+#      #url:         http://forsrc.local:10000/sso
 
 eureka:
   client:

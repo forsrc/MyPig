@@ -10,6 +10,8 @@ CREATE TABLE ClientDetails (
   access_token_validity int(11) DEFAULT NULL,
   refresh_token_validity int(11) DEFAULT NULL,
   additionalInformation varchar(4096) DEFAULT NULL,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (appId)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -20,6 +22,8 @@ DROP TABLE IF EXISTS authorities;
 CREATE TABLE authorities (
   username varchar(50) NOT NULL,
   authority varchar(50) NOT NULL,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY ix_auth_username (username,authority)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -33,7 +37,9 @@ CREATE TABLE oauth_access_token (
   user_name varchar(256) DEFAULT NULL,
   client_id varchar(256) DEFAULT NULL,
   authentication blob,
-  refresh_token varchar(256) DEFAULT NULL
+  refresh_token varchar(256) DEFAULT NULL,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -51,6 +57,8 @@ CREATE TABLE oauth_client_details (
   refresh_token_validity int(11) DEFAULT NULL,
   additional_information varchar(4096) DEFAULT NULL,
   autoapprove varchar(256) DEFAULT NULL,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (client_id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -59,7 +67,9 @@ CREATE TABLE oauth_client_details (
 DROP TABLE IF EXISTS oauth_code;
 CREATE TABLE oauth_code (
   code varchar(256) DEFAULT NULL,
-  authentication blob
+  authentication blob,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -67,13 +77,32 @@ DROP TABLE IF EXISTS oauth_refresh_token;
 CREATE TABLE oauth_refresh_token (
   token_id varchar(256) DEFAULT NULL,
   token blob,
-  authentication blob
+  authentication blob,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   username varchar(50) NOT NULL,
-  password varchar(50) NOT NULL,
+  password varchar(200) NOT NULL,
   enabled tinyint(1) NOT NULL,
+  create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username)
+) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS t_sso_user_tcc;
+CREATE TABLE t_sso_user_tcc (
+  id          UUID NOT NULL,
+  username    varchar(50) NOT NULL,
+  password    varchar(200) NOT NULL,
+  enabled     tinyint(1) NOT NULL,
+  authorities varchar(200) NOT NULL,
+  status      tinyint(2) NOT NULL,
+  expire      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  create      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
