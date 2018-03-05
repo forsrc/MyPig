@@ -15,92 +15,28 @@
         <meta name="format-detection" content="telephone=no"/>
         <meta name="msapplication-tap-highlight" content="no"/>
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
+
         <link rel="stylesheet" type="text/css" href="../css/material.min.css"/>
         <link rel="stylesheet" type="text/css" href="../css/style.css" />
-
-        <title>MyPig</title>
-    </head>
-    <body>
-
-        <div class="mdl-js-layout mdl-layout mdl-layout--fixed-header">
-            <header class="mypig-header mdl-layout__header mdl-layout__header--waterfall">
-                <div class="mdl-layout__header-row">
-                    <span class="mypig-title mdl-layout-title">
-                        <img class="mypig-logo-image-" />
-                    </span>
-                    <!-- Add spacer, to align navigation to the right in desktop -->
-                    <div class="mypig-header-spacer mdl-layout-spacer"></div>
-                    <div class="mypig-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
-                        <label class="mdl-button mdl-js-button mdl-button--icon" for="search-field">
-                            <i class="material-icons">search</i>
-                        </label>
-                        <div class="mdl-textfield__expandable-holder">
-                            <input class="mdl-textfield__input" type="text" id="search-field"/>
-                        </div>
-                    </div>
-                    <!-- Navigation -->
-                    <div class="mypig-navigation-container">
-                        <nav class="mypig-navigation mdl-navigation">
-                            <a class="mdl-navigation__link mdl-typography--text-uppercase" href="">MyPig</a>
-                        </nav>
-                    </div>
-                    <span class="mypig-mobile-title mdl-layout-title">
-                        <!-- <img class="mypig-logo-image-" alt="MyPig"/> -->
-                    </span>
-                    <button class="mypig-more-button mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
-                        <i class="material-icons">more_vert</i>
-                    </button>
-                    <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
-                        <li class="mdl-menu__item">1</li>
-                        <li class="mdl-menu__item">2</li>
-                        <li class="mdl-menu__item" disabled="true">3</li>
-                        <li class="mdl-menu__item">4</li>
-                    </ul>
-                </div>
-            </header>
-
-            <div class="mypig-drawer mdl-layout__drawer">
-                <span class="mdl-layout-title">
-                    <img class="mypig-logo-image-" src=""/>
-                </span>
-                <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="">My</a>
-                    <div class="mypig-drawer-separator"></div>
-                </nav>
-            </div>
-
-            <main class="mypig-content mdl-layout__content">
-                <div class="mypig-be-together-section mdl-typography--text-center">
-
-
-                    <div>
-                        sso
-                    </div>
-                </div>
-
-            </main>
-
-            <div id="deviceready">
-                <p class="event listening"></p>
-                <p class="event received"></p>
-            </div>
-            <footer class=" mdl-mini-footer">
-                <div class="mdl-mini-footer--left-section">
-                    <ul class="mdl-mini-footer--link-list">
-                        <li><a href="#">forsrc@gmail.com</a></li>
-                    </ul>
-                </div>
-            </footer>
-        </div>
-
+        <link rel="stylesheet" type="text/css" href="../lib/ionic/css/ionic.css">
+        <link rel="stylesheet" type="text/css" href="../lib/ion-md-input/ion-md-input.min.css">
+        <link rel="stylesheet" type="text/css" href="../lib/ionic-material/ionic.material.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/style.css" rel="stylesheet">
 
         <script type="text/javascript" src="../cordova.js"></script>
-        <script type="text/javascript" src="../js/material.min.js"></script>
+        <script type="text/javascript" src="../lib/ionic/js/ionic.bundle.js"></script>
+        <script type="text/javascript" src="../lib/ionic-material/ionic.material.min.js"></script>
+        <script type="text/javascript" src="../lib/ion-md-input/ion-md-input.min.js"></script>
         <script type="text/javascript" src="../lib/angular/angular.min.js"></script>
+        <script type="text/javascript" src="../js/material.min.js"></script>
         <script type="text/javascript" src="../js/app.js"></script>
         <script type="text/javascript" src="../js/services.js"></script>
         <script type="text/javascript" src="../js/controllers.js"></script>
         <script type="text/javascript" src="../js/filters.js"></script>
         <script type="text/javascript" src="../js/directives.js"></script>
+        <title>MyPig</title>
+    </head>
+    <body ng-app="starter">
+        <ion-nav-view></ion-nav-view>
     </body>
 </html>
