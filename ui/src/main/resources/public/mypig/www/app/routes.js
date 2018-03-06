@@ -8,12 +8,12 @@ define(['./app'], function (app) {
     return app.config(['$routeProvider', function ($routeProvider) {
 
         $routeProvider.when('/login', {
-            templateUrl: 'views/login.html',
+            templateUrl: 'app/views/login.html',
             controller: 'LoginCtrl'
         });
 
         $routeProvider.otherwise({
-            redirectTo: '/views/login'
+            redirectTo: '/login'
         });
     }]);
 });
