@@ -71,16 +71,22 @@ require.config({
         "angular-route": {
             deps: ["angular"]
         },
-        "ionic-angular": {
-            deps: ["angular", "ionic"]
-        },
-        "ng-cordova": {
+        "angular-resource": {
             deps: ["angular"]
         },
         "angular-ui-router": {
             deps: ["angular"]
         },
         "angular-cookies" : {
+            deps: ["angular"]
+        },
+        "svg-assets-cache": {
+            deps: ["angular"]
+        },
+        "ionic-angular": {
+            deps: ["angular", "ionic"]
+        },
+        "ng-cordova": {
             deps: ["angular"]
         },
         "console": {
