@@ -4,6 +4,7 @@
  */
 define([
     'angular',
+    'console',
     './controllers/index',
     './directives/index',
     './filters/index',
@@ -11,7 +12,6 @@ define([
     'ionic',
     'ionic-angular',
     'ng-cordova',
-    'console',
     'angular-route',
     'angular-resource',
     'angular-animate',
@@ -29,7 +29,7 @@ define([
     'angular-cookies',
     'ngStorage',
     'svg-assets-cache'
-], function (angular) {
+], function (angular, _console) {
     'use strict';
     console.log('--> app...')
 
@@ -53,6 +53,30 @@ define([
         'ngAria',
         'ngMessages'
     ]);
+
+    angular.element(window.document).ready(function() {
+        console.log("app -> angular.element(document).ready()...");
+
+        console.log("app -> app:", app);
+        app.run(function($ionicPlatform) {
+            console.log("app -> app.run():", $ionicPlatform);
+            $ionicPlatform.ready(function() {
+                console.log("aap -> $ionicPlatform.ready()...", $ionicPlatform);
+                if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+                    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+                }
+                if (window.StatusBar) {
+                    // org.apache.cordova.statusbar required
+                    StatusBar.styleDefault();
+                }
+            });
+        });
+        app.config(function($mdThemingProvider, $mdGestureProvider) {
+            console.log("app -> app.config():", $mdThemingProvider, $mdGestureProvider);
+            $mdGestureProvider.skipClickHijack();
+            $mdThemingProvider.theme('default').primaryPalette('red').accentPalette('blue');
+        });
+    });
 
     return app;
 });
