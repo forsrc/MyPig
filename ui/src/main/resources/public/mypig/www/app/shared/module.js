@@ -5,7 +5,7 @@
  * below, you can see we bring in our services and constants modules 
  * which avails each service of, for example, the `config` constants object.
  **/
-define([
-    './version-service',
-    './login-service'
-], function () {});
+define(['angular'], function (ng) {
+    'use strict';
+    return ng.module('app.shared', []);
+});

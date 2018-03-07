@@ -1,9 +1,10 @@
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('LoginCtrl', function ($scope, $http, $location, $httpParamSerializer, $mdToast) {
+    var jsName = "login-controller";
+    controllers.controller('LoginCtrl', function ($scope, $http, $location, $httpParamSerializer, $mdToast, loginService) {
         console.log("--> login-controller...")
 
-        console.log("{0} --> function()".formatStr(["login-controller"]), $scope);
+        console.log("{0} --> function()".formatStr([jsName]), $scope);
         $scope.user = {
             username: "forsrc",
             password: "forsrc"
@@ -34,7 +35,7 @@ define(['./module'], function (controllers) {
             var req = {
                 method: 'POST',
                 //url: "app/data/login.jsonp",
-                url: "https://127.0.0.1:8075/oauth/token",
+                url: "https://forsrc.local:10000/sso/oauth/token",
                 headers: {
                     "Authorization": "Basic " + btoa("forsrc:forsrc"),
                     "Content-type": "application/x-www-form-urlencoded; charset=utf-8"

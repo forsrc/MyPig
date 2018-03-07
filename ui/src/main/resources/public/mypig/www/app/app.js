@@ -5,6 +5,7 @@
 define([
     'angular',
     'console',
+    './shared/index',
     './controllers/index',
     './directives/index',
     './filters/index',
