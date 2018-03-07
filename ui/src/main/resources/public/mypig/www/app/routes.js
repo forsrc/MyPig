@@ -5,15 +5,35 @@
 
 define(['./app'], function (app) {
     'use strict';
-    return app.config(['$routeProvider', function ($routeProvider) {
+    return app.config(['$routeProvider', '$mdThemingProvider', '$stateProvider', '$requireProvider', function ($routeProvider, $mdThemingProvider, $stateProvider, $requireProvider) {
+        $mdThemingProvider
+            .theme('default')
+            .primaryPalette('red')
+            .accentPalette('blue');
+
+        $routeProvider.otherwise({
+            redirectTo: '/login'
+        });
 
         $routeProvider.when('/login', {
             templateUrl: 'app/views/login.html',
             controller: 'LoginCtrl'
         });
 
-        $routeProvider.otherwise({
-            redirectTo: '/login'
-        });
+//        $stateProvider.state("/login", {
+//            url : "/login",
+//            templateUrl : "app/views/login.html",
+//            title : "Login",
+//            controller : "LoginCtrl",
+//            //controllerAs: "LoginCtrl",
+//            resolve : {
+////                 css: $requireProvider.requireCSS([
+////                     'css!css/login.css'
+////                 ]),
+//                deps : $requireProvider.requireJS([
+//                        'controllers/login-controller'
+//                    ])
+//            }
+//        })
     }]);
 });
