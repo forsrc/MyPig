@@ -9,6 +9,7 @@ define([
     './directives/index',
     './filters/index',
     './services/index',
+    './utils/index',
     'ionic',
     'ionic-angular',
     'ng-cordova',

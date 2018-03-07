@@ -15,8 +15,10 @@
 
 <title>MyPig</title>
 </head>
-<body>
-    <div data-ng-view></div>
+<body ngapp="app">
+    <ion-nav-view>
+        <div data-ng-view></div>
+    </ion-nav-view>
 
     <div id="deviceready" class="blink" style="display: none;">
         <p class="event listening">Connecting to Device</p>
