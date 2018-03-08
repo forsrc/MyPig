@@ -4,5 +4,5 @@
  * properly referenced in one of the module dependencies in the array.
  **/
 define([
-    './version-directive'
+    './VersionDirective'
 ], function () {});
