@@ -5,5 +5,5 @@
  * which avails each controller of, for example, the `config` constants object.
  **/
 define([
-    './login-controller'
+    './controllers'
 ], function () {});
