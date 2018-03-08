@@ -6,5 +6,5 @@
  * which avails each service of, for example, the `config` constants object.
  **/
 define([
-    './string-utils'
+    './StringUtils'
 ], function () {});
