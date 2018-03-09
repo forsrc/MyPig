@@ -1,7 +1,8 @@
-define(['./module', '../services/LoginService'], function (controllers, loginService) {
+define(['app', '../services/LoginService'], function (app, loginService) {
     'use strict';
+    console.log("--> LoginController...", app, loginService)
     var jsName = "LoginController";
-    controllers.controller('loginController', function ($scope, $http, $location, $httpParamSerializer, $mdToast, loginService) {
+    app.controller('loginController', function ($scope, $http, $location, $httpParamSerializer, $mdToast) {
         console.log("--> LoginController...")
 
         console.log("{0} --> function()".formatStr([jsName]), $scope);
