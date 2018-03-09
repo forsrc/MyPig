@@ -6,7 +6,7 @@ define(['app', '../services/LoginService'], function (app, loginService) {
 
         console.log("{0} --> function()".formatStr([jsName]), $scope);
         $scope.user = {
-            username: "forsrc",
+            username: "forsrc@gmail.com",
             password: "forsrc"
         };
         $scope.message = 'hello world!';
@@ -35,10 +35,12 @@ define(['app', '../services/LoginService'], function (app, loginService) {
             var req = {
                 method: 'POST',
                 //url: "app/data/login.jsonp",
-                url: "https://forsrc.local:10000/sso/oauth/token",
+                url: "http://forsrc.local:10000/sso/oauth/token/",
+                //url: 'http://forsrc.local:10000/sso/oauth/token?grant_type=password&username=forsrc@gmail.com&password=forsrc',
                 headers: {
                     "Authorization": "Basic " + btoa("forsrc:forsrc"),
-                    "Content-type": "application/x-www-form-urlencoded; charset=utf-8"
+                    "Content-type": "application/x-www-form-urlencoded; charset=utf-8",
+                    'Accept': 'application/json'
                 },
                 //data: $httpParamSerializer($scope.user)
                 data: $httpParamSerializer({
@@ -49,6 +51,7 @@ define(['app', '../services/LoginService'], function (app, loginService) {
                     password: $scope.user.password
                 })
             };
+            console.log(req);
             $http(req).then(function(response) {
                 console.log("{0} --> toLogin() response:".formatStr([jsName]), response);
                 console.log("{0} --> toLogin() response:".formatStr([jsName]), response.status, response.data);
@@ -70,7 +73,7 @@ define(['app', '../services/LoginService'], function (app, loginService) {
                 }
                 $location.path("/menu/home1");
             }, function(response) {
-                console.debug("{0} --> toLogin() error".formatStr([jsName]), response);
+                console.info("{0} --> toLogin() error".formatStr([jsName]), response);
             });
             //$scope.$apply();
         };
