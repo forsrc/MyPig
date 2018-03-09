@@ -35,7 +35,7 @@ define(['app', '../services/LoginService'], function (app, loginService) {
             var req = {
                 method: 'POST',
                 //url: "app/data/login.jsonp",
-                url: "http://forsrc.local:10000/sso/oauth/token/",
+                url: "http://forsrc.local:10000/sso/oauth/token",
                 //url: 'http://forsrc.local:10000/sso/oauth/token?grant_type=password&username=forsrc@gmail.com&password=forsrc',
                 headers: {
                     "Authorization": "Basic " + btoa("forsrc:forsrc"),
