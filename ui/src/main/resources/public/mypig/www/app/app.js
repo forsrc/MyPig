@@ -7,6 +7,7 @@ define([
     'console',
     './shared/index',
     './controllers/index',
+    './factories/index',
     './directives/index',
     './filters/index',
     './services/index',

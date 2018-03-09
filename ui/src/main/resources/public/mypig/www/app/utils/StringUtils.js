@@ -1,6 +1,6 @@
 define([ './module' ], function(services) {
     'use strict';
-    console.log("--> string-utils...")
+    console.log("--> StringUtils...")
 
     /**
      * var str = "This {0} is test. {1} {-1}"; str = str.formatStr(["func",
