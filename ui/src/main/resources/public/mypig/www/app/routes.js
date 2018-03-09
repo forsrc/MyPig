@@ -43,6 +43,7 @@ define(['angular', './app', 'services/DependencyResolverFor'], function (angular
 
            $routeProvider.when('/login', {
                 templateUrl : 'app/views/login.html',
+                title : "Login",
                 resolve : dependencyResolverFor([
                     'controllers/LoginController'
                 ])

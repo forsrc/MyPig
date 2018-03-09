@@ -1,8 +1,8 @@
-define(['./module'], function (services) {
+define(['app'], function (app) {
     'use strict';
     console.log("--> LoginService...")
     var jsName = "LoginService";
-    return services.service("loginService", function () {
+    return app.service("loginService", function () {
             console.log("{0} --> function()".formatStr([jsName]));
     
             this.login = function (user) {
