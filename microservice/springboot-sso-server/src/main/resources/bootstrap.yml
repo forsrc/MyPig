@@ -40,7 +40,7 @@ spring:
 
   zipkin:
     service:
-      name:  springboot-sso-server
+      name:  ${spring.application.name}
     enabled: true
     base-url: http://forsrc.local:11110
 
