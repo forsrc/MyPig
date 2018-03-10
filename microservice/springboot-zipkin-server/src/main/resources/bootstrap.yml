@@ -26,11 +26,11 @@ spring:
 #        enabled: false
 
 
-zipkin:
-  base-url: http://forsrc.local:${server.port}
-  storage:
-    StorageComponent: springboot-zipkin-server
-    #type: mem
+#zipkin:
+#  base-url: http://forsrc.local:${server.port}
+#  storage:
+#    StorageComponent: springboot-zipkin-server
+#    #type: mem
 
 eureka:
   client:

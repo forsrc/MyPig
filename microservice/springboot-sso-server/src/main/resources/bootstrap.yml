@@ -39,7 +39,10 @@ spring:
     cache: false
 
   zipkin:
-      base-url: http://forsrc.local:11110
+    service:
+      name:  springboot-sso-server
+    enabled: true
+    base-url: http://forsrc.local:11110
 
 security:
   oauth2:
