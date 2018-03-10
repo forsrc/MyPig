@@ -4,19 +4,29 @@ spring:
   cloud:
     config:
       uri: http://forsrc.local:12000/config
+
   boot:
     admin:
       url: http://forsrc.local:13000/admin
 
+#spring.cloud.dashboard.springboot-eureka-server:
+#  environment: .*
+#  instances:
+#    management:
+#      port:   11100
+#      scheme: http
+#      path:   /eureka/mgmt
 
 eureka:
   instance:
     hostname: forsrc.local
   client:
     registerWithEureka: false
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/${server.context-path}/eureka/ 
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/${server.context-path}/eureka/
+    dashboard:
+      enabled: false
 
 management:
   context-path: /mgmt

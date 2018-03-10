@@ -74,6 +74,10 @@ server:
 
 
 eureka:
+  instance:
+    home-page-url: http://forsrc.local:${server.port}${server.context-path}
+    health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
+    status-page-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/info
   client:
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka/eureka
