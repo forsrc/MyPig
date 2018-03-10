@@ -34,6 +34,9 @@ spring:
       hibernate:
         enable_lazy_load_no_trans: true
 
+  zipkin:
+      base-url: http://forsrc.local:11110
+
   artemis:
     embedded:
       queues: jms/queues/tcc

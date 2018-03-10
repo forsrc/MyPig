@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: springboot-zipkin-server
+  cloud:
+    config:
+      uri: http://forsrc.local:12000/config
+  boot:
+    admin:
+      url: http://forsrc.local:13000/admin
+
+  datasource:
+    url: jdbc:h2:/tmp/db/h2/zipkin.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+    initialize: true
+    continue-on-error: false
+    schema: classpath:zipkin.sql
+
+#  sleuth:
+#   # not use sleuth stream to trace zipkin server itself
+#    enabled: false
+#    #refer to org.springframework.cloud.sleuth.instrument.hystrix.SleuthHystrixAutoConfiguration.java
+#    hystrix:
+#      strategy:
+#        enabled: false
+
+
+zipkin:
+  base-url: http://forsrc.local:${server.port}
+  storage:
+    StorageComponent: springboot-zipkin-server
+    #type: mem
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka/eureka
+
+management:
+  context-path: /mgmt
+  security:
+    enabled: false
+
+server:
+  port: 11110
+  #context-path: /zipkin
+
+
