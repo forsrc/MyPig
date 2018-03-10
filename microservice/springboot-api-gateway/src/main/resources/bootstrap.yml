@@ -6,7 +6,7 @@ spring:
       uri: http://forsrc.local:12000/config
   boot:
     admin:
-      url: http://forsrc.local:13000/admin
+      url: http://forsrc.local:13000/
   aop:
     proxy-target-class: true
 
@@ -61,9 +61,10 @@ zuul:
 
 eureka:
   instance:
-    home-page-url: http://forsrc.local:${server.port}${server.context-path}
-    health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
-    status-page-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/info
+    home-page-url:           http://forsrc.local:${server.port}${server.context-path}
+    health-check-url:        http://forsrc.local:${server.port}${server.context-path}/mgmt/health
+    secure-health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
+    status-page-url:         http://forsrc.local:${server.port}${server.context-path}/mgmt/info
   client:
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka/eureka

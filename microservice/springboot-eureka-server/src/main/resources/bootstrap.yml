@@ -7,7 +7,7 @@ spring:
 
   boot:
     admin:
-      url: http://forsrc.local:13000/admin
+      url: http://forsrc.local:13000
 
 #spring.cloud.dashboard.springboot-eureka-server:
 #  environment: .*
@@ -20,13 +20,16 @@ spring:
 eureka:
   instance:
     hostname: forsrc.local
+    metadata-map:
+      cluster: MAIN
+      management.context-path: ${management.context-path}
   client:
-    registerWithEureka: false
+    registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/${server.context-path}/eureka/
-    dashboard:
-      enabled: false
+      defaultZone: http://${eureka.instance.hostname}:${server.port}${server.context-path}/eureka
+  dashboard:
+    enabled: false
 
 management:
   context-path: /mgmt

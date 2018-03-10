@@ -7,7 +7,7 @@ spring:
       uri: http://forsrc.local:12000/config
   boot:
     admin:
-      url: http://forsrc.local:13000/admin
+      url: http://forsrc.local:13000
   datasource:
     url: jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
     username: sa

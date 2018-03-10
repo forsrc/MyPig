@@ -8,7 +8,7 @@ spring:
       uri: http://forsrc.local:12000/config
   boot:
     admin:
-      url: http://forsrc.local:13000/admin
+      url: http://forsrc.local:13000
 
   cache:
     type: redis
