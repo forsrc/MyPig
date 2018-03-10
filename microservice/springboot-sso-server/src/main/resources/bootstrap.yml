@@ -37,7 +37,12 @@ spring:
     prefix: 'classpath:public/mypig/www/'
     suffix: .html
     cache: false
-    
+
+  zipkin:
+    service:
+      name:  ${spring.application.name}
+    enabled: true
+    base-url: http://forsrc.local:11110
 
 security:
   oauth2:

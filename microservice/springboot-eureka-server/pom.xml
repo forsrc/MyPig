@@ -98,7 +98,7 @@
                     <buildArgs>
                         <ARG_JAR_FILE>target/${project.build.finalName}.jar</ARG_JAR_FILE>
                         <ARG_RES_FILE>src/main/resources</ARG_RES_FILE>
-                        <ARG_PORT>11000</ARG_PORT>
+                        <ARG_PORT>11100</ARG_PORT>
                     </buildArgs>
                 </configuration>
             </plugin>

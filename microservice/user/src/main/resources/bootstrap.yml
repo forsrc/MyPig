@@ -10,6 +10,9 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
+  zipkin:
+   base-url: http://forsrc.local:11110
+
 security:
   oauth2:
     client:

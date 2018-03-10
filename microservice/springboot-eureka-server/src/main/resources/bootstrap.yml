@@ -8,6 +8,7 @@ spring:
     admin:
       url: http://forsrc.local:13000/admin
 
+
 eureka:
   instance:
     hostname: forsrc.local

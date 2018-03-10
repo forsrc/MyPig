@@ -34,6 +34,12 @@ spring:
       hibernate:
         enable_lazy_load_no_trans: true
 
+  zipkin:
+    service:
+      name:  ${spring.application.name}
+    enabled: true
+    base-url: http://forsrc.local:11110
+
   artemis:
     embedded:
       queues: jms/queues/tcc
