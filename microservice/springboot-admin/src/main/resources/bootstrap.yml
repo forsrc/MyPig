@@ -3,6 +3,7 @@ spring:
     name: springboot-admin
   cloud:
     config:
+      enabled: false
       uri: http://forsrc.local:12000/config
   boot:
     admin:
@@ -28,7 +29,9 @@ turbine:
   combineHostPort: true
   instanceUrlSuffix: ${server.context-path}/hystrix.stream
 
-
+ribbon:
+  eureka:
+    enabled: true
 
 management:
   context-path: /mgmt
