@@ -26,7 +26,7 @@ turbine:
   clusterNameExpression: new String("default")
   appConfig: SPRINGBOOT-ADMIN
   combineHostPort: true
-  instanceUrlSuffix: ${management.context-path}/hystrix.stream
+  instanceUrlSuffix: ${server.context-path}/hystrix.stream
 
 
 
@@ -67,4 +67,4 @@ eureka:
       management.context-path: ${management.context-path}
   client:
     serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka/eureka
+      defaultZone: http://forsrc.local:11100/eureka

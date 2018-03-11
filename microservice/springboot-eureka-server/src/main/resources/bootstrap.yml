@@ -38,6 +38,6 @@ management:
 
 server:
   port: 11100
-  context-path: /eureka
+  context-path: /
 
 
