@@ -24,7 +24,10 @@ spring:
     proxy-target-class: true
 
 turbine:
-  clusterNameExpression: new String("default")
+#  aggregator:
+#    cluster-config:
+#    - SPRINGBOOT-ADMIN
+  clusterNameExpression: metadata['cluster']
   appConfig: SPRINGBOOT-ADMIN
   combineHostPort: true
   instanceUrlSuffix: ${server.context-path}/hystrix.stream
@@ -69,5 +72,7 @@ eureka:
       cluster: MAIN
       management.context-path: ${management.context-path}
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka

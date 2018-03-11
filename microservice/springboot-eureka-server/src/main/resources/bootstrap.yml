@@ -4,7 +4,7 @@ spring:
   cloud:
     config:
       uri: http://forsrc.local:12000/config
-
+  
   boot:
     admin:
       client:
@@ -34,11 +34,14 @@ eureka:
   dashboard:
     enabled: false
 
-turbine:
-  clusterNameExpression: new String("default")
-  appConfig: SPRINGBOOT-EUREKA-SERVER
-  combineHostPort: true
-  instanceUrlSuffix: ${server.context-path}/hystrix.stream
+#turbine:
+##  aggregator:
+##    clusterConfig:
+##    - SPRINGBOOT-EUREKA-SERVER
+#  clusterNameExpression: metadata['cluster'] #new String("default")
+#  appConfig: SPRINGBOOT-EUREKA-SERVER
+#  combineHostPort: true
+#  instanceUrlSuffix: ${server.context-path}/hystrix.stream
 
 management:
   context-path: /mgmt
