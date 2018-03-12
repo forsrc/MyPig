@@ -1,0 +1,12 @@
+server:
+  port: 11110
+  #context-path: /zipkin
+
+spring:
+  application:
+    name: springboot-zipkin-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://forsrc.local:11100/eureka
