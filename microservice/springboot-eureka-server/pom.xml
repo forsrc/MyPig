@@ -59,6 +59,10 @@
             <version>1.5.7</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
@@ -73,7 +77,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-turbine</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>com.github.vanroy</groupId>
             <artifactId>spring-cloud-dashboard</artifactId>

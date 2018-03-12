@@ -27,12 +27,13 @@ eureka:
       cluster: SPRINGBOOT-EUREKA-SERVER
       management.context-path: ${management.context-path}
   client:
-    registerWithEureka: true
+    initialInstanceInfoReplicationIntervalSeconds: 60
+    #registerWithEureka: false
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}${server.context-path}/eureka
-  dashboard:
-    enabled: false
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+#  dashboard:
+#    enabled: true
 
 #turbine:
 ##  aggregator:
