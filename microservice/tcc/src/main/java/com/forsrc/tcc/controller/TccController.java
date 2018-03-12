@@ -51,11 +51,6 @@ public class TccController implements TccFeignClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccController.class);
 
-    @GetMapping(path = "/test")
-    public String test() {
-        return new Date().toString();
-    }
-
     @GetMapping(path = "/{id}")
     @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Tcc> get(
@@ -69,7 +64,15 @@ public class TccController implements TccFeignClient {
 
     @Override
     @PostMapping(path = "/")
+    @HystrixCommand(fallbackMethod = "tccTryFallBack")
     public ResponseEntity<Tcc> tccTry(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody Tcc tcc) {
+        LOGGER.info("--> tcc: {}", tcc);
+        return ResponseEntity.ok().body(tcc);
+    }
+
+    public ResponseEntity<Tcc> tccTryFallBack(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody Tcc tcc) {
         LOGGER.info("--> tcc: {}", tcc);

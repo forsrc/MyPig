@@ -24,14 +24,14 @@ public class RestConfig {
 
     @Bean("restTemplate")
     @Primary
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     @Bean("loadBalancedRestTemplate")
     @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    public RestTemplate loadBalancedRestTemplate() {
+        return new RestTemplate();
     }
 
     @Bean("loadBalancedOAuth2RestTemplate")

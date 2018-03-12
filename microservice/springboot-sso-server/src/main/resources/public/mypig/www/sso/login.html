@@ -72,35 +72,36 @@
             <main class="mypig-content mdl-layout__content">
                 <div class="mypig-be-together-section mdl-typography--text-center">
 
-
-                    <div>
-                        <h5>Login</h5>
-                        <p th:if="${param.error}">
-                            <div class="mdl-components__warning"><b>Note: </b>Login failed ...</div>
-                        </p>
-                        <p th:if="${param.logout}">
-                            <div class="mdl-components__warning"><b>Note: </b>Logout succeeded.</div>
-                        </p>
-                        <form method="post" th:action="@{/login}">
-                            <div>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="text" id="username" name="username" value="forsrc@gmail.com" />
-                                    <label class="mdl-textfield__label" for="username">Username</label>
+                    <section class="section-login section--center mdl-grid1 mdl-grid--no-spacing1">
+                        <div class="mdl-cell mdl-cell--12-col">
+                            <h5>Login</h5>
+                            <p th:if="${param.error}">
+                                <div class="mdl-components__warning"><b>Note: </b>Login failed ...</div>
+                            </p>
+                            <p th:if="${param.logout}">
+                                <div class="mdl-components__warning"><b>Note: </b>Logout succeeded.</div>
+                            </p>
+                            <form method="post" th:action="@{/login}">
+                                <div>
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input" type="text" id="username" name="username" value="forsrc@gmail.com" />
+                                        <label class="mdl-textfield__label" for="username">Username</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input class="mdl-textfield__input" type="password" id="password" name="password" value="forsrc" />
-                                    <label class="mdl-textfield__label" for="password">Password</label>
+                                <div>
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input" type="password" id="password" name="password" value="forsrc" />
+                                        <label class="mdl-textfield__label" for="password">Password</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <button class="mdl-button mdl-js-button mdl-button--primary">
-                                    Login
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                                <div>
+                                    <button class="mdl-button mdl-js-button mdl-button--primary">
+                                        Login
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
                 </div>
 
             </main>
