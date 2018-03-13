@@ -20,8 +20,6 @@ spring:
 #      scheme: http
 #      path:   /eureka/mgmt
 
-
-
 eureka:
   instance:
     hostname: forsrc.local
