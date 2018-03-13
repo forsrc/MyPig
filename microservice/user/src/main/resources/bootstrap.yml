@@ -13,6 +13,9 @@ spring:
   zipkin:
    base-url: http://forsrc.local:11110
 
+  zipkin:
+   base-url: http://forsrc.local:11110
+
 security:
   oauth2:
     client:

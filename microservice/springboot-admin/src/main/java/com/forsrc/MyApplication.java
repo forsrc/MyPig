@@ -31,8 +31,6 @@ import de.codecentric.boot.admin.config.EnableAdminServer;
 @EnableDiscoveryClient
 @EnableAdminServer
 @EnableHystrixDashboard
-@EnableTurbine
-@EnableHystrix
 
 public class MyApplication {
 
