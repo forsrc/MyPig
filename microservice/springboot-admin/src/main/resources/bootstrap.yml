@@ -1,17 +1,19 @@
 spring:
   application:
     name: springboot-admin
-#  cloud:
-#    config:
-#      uri: http://forsrc.local:12000/config
+  cloud:
+    config:
+      enabled: false
+      uri: http://forsrc.local:12000/config
   boot:
     admin:
-      url: http://forsrc.local:13000/admin
+      url: http://forsrc.local:13000${server.context-path}
       routes:
         endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
       turbine:
         clusters: default
-        location: turbine
+        location: SPRINGBOOT-ADMIN
+        enabled:  true
       username: forsrc@gmail.com
       password: forsrc
       client:
@@ -20,6 +22,19 @@ spring:
           user.password: forsrc
   aop:
     proxy-target-class: true
+
+turbine:
+#  aggregator:
+#    cluster-config:
+#    - SPRINGBOOT-ADMIN
+  clusterNameExpression: metadata['cluster']
+  appConfig: SPRINGBOOT-ADMIN
+  combineHostPort: true
+  instanceUrlSuffix: ${server.context-path}/hystrix.stream
+
+ribbon:
+  eureka:
+    enabled: true
 
 management:
   context-path: /mgmt
@@ -44,10 +59,20 @@ security:
 
 server:
   port: 13000
-  context-path: /admin
+  context-path: /
 
 
 eureka:
+  instance:
+    home-page-url:           http://forsrc.local:${server.port}${server.context-path}
+    health-check-url:        http://forsrc.local:${server.port}${server.context-path}/mgmt/health
+    secure-health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
+    status-page-url:         http://forsrc.local:${server.port}${server.context-path}/mgmt/info
+    metadata-map:
+      cluster: MAIN
+      management.context-path: ${management.context-path}
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka/eureka
+      defaultZone: http://forsrc.local:11100/eureka
