@@ -11,7 +11,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
-@EnableCaching(mode = AdviceMode.PROXY)
+//@EnableCaching(mode = AdviceMode.PROXY)
 public class RedisConfig {
 
     @Value("${spring.redis.host}")

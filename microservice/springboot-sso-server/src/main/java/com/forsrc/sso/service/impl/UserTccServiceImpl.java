@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,9 @@ public class UserTccServiceImpl implements UserTccService{
     @Autowired
     private UserTccDao userTccDao;
 
+    @Autowired
+    private Executor asyncExecutor;
+
     @Override
     public UserTcc tccTry(UserTcc userTcc) {
         userTcc.setId(null);
@@ -71,6 +76,14 @@ public class UserTccServiceImpl implements UserTccService{
             }
             authorityService.save(list);
             userTcc = userTccDao.save(userTcc);
+
+            CompletableFuture<Void> send = CompletableFuture.runAsync(new Runnable() {
+                @Override
+                public void run() {
+                    
+                }
+            }, asyncExecutor);
+
             return userTcc;
         } else {
             LOGGER.warn("--> UserTcc confirm error status: {}", userTcc);
