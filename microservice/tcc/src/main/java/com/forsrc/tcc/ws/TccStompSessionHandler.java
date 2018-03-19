@@ -16,11 +16,11 @@ public class TccStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         LOGGER.info("New session established : " + session.getSessionId());
-        session.subscribe("/topic/tcc", this);
+        //session.subscribe("/topic/tcc", this);
 
-        LOGGER.info("Subscribed to /topic/messages");
+        //LOGGER.info("Subscribed to /topic/messages");
  
-        session.send("/app/tcc", "test".getBytes());
+        //session.send("/app/tcc", "test".getBytes());
 
         LOGGER.info("Message sent to websocket server");
     }
@@ -33,12 +33,14 @@ public class TccStompSessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
+        System.out.println("--> " + headers);
         return String.class;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         String text = payload.toString();
+        System.out.println("--> " + text);
         LOGGER.info("Received : {}", text);
     }
 }
