@@ -47,6 +47,6 @@ public class TccStompSessionHandler extends StompSessionHandlerAdapter {
         String text = payload.toString();
         System.out.println("--> " + text);
         LOGGER.info("Received : {}", text);
-        //completableFuture.complete(text);
+        completableFuture.complete(text);
     }
 }
