@@ -1,6 +1,8 @@
 package com.forsrc.tcc.ws;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -62,7 +64,7 @@ public class TccWebSocket {
         WebSocketStompClient stompClient = new WebSocketStompClient(
                 new SockJsClient(Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()))));
 
-        //stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+        // stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         stompClient.setMessageConverter(new StringMessageConverter());
 
         StompSession session = stompClient.connect("ws://forsrc.local:10020/tcc/ws/tcc?access_token=" + accessToken,
@@ -70,11 +72,13 @@ public class TccWebSocket {
                 }).get(5, TimeUnit.SECONDS);
 
         System.out.println(session.isConnected());
-        session.subscribe("/topic/tcc", new TccStompSessionHandler());
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
+        session.subscribe("/topic/tcc", new TccStompSessionHandler(completableFuture));
 
         session.send("/app/tcc", "test");
 
-        TimeUnit.SECONDS.sleep(3);
+        LOGGER.info("ws: {}", completableFuture.get());
+
         session.disconnect();
     }
 }

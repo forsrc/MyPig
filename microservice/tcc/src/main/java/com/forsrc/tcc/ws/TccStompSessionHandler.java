@@ -1,6 +1,7 @@
 package com.forsrc.tcc.ws;
 
 import java.lang.reflect.Type;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,11 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 public class TccStompSessionHandler extends StompSessionHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccStompSessionHandler.class);
+    private CompletableFuture<String> completableFuture ;
 
+    public TccStompSessionHandler(CompletableFuture<String> completableFuture ) {
+        this.completableFuture = completableFuture;
+    }
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         LOGGER.info("New session established : " + session.getSessionId());
@@ -42,5 +47,6 @@ public class TccStompSessionHandler extends StompSessionHandlerAdapter {
         String text = payload.toString();
         System.out.println("--> " + text);
         LOGGER.info("Received : {}", text);
+        completableFuture.complete(text);
     }
 }

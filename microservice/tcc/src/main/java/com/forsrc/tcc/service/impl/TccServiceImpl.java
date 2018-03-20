@@ -73,7 +73,7 @@ public class TccServiceImpl implements TccService {
     public Tcc save(Tcc tcc) {
         tccDao.save(tcc);
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             link.setTccId(tcc.getId());
         }
         tccLinkDao.save(links);
@@ -108,16 +108,17 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
 
-//        if (tcc.getTimes().intValue() > 10) {
-//            tcc.setStatus(Status.CONFIRM_ERROR.getStatus());
-//            this.update(tcc);
-//            return tcc;
-//        }
+        // if (tcc.getTimes().intValue() > 10) {
+        // tcc.setStatus(Status.CONFIRM_ERROR.getStatus());
+        // this.update(tcc);
+        // return tcc;
+        // }
         if (tcc.getStatus() != null && Status.CANCEL.getStatus() == tcc.getStatus().intValue()) {
             throw new TccAlreadyCancelException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
         }
         if (tcc.getStatus() != null && Status.CONFIRM.getStatus() == tcc.getStatus().intValue()) {
-            //throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
+            // throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: "
+            // + tcc.getStatus());
             tcc.setStatus(Status.ALREADY_CONFIRMED.getStatus());
             return tcc;
         }
@@ -133,7 +134,7 @@ public class TccServiceImpl implements TccService {
 
         boolean isError = false;
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/confirm");
             ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken, HttpMethod.PUT);
             LOGGER.info("--> response: {}", response);
@@ -169,7 +170,8 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
         if (tcc.getStatus() != null && Status.CANCEL.getStatus() == tcc.getStatus().intValue()) {
-            //throw new TccCancelException(uuid, "Already canceled, Tccs tatus: " + tcc.getStatus());
+            // throw new TccCancelException(uuid, "Already canceled, Tccs tatus: " +
+            // tcc.getStatus());
             tcc.setStatus(Status.ALREADY_CANCELED.getStatus());
             return tcc;
         }
@@ -184,14 +186,13 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-
     private Tcc cance(Tcc tcc, String accessToken) {
 
         boolean isError = false;
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/cancel");
-            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken,HttpMethod.DELETE);
+            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken, HttpMethod.DELETE);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -215,38 +216,35 @@ public class TccServiceImpl implements TccService {
     private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod) {
 
         String url = String.format("%s/{id}", uri);
+        LOGGER.info("--> ResponseEntity: {}/{}", uri, id);
         HttpHeaders requestHeaders = new HttpHeaders();
-        List <MediaType> mediaTypeList = new ArrayList<MediaType>();
+        List<MediaType> mediaTypeList = new ArrayList<MediaType>();
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(mediaTypeList);
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         requestHeaders.set("Authorization", String.format("Bearer %s", accessToken));
         HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
 
-        //ResponseEntity<Object> response = oauth2RestTemplate.exchange(url, httpMethod, requestEntity, Object.class, id);
-
+        // ResponseEntity<Object> response = oauth2RestTemplate.exchange(url,
+        // httpMethod, requestEntity, Object.class, id);
+        
         try {
-            ResponseEntity<Void> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity, Void.class, id);
+            ResponseEntity<Void> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity,
+                    Void.class, id);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
         } catch (HttpServerErrorException e) {
-            LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(), e.getResponseBodyAsString());
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .build();
+            LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
+                    e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode()).header("tccId", id)
+                    .header("responseBody", e.getResponseBodyAsString()).header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders()).build();
         } catch (HttpClientErrorException e) {
-            LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(), e.getResponseBodyAsString());
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .build();
+            LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
+                    e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode()).header("tccId", id)
+                    .header("responseBody", e.getResponseBodyAsString()).header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders()).build();
         }
     }
 
