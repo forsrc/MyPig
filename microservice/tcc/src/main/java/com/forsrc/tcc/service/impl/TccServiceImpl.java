@@ -254,4 +254,14 @@ public class TccServiceImpl implements TccService {
         return tccMapper.getTryStatusList();
     }
 
+    @Override
+    public TccLink getTccLink(UUID id) {
+        return tccLinkDao.findOne(id);
+    }
+
+    @Override
+    public TccLink update(TccLink tccLink) {
+        return tccLinkDao.save(tccLink);
+    }
+
 }
