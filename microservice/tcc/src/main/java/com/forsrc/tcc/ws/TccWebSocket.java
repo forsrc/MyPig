@@ -51,18 +51,19 @@ public class TccWebSocket {
     @SendTo("/topic/tcc")
     public String send(@DestinationVariable("tccId") String tccId, @Payload Message<String> message,
             SimpMessageHeaderAccessor headerAccessor, Principal user) throws Exception {
-        LOGGER.info("SimpMessageHeaderAccessor: {}", headerAccessor);
+        String sessionId = headerAccessor.getSessionId();
+        LOGGER.info("SimpMessageHeaderAccessor: {} -> {}", sessionId, headerAccessor);
         LOGGER.info("Message: {}", message);
         LOGGER.info("Principal: {} -> {}", user.getName(), user);
-        String sessionId = headerAccessor.getSessionId();
         // messagingTemplate.
         String text = message.getPayload();
         Tcc tcc = tccService.get(StringUtils.toUuid(tccId));
 
         messagingTemplate.convertAndSend("/topic/tcc", "test 1");
         messagingTemplate.convertAndSend("/topic/tcc", "test 2", createHeaders(sessionId));
-        messagingTemplate.convertAndSendToUser(user.getName(), "/usermessage", "test 3");
-        
+        messagingTemplate.convertAndSend("/topic/tcc/" + tccId, "test 3 " + tccId);
+        messagingTemplate.convertAndSendToUser(user.getName(), "/usermessage", "test user");
+
         messagingTemplate.convertAndSendToUser(user.getName(), "/usermessage", "test messagingTemplate",
                 createHeaders(sessionId));
 
@@ -104,16 +105,21 @@ public class TccWebSocket {
                 }).get(5, TimeUnit.SECONDS);
 
         System.out.println(session.isConnected());
+        System.out.println(session.getSessionId());
         CompletableFuture<String> completableFuture1 = new CompletableFuture<>();
         CompletableFuture<String> completableFuture2 = new CompletableFuture<>();
+        CompletableFuture<String> completableFuture3 = new CompletableFuture<>();
+
         session.subscribe("/topic/tcc", new TccStompSessionHandler(completableFuture1));
         session.subscribe("/user/tcc/usermessage", new TccStompSessionHandler(completableFuture2));
+        session.subscribe("/topic/tcc/" + "d4e55207-db0a-4b8e-9691-90305cb51a44", new TccStompSessionHandler(completableFuture3));
 
         session.send("/app/tcc/d4e55207-db0a-4b8e-9691-90305cb51a44", "test");
 
         LOGGER.info("--> ws1: {}", completableFuture1.get());
         LOGGER.info("--> ws2: {}", completableFuture2.get());
-        TimeUnit.SECONDS.sleep(5);
+        LOGGER.info("--> ws3: {}", completableFuture3.get());
+        TimeUnit.SECONDS.sleep(3);
         session.disconnect();
     }
 
