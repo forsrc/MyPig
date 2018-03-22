@@ -2,7 +2,9 @@ package com.forsrc.tcc.ws;
 
 import java.lang.reflect.Type;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -32,7 +35,9 @@ import org.springframework.security.oauth2.client.token.grant.password.ResourceO
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.forsrc.common.utils.StringUtils;
@@ -95,15 +100,23 @@ public class TccWsDemo {
         tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
         String accessToken = tccOAuth2RestTemplate.getAccessToken().getValue();
 
-        WebSocketStompClient stompClient = new WebSocketStompClient(
-                new SockJsClient(Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()))));
+ 
+        List<Transport> transports = new ArrayList<>();
+        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+        RestTemplateXhrTransport xhrTransport = new RestTemplateXhrTransport(tccOAuth2RestTemplate);
+ 
+        transports.add(xhrTransport);
 
-        // stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+        SockJsClient sockJsClient = new SockJsClient(transports);
+
+        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+        //stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         stompClient.setMessageConverter(new StringMessageConverter());
 
         StompSession session = stompClient.connect("ws://forsrc.local:10020/tcc/ws/tcc?access_token=" + accessToken,
                 new StompSessionHandlerAdapter() {
                 }).get(5, TimeUnit.SECONDS);
+
 
         System.out.println(session.isConnected());
         System.out.println(session.getSessionId());
