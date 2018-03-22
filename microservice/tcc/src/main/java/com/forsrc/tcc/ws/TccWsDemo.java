@@ -125,7 +125,7 @@ public class TccWsDemo {
         CompletableFuture<String> completableFuture3 = new CompletableFuture<>();
 
         session.subscribe("/topic/demo", new TccStompSessionHandler(completableFuture1));
-        session.subscribe("/user/demo/usermessage", new TccStompSessionHandler(completableFuture2));
+        session.subscribe("/user/tcc/usermessage", new TccStompSessionHandler(completableFuture2));
         session.subscribe("/topic/demo/" + "d4e55207-db0a-4b8e-9691-90305cb51a44", new TccStompSessionHandler(completableFuture3));
 
         session.send("/app/demo/d4e55207-db0a-4b8e-9691-90305cb51a44", "test");
