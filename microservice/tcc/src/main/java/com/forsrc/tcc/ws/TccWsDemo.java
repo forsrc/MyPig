@@ -2,6 +2,7 @@ package com.forsrc.tcc.ws;
 
 import java.lang.reflect.Type;
 import java.security.Principal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.forsrc.common.core.utils.WebSocketClientUtils;
+import com.forsrc.common.utils.CompletableFutureUtils;
 import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
@@ -125,9 +127,9 @@ public class TccWsDemo {
 //
 //        System.out.println(session.isConnected());
 //        System.out.println(session.getSessionId());
-        final CompletableFuture<String> completableFuture1 = new CompletableFuture<>();
-        final CompletableFuture<String> completableFuture2 = new CompletableFuture<>();
-        final CompletableFuture<String> completableFuture3 = new CompletableFuture<>();
+        final CompletableFuture<String> completableFuture1 = CompletableFutureUtils.withTimeout(Duration.ofSeconds(3));
+        final CompletableFuture<String> completableFuture2 = CompletableFutureUtils.withTimeout(Duration.ofSeconds(3));
+        final CompletableFuture<String> completableFuture3 = CompletableFutureUtils.withTimeout(Duration.ofSeconds(3));
         String ws = "ws://forsrc.local:10020/tcc/ws/tcc";
         WebSocketClientUtils
             .get(ws, new StringMessageConverter(), tccOAuth2RestTemplate)
