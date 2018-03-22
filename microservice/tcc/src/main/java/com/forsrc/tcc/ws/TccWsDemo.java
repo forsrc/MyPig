@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -40,6 +41,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import com.forsrc.common.core.utils.WebSocketClientUtils;
 import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
@@ -50,6 +52,9 @@ public class TccWsDemo {
     private TccService tccService;
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
+    @Autowired
+    @Qualifier("oauth2RestTemplate")
+    private OAuth2RestTemplate oauth2RestTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccWsDemo.class);
 
@@ -98,43 +103,55 @@ public class TccWsDemo {
         OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails,
                 new DefaultOAuth2ClientContext());
         tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
-        String accessToken = tccOAuth2RestTemplate.getAccessToken().getValue();
+//        String accessToken = tccOAuth2RestTemplate.getAccessToken().getValue();
+//
+// 
+//        List<Transport> transports = new ArrayList<>();
+//        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+//        RestTemplateXhrTransport xhrTransport = new RestTemplateXhrTransport(tccOAuth2RestTemplate);
+// 
+//        transports.add(xhrTransport);
+//
+//        SockJsClient sockJsClient = new SockJsClient(transports);
+//
+//        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+//        //stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+//        stompClient.setMessageConverter(new StringMessageConverter());
+//
+//        StompSession session = stompClient.connect("ws://forsrc.local:10020/tcc/ws/tcc?access_token=" + accessToken,
+//                new StompSessionHandlerAdapter() {
+//                }).get(5, TimeUnit.SECONDS);
+//
+//
+//        System.out.println(session.isConnected());
+//        System.out.println(session.getSessionId());
+        final CompletableFuture<String> completableFuture1 = new CompletableFuture<>();
+        final CompletableFuture<String> completableFuture2 = new CompletableFuture<>();
+        final CompletableFuture<String> completableFuture3 = new CompletableFuture<>();
+        String ws = "ws://forsrc.local:10020/tcc/ws/tcc";
+        WebSocketClientUtils
+            .get(ws, new StringMessageConverter(), tccOAuth2RestTemplate)
+            .set("/topic/demo", new TccStompSessionHandler(completableFuture1))
+            .set("/user/tcc/usermessage", new TccStompSessionHandler(completableFuture2))
+            .set("/topic/demo/" + "d4e55207-db0a-4b8e-9691-90305cb51a44", new TccStompSessionHandler(completableFuture3))
+            .send("/app/demo/d4e55207-db0a-4b8e-9691-90305cb51a44", "test")
+            .handle(new WebSocketClientUtils.Handler() {
+                @Override
+                public void handle(StompSession session) throws RuntimeException {
+                    // TODO Auto-generated method stub
+                    try {
+                        LOGGER.info("--> ws1: {}", completableFuture1.get());
+                        LOGGER.info("--> ws2: {}", completableFuture2.get());
+                        LOGGER.info("--> ws3: {}", completableFuture3.get());
+                        TimeUnit.SECONDS.sleep(3);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            })
+            .disconnect();
 
- 
-        List<Transport> transports = new ArrayList<>();
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-        RestTemplateXhrTransport xhrTransport = new RestTemplateXhrTransport(tccOAuth2RestTemplate);
- 
-        transports.add(xhrTransport);
 
-        SockJsClient sockJsClient = new SockJsClient(transports);
-
-        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
-        //stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        stompClient.setMessageConverter(new StringMessageConverter());
-
-        StompSession session = stompClient.connect("ws://forsrc.local:10020/tcc/ws/tcc?access_token=" + accessToken,
-                new StompSessionHandlerAdapter() {
-                }).get(5, TimeUnit.SECONDS);
-
-
-        System.out.println(session.isConnected());
-        System.out.println(session.getSessionId());
-        CompletableFuture<String> completableFuture1 = new CompletableFuture<>();
-        CompletableFuture<String> completableFuture2 = new CompletableFuture<>();
-        CompletableFuture<String> completableFuture3 = new CompletableFuture<>();
-
-        session.subscribe("/topic/demo", new TccStompSessionHandler(completableFuture1));
-        session.subscribe("/user/tcc/usermessage", new TccStompSessionHandler(completableFuture2));
-        session.subscribe("/topic/demo/" + "d4e55207-db0a-4b8e-9691-90305cb51a44", new TccStompSessionHandler(completableFuture3));
-
-        session.send("/app/demo/d4e55207-db0a-4b8e-9691-90305cb51a44", "test");
-
-        LOGGER.info("--> ws1: {}", completableFuture1.get());
-        LOGGER.info("--> ws2: {}", completableFuture2.get());
-        LOGGER.info("--> ws3: {}", completableFuture3.get());
-        TimeUnit.SECONDS.sleep(3);
-        session.disconnect();
     }
 
     static class TccStompSessionHandler extends StompSessionHandlerAdapter {
@@ -172,7 +189,7 @@ public class TccWsDemo {
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
             String text = payload.toString();
-            System.out.println("--> " + text);
+            System.out.println("payload --> " + text);
             LOGGER.info("Received : {}", text);
             completableFuture.complete(text);
         }
