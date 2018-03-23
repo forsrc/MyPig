@@ -38,6 +38,7 @@ public class WebSocketClientUtils {
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         RestTemplateXhrTransport xhrTransport = new RestTemplateXhrTransport(restTemplate);
+        //xhrTransport.setTaskExecutor(new SyncTaskExecutor());
         transports.add(xhrTransport);
         SockJsClient sockJsClient = new SockJsClient(transports);
         stompClient = new WebSocketStompClient(sockJsClient);
