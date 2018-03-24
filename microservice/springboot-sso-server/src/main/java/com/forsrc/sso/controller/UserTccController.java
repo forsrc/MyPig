@@ -63,13 +63,13 @@ public class UserTccController{
     public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
-        UUID uuid = StringUtils.toUuid(id);
         try {
             //check timeout
-            userTcc = userTccService.confirm(uuid);
+            userTcc = userTccService.confirm(id);
             LOGGER.info("--> /tcc/user/confirm/{}: {}", id, userTcc);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
+            UUID uuid = StringUtils.toUuid(id);
             throw new TccConfirmException(uuid, e.getMessage());
         }
         return ResponseEntity
@@ -84,12 +84,12 @@ public class UserTccController{
     public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) {
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
-        UUID uuid = UUID.fromString(id);
         try {
-            userTcc = userTccService.cancel(uuid);
+            userTcc = userTccService.cancel(id);
             LOGGER.info("--> /tcc/user/cancel/{}: {}", id, userTcc);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
+            UUID uuid = StringUtils.toUuid(id);
             throw new TccCancelException(uuid, e.getMessage());
         }
         return ResponseEntity

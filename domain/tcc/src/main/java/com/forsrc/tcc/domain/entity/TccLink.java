@@ -29,11 +29,11 @@ public class TccLink implements java.io.Serializable {
     @Column(name = "tcc_id", nullable = false)
     private UUID tccId;
 
-    @Column(name = "entity_id", length = 500, nullable = false)
-    private UUID entityId;
-
     @Column(name = "uri", length = 1000, nullable = false)
     private String uri;
+
+    @Column(name = "path", length = 500, unique = true, nullable = false)
+    private String path;
 
     @Column(name = "create", insertable = false, updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
@@ -101,12 +101,12 @@ public class TccLink implements java.io.Serializable {
         this.update = update;
     }
 
-    public UUID getEntityId() {
-        return entityId;
+    public String getPath() {
+        return path;
     }
 
-    public void setEntityId(UUID entityId) {
-        this.entityId = entityId;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Integer getStatus() {
@@ -120,8 +120,8 @@ public class TccLink implements java.io.Serializable {
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"tccId\":\"%s\", \"entityId\":\"%s\", \"uri\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\"} ",
-                id, tccId, entityId, uri, create, update, expire, status);
+                "{\"id\":\"%s\", \"tccId\":\"%s\", \"uri\":\"%s\", \"path\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\"} ",
+                id, tccId, uri, path, create, update, expire, status);
     }
 
 }

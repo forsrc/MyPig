@@ -32,6 +32,7 @@ import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.tcc.dao.TccDao;
 import com.forsrc.tcc.dao.TccLinkDao;
+import com.forsrc.tcc.dao.mapper.TccLinkMapper;
 import com.forsrc.tcc.dao.mapper.TccMapper;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
@@ -59,6 +60,9 @@ public class TccServiceImpl implements TccService {
 
     @Autowired
     private TccMapper tccMapper;
+
+    @Autowired
+    private TccLinkMapper tccLinkMapper;
 
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -136,7 +140,7 @@ public class TccServiceImpl implements TccService {
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/confirm");
-            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken, HttpMethod.PUT);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -192,7 +196,7 @@ public class TccServiceImpl implements TccService {
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/cancel");
-            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken, HttpMethod.DELETE);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -262,6 +266,16 @@ public class TccServiceImpl implements TccService {
     @Override
     public TccLink update(TccLink tccLink) {
         return tccLinkDao.save(tccLink);
+    }
+
+    @Override
+    public Tcc getTccByPath(String path) {
+        return tccMapper.getByTccLinkPath(path);
+    }
+
+    @Override
+    public TccLink getTccLinkByPath(String path) {
+        return tccLinkMapper.getByPath(path);
     }
 
 }

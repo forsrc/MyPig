@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
@@ -38,7 +38,7 @@ public class WebSocketClientUtils {
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         RestTemplateXhrTransport xhrTransport = new RestTemplateXhrTransport(restTemplate);
-        //xhrTransport.setTaskExecutor(new SyncTaskExecutor());
+        xhrTransport.setTaskExecutor(new SyncTaskExecutor());
         transports.add(xhrTransport);
         SockJsClient sockJsClient = new SockJsClient(transports);
         stompClient = new WebSocketStompClient(sockJsClient);

@@ -20,6 +20,12 @@ public interface TccService {
     @Transactional(readOnly = true)
     public TccLink getTccLink(UUID id);
 
+    @Transactional(readOnly = true)
+    public Tcc getTccByPath(String path);
+
+    @Transactional(readOnly = true)
+    public TccLink getTccLinkByPath(String path);
+
     public Tcc save(Tcc tcc);
 
     public Tcc update(Tcc tcc);
