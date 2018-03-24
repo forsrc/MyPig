@@ -16,7 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass=false)
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory", 
         transactionManagerRef = "transactionManager",
@@ -36,17 +36,17 @@ public class JpaConfig {
     }
 
 
-//  @Primary
-//  @Bean(name = "transactionManager")
-//  public PlatformTransactionManager transactionManager(
-//          @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-//      return new JpaTransactionManager();
-//  }
+      @Primary
+      @Bean(name = "transactionManager")
+      public PlatformTransactionManager transactionManager(
+              @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+          return new JpaTransactionManager();
+      }
 
-    @Primary
-    @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
+//    @Primary
+//    @Bean(name = "transactionManager")
+//    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 
 }

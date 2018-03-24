@@ -200,7 +200,7 @@ public class TccServiceImpl implements TccService {
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
-            if (!HttpStatus.NO_CONTENT.equals(response.getStatusCode()) && status != Status.CANCEL.getStatus()) {
+            if (!HttpStatus.NO_CONTENT.equals(response.getStatusCode())) {
                 isError = true;
             }
             link.setStatus(status);

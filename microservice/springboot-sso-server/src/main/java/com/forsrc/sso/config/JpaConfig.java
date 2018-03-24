@@ -36,17 +36,17 @@ public class JpaConfig {
     }
 
 
-//    @Primary
-//    @Bean(name = "transactionManager")
-//    public PlatformTransactionManager transactionManager(
-//            @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-//        return new JpaTransactionManager();
-//    }
-
     @Primary
     @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    public PlatformTransactionManager transactionManager(
+            @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager();
     }
+
+//    @Primary
+//    @Bean(name = "transactionManager")
+//    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 
 }

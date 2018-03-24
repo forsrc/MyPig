@@ -15,7 +15,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.forsrc.tcc.config.RibbonClinetConfig;
 
@@ -33,7 +32,6 @@ import com.forsrc.tcc.config.RibbonClinetConfig;
 @RibbonClient(name = "springboot-sso-server", configuration = RibbonClinetConfig.class)
 @EnableHystrix
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@EnableTransactionManagement(proxyTargetClass=false)
 public class MyApplication {
 
     public static void main(String[] args) {

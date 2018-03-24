@@ -33,7 +33,6 @@ public class TccSchedule {
     private TccService tccService;
 
     @Scheduled(cron = "0 0/1 * * * *")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void tcc() throws TccException{
         List<Tcc> list = tccService.getTryStatusList();
         LOGGER.info("--> TccSchedule {} -> size: {}", dateFormat.format(new Date()), list.size());
