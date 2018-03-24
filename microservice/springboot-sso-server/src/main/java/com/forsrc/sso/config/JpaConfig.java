@@ -15,11 +15,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass=false)
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory", 
         transactionManagerRef = "transactionManager",
-        basePackages = { "com.forsrc.sso.dao" })
+        basePackages = { "com.forsrc.sso" })
 public class JpaConfig {
 
     @Primary

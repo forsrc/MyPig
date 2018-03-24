@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,6 +28,7 @@ import com.forsrc.common.core.tcc.exception.TccAlreadyCancelException;
 import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.tcc.dao.TccDao;
 import com.forsrc.tcc.dao.TccLinkDao;
@@ -39,7 +39,7 @@ import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = { Exception.class })
 public class TccServiceImpl implements TccService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccServiceImpl.class);
@@ -97,7 +97,7 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc confirm(UUID uuid, String accessToken) {
+    public Tcc confirm(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.findOne(uuid);
         LOGGER.info("--> confirm: {}", tcc);
         if (tcc == null) {
@@ -160,7 +160,7 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc cancel(UUID uuid, String accessToken) {
+    public Tcc cancel(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.getOne(uuid);
         LOGGER.info("--> cancel: {}", tcc);
         if (tcc == null) {

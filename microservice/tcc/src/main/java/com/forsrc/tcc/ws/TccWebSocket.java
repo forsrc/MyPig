@@ -14,7 +14,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.forsrc.common.core.tcc.dto.WsUserTccDto;
@@ -35,7 +34,7 @@ public class TccWebSocket {
 
     @MessageMapping("/tcc/{tccId}")
     @SendTo("/topic/tcc")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = { Exception.class })
     public WsUserTccDto tcc(@DestinationVariable("tccId") String tccId, @Payload Message<WsUserTccDto> message,
             SimpMessageHeaderAccessor headerAccessor, Principal user) throws Exception {
         LOGGER.info("ws ttc: {} -> {} -> {} -> {}", tccId, user.getName(), message, headerAccessor);

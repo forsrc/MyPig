@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 
@@ -30,7 +33,8 @@ public class TccSchedule {
     private TccService tccService;
 
     @Scheduled(cron = "0 0/1 * * * *")
-    public void tcc() {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void tcc() throws TccException{
         List<Tcc> list = tccService.getTryStatusList();
         LOGGER.info("--> TccSchedule {} -> size: {}", dateFormat.format(new Date()), list.size());
         String  accessToken = getAccessToken();

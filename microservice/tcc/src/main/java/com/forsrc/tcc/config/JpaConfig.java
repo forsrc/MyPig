@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory", 
         transactionManagerRef = "transactionManager",
-        basePackages = { "com.forsrc.tcc.dao" })
+        basePackages = { "com.forsrc.tcc" })
 public class JpaConfig {
 
     @Primary

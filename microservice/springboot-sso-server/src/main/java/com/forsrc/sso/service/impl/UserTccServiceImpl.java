@@ -21,12 +21,12 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.forsrc.common.core.tcc.dto.WsUserTccDto;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.common.core.utils.WebSocketClientUtils;
 import com.forsrc.common.utils.CompletableFutureUtils;
@@ -41,7 +41,7 @@ import com.forsrc.sso.service.UserService;
 import com.forsrc.sso.service.UserTccService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = { Exception.class, TccException.class })
 public class UserTccServiceImpl implements UserTccService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTccServiceImpl.class);
@@ -74,7 +74,7 @@ public class UserTccServiceImpl implements UserTccService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class, TccException.class})
     public UserTcc confirm(String id) throws TccConfirmException {
         UUID uuid = StringUtils.toUuid(id);
         UserTcc userTcc = userTccDao.getOne(uuid);
@@ -112,7 +112,7 @@ public class UserTccServiceImpl implements UserTccService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class, TccException.class})
     public UserTcc cancel(String id) {
         UUID uuid = StringUtils.toUuid(id);
         UserTcc userTcc = userTccDao.getOne(uuid);
@@ -127,7 +127,7 @@ public class UserTccServiceImpl implements UserTccService {
         return userTcc;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class, TccException.class})
     private void confirm(String id, int status) throws InterruptedException, ExecutionException, TimeoutException {
         UUID uuid = StringUtils.toUuid(id);
         WsUserTccDto dto = new WsUserTccDto(uuid, status);

@@ -74,7 +74,7 @@ public class TccController implements TccFeignClient {
 
     public ResponseEntity<Tcc> tccTryFallBack(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody Tcc tcc) {
+            @RequestBody Tcc tcc) throws TccException {
         LOGGER.info("--> tcc: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         tcc.setStatus(0);
@@ -89,7 +89,8 @@ public class TccController implements TccFeignClient {
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TccTryException.class)
-    public ResponseEntity<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response, TccTryException e) {
+    public ResponseEntity<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response, TccTryException e)
+            throws TccException {
         LOGGER.error("--> TccConfirmException: {} : {}", request.getRequestURI(), e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -105,7 +106,7 @@ public class TccController implements TccFeignClient {
     public ResponseEntity<Void> confirm(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken
-            ) {
+            ) throws TccException {
         UUID uuid = UUID.fromString(id);
         Tcc tcc = null;
         try {
@@ -140,7 +141,7 @@ public class TccController implements TccFeignClient {
     @Override
     @PutMapping(path = "/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("id") String id,
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader("Authorization") String accessToken) throws TccException{
 
         UUID uuid = UUID.fromString(id);
         try {

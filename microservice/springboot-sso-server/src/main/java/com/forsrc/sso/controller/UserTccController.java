@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.exception.TccTryException;
 import com.forsrc.common.utils.StringUtils;
 import com.forsrc.sso.domain.entity.UserTcc;
@@ -38,7 +39,7 @@ public class UserTccController{
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/")
-    public ResponseEntity<UserTcc> ttcTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<UserTcc> ttcTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         Assert.notNull(tcc, "UserTcc is null");
         Assert.notNull(tcc.getUsername(), "UserTcc username is nul");
         Assert.notNull(tcc.getPassword(), "UserTcc password is nul");
@@ -60,7 +61,7 @@ public class UserTccController{
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/confirm/{id}")
-    public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
         try {
@@ -81,7 +82,7 @@ public class UserTccController{
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/cancel/{id}")
-    public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException{
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
         try {
