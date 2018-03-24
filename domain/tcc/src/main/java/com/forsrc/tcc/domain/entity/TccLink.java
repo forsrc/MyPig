@@ -30,7 +30,7 @@ public class TccLink implements java.io.Serializable {
     private UUID tccId;
 
     @Column(name = "entity_id", length = 500, nullable = false)
-    private String entityId;
+    private UUID entityId;
 
     @Column(name = "uri", length = 1000, nullable = false)
     private String uri;
@@ -101,11 +101,11 @@ public class TccLink implements java.io.Serializable {
         this.update = update;
     }
 
-    public String getEntityId() {
+    public UUID getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(String entityId) {
+    public void setEntityId(UUID entityId) {
         this.entityId = entityId;
     }
 
