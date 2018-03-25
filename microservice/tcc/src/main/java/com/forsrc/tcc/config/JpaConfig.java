@@ -9,14 +9,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement(proxyTargetClass=false)
+@EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory", 
         transactionManagerRef = "transactionManager",
@@ -36,12 +35,16 @@ public class JpaConfig {
     }
 
 
-      @Primary
-      @Bean(name = "transactionManager")
-      public PlatformTransactionManager transactionManager(
-              @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-          return new JpaTransactionManager();
-      }
+    @Primary
+    @Bean(name = "transactionManager")
+    public PlatformTransactionManager transactionManager(
+            @Qualifier("dataSource") DataSource dataSource,
+            @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setRollbackOnCommitFailure(true); 
+        transactionManager.setDataSource(dataSource);
+        return transactionManager;
+    }
 
 //    @Primary
 //    @Bean(name = "transactionManager")

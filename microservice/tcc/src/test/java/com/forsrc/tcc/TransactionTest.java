@@ -40,14 +40,16 @@ public class TransactionTest extends MyApplicationTests {
         @Autowired
         private TccMapper tccMapper;
 
-        @Transactional
+        @Transactional(rollbackOn = {Exception.class})
         public void testTransaction() throws Exception {
             UUID id = StringUtils.toUuid("d4e55207-db0a-4b8e-9691-90305cb51a44");
-            Tcc tcc = tccDao.getOne(id);
+            //Tcc tcc = tccDao.getOne(id);
+            Tcc tcc = new Tcc();
+            tcc.setId(id);
             System.out.println(tcc);
             assertNotNull(tcc);
             tcc.setStatus(20);
-            tccDao.save(tcc);
+            //tccDao.save(tcc);
             System.out.println(tcc);
             tcc.setStatus(30);
             tccMapper.updateStatus(tcc);
