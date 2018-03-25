@@ -73,4 +73,14 @@
             TCC.id = TCC_LINK.tcc_id
         LIMIT 1
     </select>
+
+    <update id="updateStatus" parameterType="com.forsrc.tcc.domain.entity.Tcc">
+        UPDATE
+            t_tcc
+        SET
+            status = #{tcc.status, jdbcType=INTEGER},
+            update = CURRENT_TIMESTAMP
+        WHERE
+            id = #{tcc.id, javaType=java.util.UUID, typeHandler=com.forsrc.common.core.mybatis.handler.UUIDTypeHandler}
+    </update>
 </mapper>

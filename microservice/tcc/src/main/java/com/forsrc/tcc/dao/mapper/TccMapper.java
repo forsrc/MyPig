@@ -14,4 +14,5 @@ public interface TccMapper {
 
     public Tcc getByTccLinkPath(@Param("path") String path);
 
+    public int updateStatus(@Param("tcc") Tcc tcc);
 }
