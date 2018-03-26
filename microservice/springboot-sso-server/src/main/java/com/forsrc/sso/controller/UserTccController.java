@@ -37,7 +37,7 @@ public class UserTccController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTccController.class);
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/")
     public ResponseEntity<UserTcc> ttcTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         Assert.notNull(tcc, "UserTcc is null");

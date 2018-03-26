@@ -3,10 +3,18 @@ package com.forsrc.common.core.sso.dto;
 import java.util.Date;
 import java.util.UUID;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.deser.std.FromStringDeserializer.UUIDDeserializer;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserTccDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -6158323457702043074L;
 
+    @JsonDeserialize(using = UUIDDeserializer.class)
     private UUID id;
 
     private String username;
@@ -19,10 +27,11 @@ public class UserTccDto implements java.io.Serializable {
 
     private Integer status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
     private Date create;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
     private Date update;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
     private Date expire;
 
     public String getUsername() {

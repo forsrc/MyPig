@@ -40,7 +40,7 @@ import com.forsrc.tcc.service.TccService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
-@RequestMapping(path = "/api/v1")
+@RequestMapping(path = "/api/v1/tcc")
 public class TccController implements TccFeignClient {
 
     @Autowired
@@ -67,14 +67,7 @@ public class TccController implements TccFeignClient {
     @HystrixCommand(fallbackMethod = "tccTryFallBack")
     public ResponseEntity<Tcc> tccTry(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody Tcc tcc) {
-        LOGGER.info("--> tcc: {}", tcc);
-        return ResponseEntity.ok().body(tcc);
-    }
-
-    public ResponseEntity<Tcc> tccTryFallBack(
-            @RequestHeader("Authorization") String accessToken,
-            @RequestBody Tcc tcc) throws TccException {
+            @RequestBody Tcc tcc) throws TccTryException {
         LOGGER.info("--> tcc: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         tcc.setStatus(0);
@@ -83,6 +76,14 @@ public class TccController implements TccFeignClient {
         } catch (Exception e) {
             throw new TccTryException(null, e.getMessage());
         }
+        return ResponseEntity.ok().body(tcc);
+    }
+
+    public ResponseEntity<Tcc> tccTryFallBack(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody Tcc tcc) throws TccException {
+        LOGGER.info("--> tcc: {}", tcc);
+        Assert.notNull(tcc, "Tcc is null");
         return ResponseEntity.ok().body(tcc);
     }
 
