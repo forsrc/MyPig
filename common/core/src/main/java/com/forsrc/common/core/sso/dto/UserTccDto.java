@@ -1,12 +1,11 @@
 package com.forsrc.common.core.sso.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class UserTccDto implements Serializable {
+public class UserTccDto implements java.io.Serializable {
 
-    private static final long serialVersionUID = -7276431400656160027L;
+    private static final long serialVersionUID = -6158323457702043074L;
 
     private UUID id;
 
@@ -19,6 +18,10 @@ public class UserTccDto implements Serializable {
     private String authorities;
 
     private Integer status;
+
+    private Date create;
+
+    private Date update;
 
     private Date expire;
 
@@ -70,6 +73,22 @@ public class UserTccDto implements Serializable {
         this.status = status;
     }
 
+    public Date getCreate() {
+        return create;
+    }
+
+    public void setCreate(Date create) {
+        this.create = create;
+    }
+
+    public Date getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Date update) {
+        this.update = update;
+    }
+
     public Date getExpire() {
         return expire;
     }
@@ -81,7 +100,8 @@ public class UserTccDto implements Serializable {
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"expire\":\"%s\"} ",
-                id, username, password, enabled, authorities, status, expire);
+                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\"} ",
+                id, username, password, enabled, authorities, status, create, update, expire);
     }
+
 }
