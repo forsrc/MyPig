@@ -1,6 +1,7 @@
 package com.forsrc.tcc;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +54,12 @@ public class TccTest extends MyApplicationTests {
         String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
-            Date expire = new Date(System.currentTimeMillis() + 5 * 1000 * 60);
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 30);
+            Date expire = calendar.getTime();
             userTccDto.setAuthorities("ROLE_" + id.toString());
             userTccDto.setUsername(id.toString());
             userTccDto.setPassword(id.toString());
