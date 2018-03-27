@@ -19,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forsrc.MyApplicationTests;
 import com.forsrc.common.core.sso.dto.UserTccDto;
 import com.forsrc.common.core.tcc.dto.TccDto;
 import com.forsrc.common.core.tcc.dto.TccLinkDto;
+import com.forsrc.tcc.domain.entity.Tcc;
 
 public class TccTest extends MyApplicationTests {
 
@@ -32,7 +34,11 @@ public class TccTest extends MyApplicationTests {
 
     @Autowired
     @Qualifier("tccOAuth2RestTemplate")
-    public OAuth2RestTemplate tccOAuth2RestTemplate;
+    private OAuth2RestTemplate tccOAuth2RestTemplate;
+
+    @Autowired
+    @Qualifier("loadBalancedRestTemplate")
+    private RestTemplate loadBalancedRestTemplate;
 
     @After
     public void init() {
@@ -43,11 +49,11 @@ public class TccTest extends MyApplicationTests {
     @Test
     public void testTransaction() throws Exception {
 
-        String userTccUrl = "http://forsrc.local:10000/sso/api/v1/tcc/user/";
-        String tccUrl = "http://forsrc.local:10020/tcc/api/v1/tcc/";
+        String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
+        String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 100; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
             Date expire = new Date(System.currentTimeMillis() + 5 * 1000 * 60);
@@ -58,19 +64,20 @@ public class TccTest extends MyApplicationTests {
             userTccDto.setExpire(expire);
 
             ResponseEntity<String> response = send(userTccUrl, userTccDto, HttpMethod.POST);
-            System.out.println("--> " + response.getBody());
             UserTccDto dto = objectMapper.readValue(response.getBody(), UserTccDto.class);
+            System.out.println("UserTcc --> " + dto);
             TccDto tccDto = new TccDto();
             tccDto.setExpire(expire);
             List<TccLinkDto> links = new ArrayList<>();
             TccLinkDto tccLinkDto = new TccLinkDto();
             tccLinkDto.setExpire(expire);
-            tccLinkDto.setPath(userTccUrl);
+            tccLinkDto.setUri(userTccUrl);
             tccLinkDto.setPath(dto.getId().toString());
             links.add(tccLinkDto);
             tccDto.setLinks(links);
             response = send(tccUrl, tccDto, HttpMethod.POST);
-            System.out.println("--> " + response.getBody());
+            TccDto tcc = objectMapper.readValue(response.getBody(), TccDto.class);
+            System.out.println("Tcc --> " + tcc);
         }
 
     }
@@ -91,7 +98,7 @@ public class TccTest extends MyApplicationTests {
         // httpMethod, requestEntity, Object.class, id);
 
         try {
-            ResponseEntity<String> response = tccOAuth2RestTemplate.exchange(url, httpMethod, requestEntity,
+            ResponseEntity<String> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity,
                     String.class);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
