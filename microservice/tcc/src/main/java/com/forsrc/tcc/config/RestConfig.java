@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -75,7 +73,7 @@ public class RestConfig {
         return new RequestContextListener();
     }
 
-    static class OAuth2ResponseErrorHandler implements ResponseErrorHandler {
+    public static class OAuth2ResponseErrorHandler implements ResponseErrorHandler {
 
         private OAuth2RestTemplate oAuth2RestTemplate;
 
