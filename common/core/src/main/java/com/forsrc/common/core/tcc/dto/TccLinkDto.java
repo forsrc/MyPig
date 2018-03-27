@@ -3,6 +3,8 @@ package com.forsrc.common.core.tcc.dto;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TccLinkDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -3603568859174762821L;
@@ -14,11 +16,11 @@ public class TccLinkDto implements java.io.Serializable {
     private String uri;
 
     private String path;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date create;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date update;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date expire;
 
     private Integer status;
