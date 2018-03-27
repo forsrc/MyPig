@@ -1,7 +1,9 @@
 package com.forsrc.common.utils;
 
 import java.time.Duration;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -39,4 +41,27 @@ public class CompletableFutureUtils {
         };
     }
 
+    public static void main(String[] args) throws InterruptedException {
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            new Thread() {
+                public void run() {
+
+                    CompletableFuture<Integer> completableFuture = CompletableFutureUtils
+                            .withTimeout(Duration.ofMillis(3000));
+//                    try {
+//                        TimeUnit.SECONDS.sleep(1);
+//                    } catch (InterruptedException e1) {
+//                    }
+                    completableFuture.complete(index);
+                    try {
+                        System.out.println(completableFuture.get());
+                    } catch (InterruptedException e) {
+                    } catch (ExecutionException e) {
+                        System.out.println("-->" + index);
+                    }
+                };
+            }.start();
+        }
+    }
 }

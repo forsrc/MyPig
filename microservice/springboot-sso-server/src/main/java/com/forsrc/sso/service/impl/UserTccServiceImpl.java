@@ -131,7 +131,7 @@ public class UserTccServiceImpl implements UserTccService {
     private void confirm(String id, int status) throws InterruptedException, ExecutionException, TimeoutException {
         UUID uuid = StringUtils.toUuid(id);
         WsUserTccDto dto = new WsUserTccDto(uuid, status);
-        final CompletableFuture<WsUserTccDto> completableFuture = CompletableFutureUtils.withTimeout(Duration.ofSeconds(10));
+        final CompletableFuture<WsUserTccDto> completableFuture = CompletableFutureUtils.withTimeout(Duration.ofSeconds(60));
         WebSocketClientUtils.get(tccWs, new MappingJackson2MessageConverter(), tccOAuth2RestTemplate)
                 .set(String.format("/topic/tccLink/%s", id), new TccStompSessionHandler(completableFuture))
                 .send(String.format("/app/tccLink/%s", id), dto)
@@ -139,6 +139,7 @@ public class UserTccServiceImpl implements UserTccService {
                     @Override
                     public void handle(StompSession session) throws RuntimeException {
                         try {
+                            LOGGER.info("--> ws: /topic/tccLink/{} ...", id);
                             LOGGER.info("--> ws: {}", completableFuture.get());
                         } catch (Exception e) {
                             throw new RuntimeException(e.getMessage());
