@@ -239,15 +239,23 @@ public class TccServiceImpl implements TccService {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            return ResponseEntity.status(e.getStatusCode()).header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString()).header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders()).build();
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .header("tccId", id)
+                    .header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders())
+                    .build();
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            return ResponseEntity.status(e.getStatusCode()).header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString()).header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders()).build();
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .header("tccId", id)
+                    .header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders())
+                    .build();
         }
     }
 

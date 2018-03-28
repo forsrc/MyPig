@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -54,7 +55,7 @@ public class TccTest extends MyApplicationTests {
         String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
             Calendar calendar = Calendar.getInstance();
@@ -85,6 +86,7 @@ public class TccTest extends MyApplicationTests {
 
     }
 
+    @Async
     private ResponseEntity<String> send(String url, Object body, HttpMethod httpMethod) {
 
         HttpHeaders requestHeaders = new HttpHeaders();
