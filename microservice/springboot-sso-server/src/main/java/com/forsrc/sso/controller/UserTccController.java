@@ -43,7 +43,7 @@ public class UserTccController{
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/sync/")
-    public ResponseEntity<UserTcc> ttcTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
+    public ResponseEntity<UserTcc> tccTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         Assert.notNull(tcc, "UserTcc is null");
         Assert.notNull(tcc.getUsername(), "UserTcc username is nul");
         Assert.notNull(tcc.getPassword(), "UserTcc password is nul");
@@ -65,10 +65,10 @@ public class UserTccController{
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/")
-    public DeferredResult<ResponseEntity<UserTcc>> ttcTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
+    public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<UserTcc>> result = new DeferredResult<>();
 
-        handle(result, () -> ttcTry(tcc, accessToken));
+        handle(result, () -> tccTry(tcc, accessToken));
         return result;
     }
 
