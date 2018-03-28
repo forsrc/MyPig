@@ -54,7 +54,7 @@ public class TccTest extends MyApplicationTests {
         String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
             Calendar calendar = Calendar.getInstance();
