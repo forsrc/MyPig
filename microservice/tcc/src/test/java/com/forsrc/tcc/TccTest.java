@@ -48,13 +48,13 @@ public class TccTest extends MyApplicationTests {
     }
 
     @Test
-    public void testTransaction() throws Exception {
+    public void test() throws Exception {
 
         String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
         String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
             Calendar calendar = Calendar.getInstance();
