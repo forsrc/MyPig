@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import com.forsrc.common.core.tcc.exception.TccAlreadyCancelException;
 import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
@@ -45,8 +44,8 @@ public class TccServiceImpl implements TccService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TccServiceImpl.class);
 
     @Autowired
-    @Qualifier("loadBalancedRestTemplate")
-    private RestTemplate loadBalancedRestTemplate;
+    @Qualifier("tccLoadBalancedOAuth2RestTemplate")
+    private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
 
     @Autowired
     @Qualifier("oauth2RestTemplate")
@@ -233,7 +232,7 @@ public class TccServiceImpl implements TccService {
         // httpMethod, requestEntity, Object.class, id);
         
         try {
-            ResponseEntity<Void> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity,
+            ResponseEntity<Void> response = tccLoadBalancedOAuth2RestTemplate.exchange(url, httpMethod, requestEntity,
                     Void.class, id);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;

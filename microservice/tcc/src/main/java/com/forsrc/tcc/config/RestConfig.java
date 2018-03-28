@@ -37,20 +37,43 @@ public class RestConfig {
     }
 
     @Bean("loadBalancedOAuth2RestTemplate")
+    @Primary
     @LoadBalanced
-    public RestTemplate loadBalancedOAuth2RestTemplate(OAuth2ProtectedResourceDetails details) {
-        return new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+    public OAuth2RestTemplate loadBalancedOAuth2RestTemplate(OAuth2ProtectedResourceDetails details) {
+        OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+        oAuth2RestTemplate.setRetryBadAccessTokens(true);
+        return oAuth2RestTemplate;
     }
 
     @Bean("oauth2RestTemplate")
-    @Primary
     public OAuth2RestTemplate oauth2RestTemplate(OAuth2ProtectedResourceDetails details) {
-        return new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+        oAuth2RestTemplate.setRetryBadAccessTokens(true);
+        return oAuth2RestTemplate;
+    }
+
+    @Bean("tccLoadBalancedOAuth2RestTemplate")
+    @LoadBalanced
+    public OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate() {
+
+        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
+        //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
+        tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
+        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        return tccOAuth2RestTemplate;
     }
 
     @Bean("tccOAuth2RestTemplate")
     public OAuth2RestTemplate tccOAuth2RestTemplate() {
 
+        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
+        //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
+        tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
+        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        return tccOAuth2RestTemplate;
+    }
+
+    private ResourceOwnerPasswordResourceDetails tccResourceDetails() {
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
         resourceDetails.setUsername("tcc");
         resourceDetails.setPassword("tcc");
@@ -61,12 +84,7 @@ public class RestConfig {
         resourceDetails.setClientSecret("forsrc");
         resourceDetails.setGrantType("password");
         resourceDetails.setScope(Arrays.asList("read", "write"));
-
-        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext());
-        //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
-        tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
-        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
-        return tccOAuth2RestTemplate;
+        return resourceDetails;
     }
 
     @Bean
@@ -91,7 +109,10 @@ public class RestConfig {
         @Override
         public void handleError(ClientHttpResponse response) throws IOException {
             oAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
+            oAuth2RestTemplate.getOAuth2ClientContext().getAccessToken().getValue();
         }
 
     }
+
+
 }
