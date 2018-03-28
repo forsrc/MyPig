@@ -53,7 +53,8 @@ public class RestConfig {
         resourceDetails.setScope(Arrays.asList("read", "write"));
 
         OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext());
-        tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
+        //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
+        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
         return tccOAuth2RestTemplate;
     }
 }
