@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.client.token.grant.password.ResourceO
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 
+import com.forsrc.common.core.spring.MyOAuth2RestTemplate;
+
 @Configuration
 public class RestConfig {
 
@@ -52,7 +54,7 @@ public class RestConfig {
         resourceDetails.setGrantType("password");
         resourceDetails.setScope(Arrays.asList("read", "write"));
 
-        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
         tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();

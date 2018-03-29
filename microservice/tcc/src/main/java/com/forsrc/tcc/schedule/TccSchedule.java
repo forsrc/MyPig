@@ -43,7 +43,7 @@ public class TccSchedule {
         }
     }
 
-    @Async
+    @Async("tccAsyncExecutor")
     public void asyncTcc(Tcc tcc) throws TccException {
         LOGGER.info("--> TccSchedule tcc: {}", tcc);
         String accessToken = getAccessToken();

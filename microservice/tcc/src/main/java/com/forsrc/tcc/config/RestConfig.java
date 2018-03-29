@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.client.token.grant.password.ResourceO
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
+
+import com.forsrc.common.core.spring.MyOAuth2RestTemplate;
 
 @Configuration
 public class RestConfig {
@@ -40,14 +43,14 @@ public class RestConfig {
     @Primary
     @LoadBalanced
     public OAuth2RestTemplate loadBalancedOAuth2RestTemplate(OAuth2ProtectedResourceDetails details) {
-        OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate oAuth2RestTemplate = new MyOAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
         oAuth2RestTemplate.setRetryBadAccessTokens(true);
         return oAuth2RestTemplate;
     }
 
     @Bean("oauth2RestTemplate")
     public OAuth2RestTemplate oauth2RestTemplate(OAuth2ProtectedResourceDetails details) {
-        OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate oAuth2RestTemplate = new MyOAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
         oAuth2RestTemplate.setRetryBadAccessTokens(true);
         return oAuth2RestTemplate;
     }
@@ -56,20 +59,26 @@ public class RestConfig {
     @LoadBalanced
     public OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate() {
 
-        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
-        tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
+        //tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
         tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setOutputStreaming(false);
+        tccOAuth2RestTemplate.setRequestFactory(requestFactory);
         return tccOAuth2RestTemplate;
     }
 
     @Bean("tccOAuth2RestTemplate")
     public OAuth2RestTemplate tccOAuth2RestTemplate() {
 
-        OAuth2RestTemplate tccOAuth2RestTemplate = new OAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
+        OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
-        tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
+        //tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
         tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setOutputStreaming(false);
+        tccOAuth2RestTemplate.setRequestFactory(requestFactory);
         return tccOAuth2RestTemplate;
     }
 
@@ -92,6 +101,7 @@ public class RestConfig {
         return new RequestContextListener();
     }
 
+    /*
     public static class OAuth2ResponseErrorHandler implements ResponseErrorHandler {
 
         private OAuth2RestTemplate oAuth2RestTemplate;
@@ -113,6 +123,6 @@ public class RestConfig {
         }
 
     }
-
+     */
 
 }
