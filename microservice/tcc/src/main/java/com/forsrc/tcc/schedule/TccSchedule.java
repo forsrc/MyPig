@@ -33,7 +33,7 @@ public class TccSchedule {
     @Autowired
     private TccService tccService;
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0,10,20,30,40,50 * * * * *")
     public void tcc() throws TccException{
         List<Tcc> list = tccService.getTryStatusList();
         LOGGER.info("--> TccSchedule {} -> size: {}", dateFormat.format(new Date()), list.size());
