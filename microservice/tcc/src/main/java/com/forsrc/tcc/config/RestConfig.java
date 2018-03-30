@@ -62,7 +62,7 @@ public class RestConfig {
         OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
         //tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
-        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        //tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setOutputStreaming(false);
         tccOAuth2RestTemplate.setRequestFactory(requestFactory);
@@ -75,7 +75,7 @@ public class RestConfig {
         OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(tccResourceDetails(), new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
         //tccOAuth2RestTemplate.setErrorHandler(new OAuth2ResponseErrorHandler(tccOAuth2RestTemplate));
-        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        //tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setOutputStreaming(false);
         tccOAuth2RestTemplate.setRequestFactory(requestFactory);
