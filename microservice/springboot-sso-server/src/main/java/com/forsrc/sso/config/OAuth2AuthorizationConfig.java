@@ -1,5 +1,7 @@
 package com.forsrc.sso.config;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import org.springframework.security.oauth2.provider.client.JdbcClientDetailsServ
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,8 +122,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .resourceIds("forsrc")
                 .secret("forsrc")
                 .scopes("forsrc", "read", "write")
-                .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
-                //.accessTokenValiditySeconds(10)
+                //.accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
+                .accessTokenValiditySeconds(10)
                 .autoApprove(true)
                 ;
 
@@ -168,6 +171,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     static class MyTokenServices extends DefaultTokenServices {
 
+        private TokenStore tokenStore;
+
         @Override
         @Transactional
         public synchronized OAuth2AccessToken createAccessToken(OAuth2Authentication authentication)
@@ -175,6 +180,10 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
             try {
                 return super.createAccessToken(authentication);
             } catch (Exception e) {
+                OAuth2AccessToken existingAccessToken = tokenStore.getAccessToken(authentication);
+                if (existingAccessToken != null) {
+                    tokenStore.removeAccessToken(existingAccessToken);
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e1) {
@@ -189,6 +198,10 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         public synchronized OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
                 throws AuthenticationException {
             return super.refreshAccessToken(refreshTokenValue, tokenRequest);
+        }
+        @Override
+        public void setTokenStore(TokenStore tokenStore) {
+            this.tokenStore = tokenStore;
         }
     }
 }
