@@ -1,7 +1,5 @@
 package com.forsrc.sso.config;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,23 +7,32 @@ import org.springframework.boot.autoconfigure.security.oauth2.authserver.Authori
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableAuthorizationServer
@@ -63,6 +70,15 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Bean
     protected AuthorizationCodeServices authorizationCodeServices() {
         return new JdbcAuthorizationCodeServices(dataSource);
+    }
+
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        DefaultTokenServices defaultTokenServices = new MyTokenServices();
+        defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+        return defaultTokenServices;
     }
 
     @Override
@@ -104,6 +120,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .secret("forsrc")
                 .scopes("forsrc", "read", "write")
                 .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
+                //.accessTokenValiditySeconds(10)
                 .autoApprove(true)
                 ;
 
@@ -146,6 +163,23 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("test"))
                 .roles("TEST");
             // @formatter:on
+        }
+    }
+
+    static class MyTokenServices extends DefaultTokenServices {
+
+        @Override
+        @Transactional
+        public synchronized OAuth2AccessToken createAccessToken(OAuth2Authentication authentication)
+                throws AuthenticationException {
+            return super.createAccessToken(authentication);
+        }
+
+        @Override
+        @Transactional(noRollbackFor = { InvalidTokenException.class, InvalidGrantException.class })
+        public synchronized OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
+                throws AuthenticationException {
+            return super.refreshAccessToken(refreshTokenValue, tokenRequest);
         }
     }
 }
