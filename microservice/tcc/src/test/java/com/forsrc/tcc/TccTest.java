@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -67,7 +68,7 @@ public class TccTest extends MyApplicationTests {
             userTccDto.setEnabled(0);
             userTccDto.setExpire(expire);
 
-            ResponseEntity<String> response = send(userTccUrl, userTccDto, HttpMethod.POST);
+            ResponseEntity<String> response = send(userTccUrl, userTccDto, HttpMethod.POST, 2);
             UserTccDto dto = objectMapper.readValue(response.getBody(), UserTccDto.class);
             System.out.println("UserTcc --> " + dto);
             TccDto tccDto = new TccDto();
@@ -79,7 +80,7 @@ public class TccTest extends MyApplicationTests {
             tccLinkDto.setPath(dto.getId().toString());
             links.add(tccLinkDto);
             tccDto.setLinks(links);
-            response = send(tccUrl, tccDto, HttpMethod.POST);
+            response = send(tccUrl, tccDto, HttpMethod.POST, 2);
             TccDto tcc = objectMapper.readValue(response.getBody(), TccDto.class);
             System.out.println("Tcc --> " + tcc);
         }
@@ -87,7 +88,7 @@ public class TccTest extends MyApplicationTests {
     }
 
     @Async
-    private ResponseEntity<String> send(String url, Object body, HttpMethod httpMethod) {
+    private ResponseEntity<String> send(String url, Object body, HttpMethod httpMethod, int retry) {
 
         HttpHeaders requestHeaders = new HttpHeaders();
         List<MediaType> mediaTypeList = new ArrayList<MediaType>();
@@ -110,14 +111,28 @@ public class TccTest extends MyApplicationTests {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            return ResponseEntity.status(e.getStatusCode()).header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage()).headers(e.getResponseHeaders())
+            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
+                LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
+                return send(url, body, httpMethod, --retry);
+            }
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders())
                     .body(e.getResponseBodyAsString());
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            return ResponseEntity.status(e.getStatusCode()).header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage()).headers(e.getResponseHeaders())
+            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
+                LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
+                return send(url, body, httpMethod, --retry);
+            }
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    .headers(e.getResponseHeaders())
                     .body(e.getResponseBodyAsString());
         }
     }
