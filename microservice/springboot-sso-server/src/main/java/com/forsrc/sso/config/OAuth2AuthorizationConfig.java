@@ -172,7 +172,16 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         @Transactional
         public synchronized OAuth2AccessToken createAccessToken(OAuth2Authentication authentication)
                 throws AuthenticationException {
-            return super.createAccessToken(authentication);
+            try {
+                return super.createAccessToken(authentication);
+            } catch (Exception e) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e1) {
+                }
+                return super.createAccessToken(authentication);
+            }
+           
         }
 
         @Override
