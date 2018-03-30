@@ -201,6 +201,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         }
         @Override
         public void setTokenStore(TokenStore tokenStore) {
+            super.setTokenStore(tokenStore);
             this.tokenStore = tokenStore;
         }
     }
