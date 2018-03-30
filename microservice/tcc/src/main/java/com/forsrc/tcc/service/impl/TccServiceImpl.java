@@ -139,7 +139,7 @@ public class TccServiceImpl implements TccService {
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/confirm");
-            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -195,7 +195,7 @@ public class TccServiceImpl implements TccService {
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/cancel");
-            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -216,7 +216,7 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-    private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod) {
+    private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod, int retry) {
 
         String url = String.format("%s/{id}", uri);
         LOGGER.info("--> ResponseEntity: {}/{}", uri, id);
@@ -225,12 +225,15 @@ public class TccServiceImpl implements TccService {
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(mediaTypeList);
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        if (accessToken == null) {
+            accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
+        }
         requestHeaders.set("Authorization", String.format("Bearer %s", accessToken));
         HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
 
         // ResponseEntity<Object> response = oauth2RestTemplate.exchange(url,
         // httpMethod, requestEntity, Object.class, id);
-        
+
         try {
             ResponseEntity<Void> response = tccLoadBalancedOAuth2RestTemplate.exchange(url, httpMethod, requestEntity,
                     Void.class, id);
@@ -239,6 +242,10 @@ public class TccServiceImpl implements TccService {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
+            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
+                LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
+                return send(uri, id, null, httpMethod, --retry);
+            }
             return ResponseEntity
                     .status(e.getStatusCode())
                     .header("tccId", id)
@@ -249,6 +256,10 @@ public class TccServiceImpl implements TccService {
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
+            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
+                LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
+                return send(uri, id, null, httpMethod, --retry);
+            }
             return ResponseEntity
                     .status(e.getStatusCode())
                     .header("tccId", id)
