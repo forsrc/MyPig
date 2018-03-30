@@ -56,7 +56,7 @@ public class RestConfig {
 
         OAuth2RestTemplate tccOAuth2RestTemplate = new MyOAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext());
         //tccOAuth2RestTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter()));
-        tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
+        //tccOAuth2RestTemplate.setRetryBadAccessTokens(true);
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setOutputStreaming(false);
         tccOAuth2RestTemplate.setRequestFactory(requestFactory);

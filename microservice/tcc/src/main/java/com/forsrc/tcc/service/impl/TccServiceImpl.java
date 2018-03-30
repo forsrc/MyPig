@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,6 @@ public class TccServiceImpl implements TccService {
     @Autowired
     @Qualifier("tccLoadBalancedOAuth2RestTemplate")
     private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
-
-    @Autowired
-    @Qualifier("oauth2RestTemplate")
-    private OAuth2RestTemplate oauth2RestTemplate;
 
     @Autowired
     private TccDao tccDao;
@@ -242,9 +239,11 @@ public class TccServiceImpl implements TccService {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
+            if (retry >= 0
+                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
+                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
                 LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
-                return send(uri, id, null, httpMethod, --retry);
+                return resend(uri, id, null, httpMethod, --retry);
             }
             return ResponseEntity
                     .status(e.getStatusCode())
@@ -256,9 +255,10 @@ public class TccServiceImpl implements TccService {
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
-                LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
-                return send(uri, id, null, httpMethod, --retry);
+            if (retry >= 0
+                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
+                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+                return resend(uri, id, null, httpMethod, --retry);
             }
             return ResponseEntity
                     .status(e.getStatusCode())
@@ -270,6 +270,19 @@ public class TccServiceImpl implements TccService {
         }
     }
 
+    public synchronized ResponseEntity<Void> resend(String url, String id, String accessToken, HttpMethod httpMethod,
+            int retry) {
+
+        tccLoadBalancedOAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
+        LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        } catch (InterruptedException ie) {
+        }
+        return send(url, id, null, httpMethod, --retry);
+
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public List<Tcc> getTryStatusList() {

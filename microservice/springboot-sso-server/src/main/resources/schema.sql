@@ -24,7 +24,7 @@ CREATE TABLE authorities (
   authority varchar(50) NOT NULL,
   create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY ix_auth_username (username,authority)
+  UNIQUE KEY u_auth_username (username,authority)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -40,6 +40,7 @@ CREATE TABLE oauth_access_token (
   refresh_token varchar(256) DEFAULT NULL,
   create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY u_authentication_id (authentication_id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -79,7 +80,7 @@ CREATE TABLE oauth_refresh_token (
   token blob,
   authentication blob,
   create TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS users;

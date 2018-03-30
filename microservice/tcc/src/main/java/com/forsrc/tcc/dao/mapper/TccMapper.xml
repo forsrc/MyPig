@@ -47,8 +47,9 @@
             TCC.status = 0
         AND
             TCC.id = TCC_LINK.tcc_id
-        AND
-            NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        -- AND
+            -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        LIMIT 100
     </select>
 
     <select id="getByTccLinkPath" resultType="com.forsrc.tcc.domain.entity.Tcc"

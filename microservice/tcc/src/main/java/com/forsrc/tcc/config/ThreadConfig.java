@@ -18,7 +18,7 @@ public class ThreadConfig {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(100);
+        executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("MypigAsyncExecutor-");
         executor.initialize();
         return executor;
@@ -29,7 +29,7 @@ public class ThreadConfig {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(100);
+        executor.setQueueCapacity(20);
         executor.setThreadNamePrefix("MypigTccAsyncExecutor-");
         executor.initialize();
         return executor;

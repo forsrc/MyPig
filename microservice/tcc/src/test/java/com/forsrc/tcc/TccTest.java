@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Test;
@@ -36,12 +37,8 @@ public class TccTest extends MyApplicationTests {
     private static final Logger LOGGER = LoggerFactory.getLogger(TccTest.class);
 
     @Autowired
-    @Qualifier("tccOAuth2RestTemplate")
-    private OAuth2RestTemplate tccOAuth2RestTemplate;
-
-    @Autowired
-    @Qualifier("loadBalancedRestTemplate")
-    private RestTemplate loadBalancedRestTemplate;
+    @Qualifier("tccLoadBalancedOAuth2RestTemplate")
+    private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
 
     @After
     public void init() {
@@ -95,7 +92,7 @@ public class TccTest extends MyApplicationTests {
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(mediaTypeList);
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        String accessToken = tccOAuth2RestTemplate.getAccessToken().getValue();
+        String accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
         LOGGER.info("--> accessToken: {}", accessToken);
         requestHeaders.set("Authorization", String.format("Bearer %s", accessToken));
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(body, requestHeaders);
@@ -104,16 +101,17 @@ public class TccTest extends MyApplicationTests {
         // httpMethod, requestEntity, Object.class, id);
 
         try {
-            ResponseEntity<String> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity,
+            ResponseEntity<String> response = tccLoadBalancedOAuth2RestTemplate.exchange(url, httpMethod, requestEntity,
                     String.class);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
-                LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
-                return send(url, body, httpMethod, --retry);
+            if (retry >= 0
+                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
+                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+                return resend(url, body, httpMethod, --retry);
             }
             return ResponseEntity
                     .status(e.getStatusCode())
@@ -124,9 +122,10 @@ public class TccTest extends MyApplicationTests {
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0 && HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()) {
-                LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
-                return send(url, body, httpMethod, --retry);
+            if (retry >= 0
+                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
+                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+                return resend(url, body, httpMethod, retry);
             }
             return ResponseEntity
                     .status(e.getStatusCode())
@@ -135,5 +134,15 @@ public class TccTest extends MyApplicationTests {
                     .headers(e.getResponseHeaders())
                     .body(e.getResponseBodyAsString());
         }
+    }
+ 
+    private synchronized ResponseEntity<String> resend(String url, Object body, HttpMethod httpMethod, int retry) {
+        LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
+        tccLoadBalancedOAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        } catch (InterruptedException ie) {
+        }
+        return send(url, body, httpMethod, --retry);
     }
 }

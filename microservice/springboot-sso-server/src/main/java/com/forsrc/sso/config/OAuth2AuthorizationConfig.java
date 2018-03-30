@@ -123,7 +123,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .secret("forsrc")
                 .scopes("forsrc", "read", "write")
                 //.accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
-                .accessTokenValiditySeconds(10)
+                .accessTokenValiditySeconds(60)
                 .autoApprove(true)
                 ;
 
@@ -201,6 +201,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         }
         @Override
         public void setTokenStore(TokenStore tokenStore) {
+            super.setTokenStore(tokenStore);
             this.tokenStore = tokenStore;
         }
     }

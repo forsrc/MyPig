@@ -44,14 +44,14 @@ public class RestConfig {
     @LoadBalanced
     public OAuth2RestTemplate loadBalancedOAuth2RestTemplate(OAuth2ProtectedResourceDetails details) {
         OAuth2RestTemplate oAuth2RestTemplate = new MyOAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
-        oAuth2RestTemplate.setRetryBadAccessTokens(true);
+        //oAuth2RestTemplate.setRetryBadAccessTokens(true);
         return oAuth2RestTemplate;
     }
 
     @Bean("oauth2RestTemplate")
     public OAuth2RestTemplate oauth2RestTemplate(OAuth2ProtectedResourceDetails details) {
         OAuth2RestTemplate oAuth2RestTemplate = new MyOAuth2RestTemplate(details, new DefaultOAuth2ClientContext());
-        oAuth2RestTemplate.setRetryBadAccessTokens(true);
+        //oAuth2RestTemplate.setRetryBadAccessTokens(true);
         return oAuth2RestTemplate;
     }
 
