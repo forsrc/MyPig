@@ -76,6 +76,13 @@ public class TccController implements TccFeignClient {
             @RequestHeader("Authorization") String accessToken,
             @RequestBody Tcc tcc) throws TccTryException {
         LOGGER.info("--> tcc: {}", tcc);
+        return ResponseEntity.ok().body(tcc);
+    }
+
+    public ResponseEntity<Tcc> tccTryFallBack(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody Tcc tcc) {
+        LOGGER.info("--> tcc: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         tcc.setStatus(0);
         try {

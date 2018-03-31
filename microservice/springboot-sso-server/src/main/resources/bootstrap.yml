@@ -84,3 +84,4 @@ eureka:
 
 tcc:
   ws: ws://forsrc.local:10020/tcc/ws/tcc
+
