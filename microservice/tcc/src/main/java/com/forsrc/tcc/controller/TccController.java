@@ -1,7 +1,5 @@
 package com.forsrc.tcc.controller;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,25 +21,24 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.exception.TccTryException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
+import com.forsrc.common.core.tcc.functional.TccSupplier;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
-@RequestMapping(path = "/api/v1")
+@RequestMapping(path = "/api/v1/tcc")
 public class TccController implements TccFeignClient {
 
     @Autowired
@@ -51,7 +49,7 @@ public class TccController implements TccFeignClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccController.class);
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/sync/{id}")
     @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Tcc> get(
             @RequestHeader("Authorization") String accessToken,
@@ -62,12 +60,21 @@ public class TccController implements TccFeignClient {
         return ResponseEntity.ok().body(tcc);
     }
 
+    @GetMapping(path = "/{id}")
+    public DeferredResult<ResponseEntity<Tcc>> getDeferredResult(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable("id") String id) throws TccException {
+        final DeferredResult<ResponseEntity<Tcc>> result = new DeferredResult<>();
+        handle(result, () -> get(accessToken, id));
+        return result;
+    }
+
     @Override
-    @PostMapping(path = "/")
+    @PostMapping(path = "/sync/")
     @HystrixCommand(fallbackMethod = "tccTryFallBack")
     public ResponseEntity<Tcc> tccTry(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody Tcc tcc) {
+            @RequestBody Tcc tcc) throws TccTryException {
         LOGGER.info("--> tcc: {}", tcc);
         return ResponseEntity.ok().body(tcc);
     }
@@ -86,10 +93,28 @@ public class TccController implements TccFeignClient {
         return ResponseEntity.ok().body(tcc);
     }
 
+    @PostMapping(path = "/")
+    public DeferredResult<ResponseEntity<Tcc>> tccTryDeferredResult(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody Tcc tcc) throws TccException {
+        final DeferredResult<ResponseEntity<Tcc>> result = new DeferredResult<>();
+        handle(result, () -> tccTry(accessToken, tcc));
+        return result;
+    }
+
+    public ResponseEntity<Tcc> tccTryFallBack(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody Tcc tcc) throws TccException {
+        LOGGER.info("--> tcc: {}", tcc);
+        Assert.notNull(tcc, "Tcc is null");
+        return ResponseEntity.ok().body(tcc);
+    }
+
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TccTryException.class)
-    public ResponseEntity<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response, TccTryException e) {
+    public ResponseEntity<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response, TccTryException e)
+            throws TccException {
         LOGGER.error("--> TccConfirmException: {} : {}", request.getRequestURI(), e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -101,11 +126,11 @@ public class TccController implements TccFeignClient {
     }
 
     @Override
-    @PutMapping(path = "/confirm/{id}")
+    @PutMapping(path = "/sync/confirm/{id}")
     public ResponseEntity<Void> confirm(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken
-            ) {
+            ) throws TccException {
         UUID uuid = UUID.fromString(id);
         Tcc tcc = null;
         try {
@@ -123,6 +148,16 @@ public class TccController implements TccFeignClient {
         }
     }
 
+    @PutMapping(path = "/confirm/{id}")
+    public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(
+            @PathVariable("id") String id,
+            @RequestHeader("Authorization") String accessToken
+            ) throws TccException {
+        final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
+        handle(result, () -> confirm(id, accessToken));
+        return result;
+    }
+
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TccConfirmException.class)
@@ -138,9 +173,9 @@ public class TccController implements TccFeignClient {
     }
 
     @Override
-    @PutMapping(path = "/cancel")
+    @PutMapping(path = "/sync/cancel")
     public ResponseEntity<Void> cancel(@PathVariable("id") String id,
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader("Authorization") String accessToken) throws TccException{
 
         UUID uuid = UUID.fromString(id);
         try {
@@ -156,6 +191,14 @@ public class TccController implements TccFeignClient {
             LOGGER.error("--> /cancel: {}", e.getMessage());
             throw new TccCancelException(uuid, e.getMessage(), e.getStatus());
         }
+    }
+
+    @PutMapping(path = "/cancel")
+    public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") String id,
+            @RequestHeader("Authorization") String accessToken) throws TccException{
+        final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
+        handle(result, () -> confirm(id, accessToken));
+        return result;
     }
 
     @ResponseBody
@@ -181,4 +224,8 @@ public class TccController implements TccFeignClient {
                 .build();
     }
 
+    @Async
+    private <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
+        result.setResult(supplier.get());
+    }
 }

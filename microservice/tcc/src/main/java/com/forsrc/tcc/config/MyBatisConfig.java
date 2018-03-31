@@ -53,4 +53,11 @@ public class MyBatisConfig {
             return new SqlSessionTemplate(sqlSessionFactoryPrimary);
         }
     }
+
+//  @Primary
+//  @Bean(name = "transactionManager")
+//  public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+//      return new DataSourceTransactionManager(dataSource);
+//  }
+
 }

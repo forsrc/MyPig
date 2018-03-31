@@ -1,64 +1,28 @@
-package com.forsrc.tcc.domain.entity;
+package com.forsrc.common.core.tcc.dto;
 
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
-@Entity
-@Table(name = "t_tcc_link")
-public class TccLink implements java.io.Serializable {
+public class TccLinkDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -3603568859174762821L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private UUID id;
 
-    @Column(name = "tcc_id", nullable = false)
     private UUID tccId;
 
-    @Column(name = "uri", length = 1000, nullable = false)
     private String uri;
 
-    @Column(name = "path", length = 500, unique = true, nullable = false)
     private String path;
-
-    @Column(name = "create", insertable = false, updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date create;
-    @PrePersist
-    protected void onCreate() {
-        this.create = new Date();
-    }
-    @Column(name = "update", insertable = false, updatable = true, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date update;
-    @PreUpdate
-    protected void onUpdate() {
-        this.update = new Date();
-    }
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    @Column(name = "expire", nullable = false, columnDefinition = "TIMESTAMP DEFAULT TIMESTAMPADD(MINUTE, 5, CURRENT_TIMESTAMP)")
     private Date expire;
- 
-    @Column(name = "status", length = 2, nullable = false, columnDefinition = "INT DEFAULT 0")
+
     private Integer status;
 
     public UUID getId() {

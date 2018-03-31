@@ -15,11 +15,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory", 
         transactionManagerRef = "transactionManager",
-        basePackages = { "com.forsrc.tcc.dao" })
+        basePackages = { "com.forsrc.tcc" })
 public class JpaConfig {
 
     @Primary
@@ -38,9 +38,18 @@ public class JpaConfig {
     @Primary
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(
+            @Qualifier("dataSource") DataSource dataSource,
             @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager();
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setRollbackOnCommitFailure(true); 
+        transactionManager.setDataSource(dataSource);
+        return transactionManager;
     }
 
+//    @Primary
+//    @Bean(name = "transactionManager")
+//    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 
 }

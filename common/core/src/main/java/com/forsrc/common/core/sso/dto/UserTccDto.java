@@ -1,66 +1,36 @@
-package com.forsrc.sso.domain.entity;
+package com.forsrc.common.core.sso.dto;
 
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.deser.std.FromStringDeserializer.UUIDDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-@Table(name = "t_sso_user_tcc", indexes = { @Index(name = "index_sso_user_tcc_username", columnList = "username") })
-public class UserTcc implements java.io.Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UserTccDto implements java.io.Serializable {
 
-    private static final long serialVersionUID = 7053075402341362549L;
+    private static final long serialVersionUID = -6158323457702043074L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @JsonDeserialize(using = UUIDDeserializer.class)
     private UUID id;
 
-    @Column(name = "username", length = 200, nullable = false)
     private String username;
 
-    @Column(name = "password", length = 200, nullable = false)
     private String password;
 
-    @Column(name = "enabled", length = 1, nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer enabled;
 
-    @Column(name = "authorities", length = 200, nullable = false)
     private String authorities;
 
-    @Column(name = "status", length = 2, nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer status;
 
-    @Column(name = "create", insertable = false, updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date create;
-    @PrePersist
-    protected void onCreate() {
-        this.create = new Date();
-    }
-    @Column(name = "update", insertable = false, updatable = true, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date update;
-    @PreUpdate
-    protected void onUpdate() {
-        this.update = new Date();
-    }
-    @Column(name = "expire", nullable = false, columnDefinition = "TIMESTAMP DEFAULT TIMESTAMPADD(MINUTE, 5, CURRENT_TIMESTAMP)")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date expire;
 
