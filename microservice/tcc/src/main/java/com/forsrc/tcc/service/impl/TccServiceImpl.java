@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.forsrc.common.core.tcc.exception.TccAlreadyCancelException;
 import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
@@ -236,37 +237,21 @@ public class TccServiceImpl implements TccService {
                     Void.class, id);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
-        } catch (HttpServerErrorException e) {
-            LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
-                    e.getResponseBodyAsString());
-            if (retry >= 0) {
-                LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
-                return resend(uri, id, null, httpMethod, --retry);
-            }
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .build();
-        } catch (HttpClientErrorException e) {
-            LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
-                    e.getResponseBodyAsString());
-            if (retry >= 0) {
-                return resend(uri, id, null, httpMethod, --retry);
-            }
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .build();
         } catch (Exception e) {
-            LOGGER.warn("--> Exception: {} -> {}", e.getClass(), e.getMessage());
+            LOGGER.warn("--> {}: {}", e.getClass(), e.getMessage());
             if (retry >= 0) {
                 return resend(uri, id, null, httpMethod, --retry);
+            }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccId", id)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
             }
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

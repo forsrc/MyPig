@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -105,30 +106,29 @@ public class TccTest extends MyApplicationTests {
                     String.class);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
-        } catch (HttpServerErrorException e) {
-            LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
-                    e.getResponseBodyAsString());
-            if (retry >= 0) {
-                return resend(url, body, httpMethod, --retry);
-            }
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .body(e.getResponseBodyAsString());
-        } catch (HttpClientErrorException e) {
-            LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
-                    e.getResponseBodyAsString());
+        } catch (Exception e) {
+            LOGGER.warn("--> {}: {}", e.getClass(), e.getMessage());
+            
             if (retry >= 0) {
                 return resend(url, body, httpMethod, retry);
             }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccUrl", url)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
+            }
             return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("responseBody", e.getResponseBodyAsString())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    //.header("responseBody", e.getResponseBodyAsString())
                     .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .body(e.getResponseBodyAsString());
+                    //.headers(e.getResponseHeaders())
+                    .body(e.getMessage());
         }
     }
  
