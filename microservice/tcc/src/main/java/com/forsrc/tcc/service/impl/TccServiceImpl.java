@@ -239,9 +239,7 @@ public class TccServiceImpl implements TccService {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0
-                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
-                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+            if (retry >= 0) {
                 LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
                 return resend(uri, id, null, httpMethod, --retry);
             }
@@ -255,9 +253,7 @@ public class TccServiceImpl implements TccService {
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0
-                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
-                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+            if (retry >= 0) {
                 return resend(uri, id, null, httpMethod, --retry);
             }
             return ResponseEntity

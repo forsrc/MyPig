@@ -108,9 +108,7 @@ public class TccTest extends MyApplicationTests {
         } catch (HttpServerErrorException e) {
             LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0
-                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
-                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+            if (retry >= 0) {
                 return resend(url, body, httpMethod, --retry);
             }
             return ResponseEntity
@@ -122,9 +120,7 @@ public class TccTest extends MyApplicationTests {
         } catch (HttpClientErrorException e) {
             LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(),
                     e.getResponseBodyAsString());
-            if (retry >= 0
-                    && (HttpStatus.UNAUTHORIZED.value() == e.getStatusCode().value()
-                            || HttpStatus.FORBIDDEN.value() == e.getStatusCode().value())) {
+            if (retry >= 0) {
                 return resend(url, body, httpMethod, retry);
             }
             return ResponseEntity
