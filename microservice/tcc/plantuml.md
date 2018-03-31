@@ -24,7 +24,6 @@
 
 @endditaa
 
-
 @startditaa
                    
                     |1. use tcc
@@ -37,21 +36,21 @@
                   |          |           |                                 +------------+
                   |          |           |                                         | TCC WS @MessageMapping("/tccLink/{path}")
         +---------+          +----------------------+                              | ^ ^
-        |1.1 TccLink1=/microservice/A    |          |1.2 TccLink2=/microservice/B  | | |2.2.1
-        |POST                            |          |POST                          | |2.1.2
-        v                                |          v                              | | |
+        |1.1 TccLink1=/microservice/A    |          |1.2 TccLink2=/microservice/B  | | |2.2.1 Websocket /topic/tccLink/A<-(ALL confirm OK)
+        |POST                            |          |POST                          | | |
+        v                                |          v                              | |2.1.2 Websocket /topic/tccLink/B<-(ALL confirm OK)
    +--------------+                      |         +--------------+                | | |
    |              |                      |         |              |                | | |
    | Microservice |<---------------------+         | Microservice |<---------------+ | |
    | A            |2.1 PUT /microservice/A/confirm | B            |2.2 PUT /microservice/B/confirm
    |              |                                |              |                  | |
-   |              |                                |              |/topic/tccLink/B<-(ALL confirm OK)
-   |      cYEL {o}|                                |      cYEL {o}|<-----------------| |
-   +--------------+                                +--------------+ Websocket (B confirm OK)->/app/tccLink/B
-              ^2.1.1                                               2.2.1               |
-              |Websocket           (A confirm OK)->/app/tccLink/A                      |
-              +------------------------------------------------------------------------+
-              /topic/tccLink/A<-(ALL confirm OK)
+   |              |                                |              |                  | |
+   |      cYEL {o}|                                |      cYEL {o}|<-----------------+ |
+   +--------------+                                +--------------+2.2.1 Websocket (B confirm OK)->/app/tccLink/B
+          ^2.1.1 Websocket                                                             |
+          |          (A confirm OK)->/app/tccLink/A                                    |
+          +----------------------------------------------------------------------------+
+ 
 @endditaa
 
 
