@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccTryException;
-import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.sso.service.UserTccService;
 
 @ControllerAdvice

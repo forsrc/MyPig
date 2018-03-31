@@ -81,3 +81,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka
+
+tcc:
+  ws: ws://forsrc.local:10020/tcc/ws/tcc
+

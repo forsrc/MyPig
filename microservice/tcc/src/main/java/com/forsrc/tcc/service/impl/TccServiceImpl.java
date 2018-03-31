@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,38 +19,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.forsrc.common.core.tcc.exception.TccAlreadyCancelException;
 import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.tcc.dao.TccDao;
 import com.forsrc.tcc.dao.TccLinkDao;
+import com.forsrc.tcc.dao.mapper.TccLinkMapper;
 import com.forsrc.tcc.dao.mapper.TccMapper;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = { Exception.class })
 public class TccServiceImpl implements TccService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccServiceImpl.class);
 
     @Autowired
-    @Qualifier("loadBalancedRestTemplate")
-    private RestTemplate loadBalancedRestTemplate;
-
-    @Autowired
-    @Qualifier("oauth2RestTemplate")
-    private OAuth2RestTemplate oauth2RestTemplate;
+    @Qualifier("tccLoadBalancedOAuth2RestTemplate")
+    private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
 
     @Autowired
     private TccDao tccDao;
@@ -59,6 +57,9 @@ public class TccServiceImpl implements TccService {
 
     @Autowired
     private TccMapper tccMapper;
+
+    @Autowired
+    private TccLinkMapper tccLinkMapper;
 
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -73,7 +74,7 @@ public class TccServiceImpl implements TccService {
     public Tcc save(Tcc tcc) {
         tccDao.save(tcc);
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             link.setTccId(tcc.getId());
         }
         tccLinkDao.save(links);
@@ -93,7 +94,7 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc confirm(UUID uuid, String accessToken) {
+    public Tcc confirm(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.findOne(uuid);
         LOGGER.info("--> confirm: {}", tcc);
         if (tcc == null) {
@@ -108,16 +109,17 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
 
-//        if (tcc.getTimes().intValue() > 10) {
-//            tcc.setStatus(Status.CONFIRM_ERROR.getStatus());
-//            this.update(tcc);
-//            return tcc;
-//        }
+        // if (tcc.getTimes().intValue() > 10) {
+        // tcc.setStatus(Status.CONFIRM_ERROR.getStatus());
+        // this.update(tcc);
+        // return tcc;
+        // }
         if (tcc.getStatus() != null && Status.CANCEL.getStatus() == tcc.getStatus().intValue()) {
             throw new TccAlreadyCancelException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
         }
         if (tcc.getStatus() != null && Status.CONFIRM.getStatus() == tcc.getStatus().intValue()) {
-            //throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
+            // throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: "
+            // + tcc.getStatus());
             tcc.setStatus(Status.ALREADY_CONFIRMED.getStatus());
             return tcc;
         }
@@ -133,9 +135,9 @@ public class TccServiceImpl implements TccService {
 
         boolean isError = false;
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/confirm");
-            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken, HttpMethod.PUT);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -155,7 +157,7 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc cancel(UUID uuid, String accessToken) {
+    public Tcc cancel(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.getOne(uuid);
         LOGGER.info("--> cancel: {}", tcc);
         if (tcc == null) {
@@ -169,7 +171,8 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
         if (tcc.getStatus() != null && Status.CANCEL.getStatus() == tcc.getStatus().intValue()) {
-            //throw new TccCancelException(uuid, "Already canceled, Tccs tatus: " + tcc.getStatus());
+            // throw new TccCancelException(uuid, "Already canceled, Tccs tatus: " +
+            // tcc.getStatus());
             tcc.setStatus(Status.ALREADY_CANCELED.getStatus());
             return tcc;
         }
@@ -184,18 +187,17 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-
     private Tcc cance(Tcc tcc, String accessToken) {
 
         boolean isError = false;
         List<TccLink> links = tcc.getLinks();
-        for(TccLink link : links) {
+        for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/cancel");
-            ResponseEntity<Void> response = send(uri, link.getEntityId(), accessToken,HttpMethod.DELETE);
+            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
-            if (!HttpStatus.NO_CONTENT.equals(response.getStatusCode()) && status != Status.CANCEL.getStatus()) {
+            if (!HttpStatus.NO_CONTENT.equals(response.getStatusCode())) {
                 isError = true;
             }
             link.setStatus(status);
@@ -212,48 +214,92 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-    private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod) {
+    private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod, int retry) {
 
         String url = String.format("%s/{id}", uri);
+        LOGGER.info("--> ResponseEntity: {}/{}", uri, id);
         HttpHeaders requestHeaders = new HttpHeaders();
-        List <MediaType> mediaTypeList = new ArrayList<MediaType>();
+        List<MediaType> mediaTypeList = new ArrayList<MediaType>();
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         requestHeaders.setAccept(mediaTypeList);
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        if (accessToken == null) {
+            accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
+        }
         requestHeaders.set("Authorization", String.format("Bearer %s", accessToken));
         HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
 
-        //ResponseEntity<Object> response = oauth2RestTemplate.exchange(url, httpMethod, requestEntity, Object.class, id);
+        // ResponseEntity<Object> response = oauth2RestTemplate.exchange(url,
+        // httpMethod, requestEntity, Object.class, id);
 
         try {
-            ResponseEntity<Void> response = loadBalancedRestTemplate.exchange(url, httpMethod, requestEntity, Void.class, id);
+            ResponseEntity<Void> response = tccLoadBalancedOAuth2RestTemplate.exchange(url, httpMethod, requestEntity,
+                    Void.class, id);
             LOGGER.info("--> ResponseEntity: {}", response);
             return response;
-        } catch (HttpServerErrorException e) {
-            LOGGER.warn("--> HttpServerErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(), e.getResponseBodyAsString());
+        } catch (Exception e) {
+            LOGGER.warn("--> {}: {}", e.getClass(), e.getMessage());
+            if (retry >= 0) {
+                return resend(uri, id, null, httpMethod, --retry);
+            }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccId", id)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
+            }
             return ResponseEntity
-                    .status(e.getStatusCode())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
+                    //.header("responseBody", e.getResponseBodyAsString())
                     .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
+                    //.headers(e.getResponseHeaders())
                     .build();
-        } catch (HttpClientErrorException e) {
-            LOGGER.warn("--> HttpClientErrorException: {} {} -> {}", e.getStatusCode(), e.getStatusText(), e.getResponseBodyAsString());
-            return ResponseEntity
-                    .status(e.getStatusCode())
-                    .header("tccId", id)
-                    .header("responseBody", e.getResponseBodyAsString())
-                    .header("errorMessage", e.getMessage())
-                    .headers(e.getResponseHeaders())
-                    .build();
-        }
+        } 
     }
 
+    public synchronized ResponseEntity<Void> resend(String url, String id, String accessToken, HttpMethod httpMethod,
+            int retry) {
+
+        tccLoadBalancedOAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
+        LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
+        try {
+            TimeUnit.MILLISECONDS.sleep(2);
+        } catch (InterruptedException ie) {
+        }
+        return send(url, id, null, httpMethod, --retry);
+
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public List<Tcc> getTryStatusList() {
         return tccMapper.getTryStatusList();
+    }
+
+    @Override
+    public TccLink getTccLink(UUID id) {
+        return tccLinkDao.findOne(id);
+    }
+
+    @Override
+    public TccLink update(TccLink tccLink) {
+        return tccLinkDao.save(tccLink);
+    }
+
+    @Override
+    public Tcc getTccByPath(String path) {
+        return tccMapper.getByTccLinkPath(path);
+    }
+
+    @Override
+    public TccLink getTccLinkByPath(String path) {
+        return tccLinkMapper.getByPath(path);
     }
 
 }

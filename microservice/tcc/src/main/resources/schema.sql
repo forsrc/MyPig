@@ -17,7 +17,7 @@ CREATE TABLE t_tcc_link (
   id          UUID NOT NULL,
   tcc_id      UUID NOT NULL,
   uri         varchar(200) NOT NULL,
-  entity_id   varchar(200) NOT NULL,
+  path        varchar(500)  NOT NULL,
   status      tinyint(2) NOT NULL,
   expire      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   create      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

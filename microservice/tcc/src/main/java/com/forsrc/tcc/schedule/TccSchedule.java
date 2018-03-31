@@ -8,10 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 
@@ -29,20 +33,25 @@ public class TccSchedule {
     @Autowired
     private TccService tccService;
 
-    @Scheduled(cron = "0 0/1 * * * *")
-    public void tcc() {
+    @Scheduled(cron = "0,10,20,30,40,50 * * * * *")
+    public void tcc() throws TccException{
         List<Tcc> list = tccService.getTryStatusList();
         LOGGER.info("--> TccSchedule {} -> size: {}", dateFormat.format(new Date()), list.size());
-        String  accessToken = getAccessToken();
-        LOGGER.info("--> accessToken: {}", accessToken);
         for (Tcc tcc : list) {
             LOGGER.info("--> TccSchedule tcc: {}", tcc);
-            if (tcc.getExpire() != null && tcc.getExpire().compareTo(new Date()) < 0) {
-                tccService.cancel(tcc.getId(), accessToken);
-                continue;
-            }
-            tccService.confirm(tcc.getId(), accessToken);
+            asyncTcc(tcc);
         }
+    }
+
+    @Async("tccAsyncExecutor")
+    public void asyncTcc(Tcc tcc) throws TccException {
+        LOGGER.info("--> TccSchedule tcc: {}", tcc);
+        String accessToken = getAccessToken();
+        if (tcc.getExpire() != null && tcc.getExpire().compareTo(new Date()) < 0) {
+            tccService.cancel(tcc.getId(), accessToken);
+            return;
+        }
+        tccService.confirm(tcc.getId(), accessToken);
     }
 
     private String getAccessToken() {

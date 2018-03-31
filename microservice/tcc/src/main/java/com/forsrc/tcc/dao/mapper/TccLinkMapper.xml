@@ -1,0 +1,35 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forsrc.tcc.dao.mapper.TccLinkMapper">
+
+    <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.TccLink">
+        <id property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <result property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <result property="tccId" column="tcc_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <result property="uri" column="uri" />
+        <result property="path" column="path" />
+        <result property="expire" column="expire" />
+        <result property="create" column="create" />
+        <result property="update" column="update" />
+        <result property="status" column="status" />
+
+    </resultMap>
+
+    <select id="getByPath" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            id,
+            tcc_id,
+            uri,
+            path,
+            expire,
+            create,
+            update,
+            status
+        FROM
+            t_tcc_link TCC_LINK
+        WHERE
+            TCC_LINK.path = #{path}
+    </select>
+</mapper>

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.forsrc.common.core.tcc.status.Status;
 
-public class TccException extends RuntimeException {
+public class TccException extends Exception {
 
 
     private static final long serialVersionUID = -7540498410823440508L;

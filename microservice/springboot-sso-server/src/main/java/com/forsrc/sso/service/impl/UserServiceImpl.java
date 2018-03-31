@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.forsrc.sso.dao.UserDao;
@@ -16,7 +15,7 @@ import com.forsrc.sso.domain.entity.User;
 import com.forsrc.sso.service.UserService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = { Exception.class })
 public class UserServiceImpl implements UserService {
 
     private static final String TIMEOUT_REFRESH = "#${select.cache.timeout:1800}#${select.cache.refresh:600}";
