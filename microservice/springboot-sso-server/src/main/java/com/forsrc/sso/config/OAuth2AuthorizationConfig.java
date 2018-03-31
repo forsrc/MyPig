@@ -122,8 +122,9 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .resourceIds("forsrc")
                 .secret("forsrc")
                 .scopes("forsrc", "read", "write")
-                //.accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
-                .accessTokenValiditySeconds(60)
+                //
+                .accessTokenValiditySeconds((int) TimeUnit.HOURS.toSeconds(1))
+                //.accessTokenValiditySeconds(60)
                 .autoApprove(true)
                 ;
 
