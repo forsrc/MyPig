@@ -263,7 +263,19 @@ public class TccServiceImpl implements TccService {
                     .header("errorMessage", e.getMessage())
                     .headers(e.getResponseHeaders())
                     .build();
-        }
+        } catch (Exception e) {
+            LOGGER.warn("--> Exception: {} -> {}", e.getClass(), e.getMessage());
+            if (retry >= 0) {
+                return resend(uri, id, null, httpMethod, --retry);
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("tccId", id)
+                    //.header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    //.headers(e.getResponseHeaders())
+                    .build();
+        } 
     }
 
     public synchronized ResponseEntity<Void> resend(String url, String id, String accessToken, HttpMethod httpMethod,
@@ -272,7 +284,7 @@ public class TccServiceImpl implements TccService {
         tccLoadBalancedOAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
         LOGGER.warn("--> Retry {}: {}/{} -> {} -> {}", retry, url, id, httpMethod);
         try {
-            TimeUnit.MILLISECONDS.sleep(1000);
+            TimeUnit.MILLISECONDS.sleep(2);
         } catch (InterruptedException ie) {
         }
         return send(url, id, null, httpMethod, --retry);
