@@ -27,30 +27,30 @@
 @startditaa
                    
                     |1. use tcc
-                    |                                                      +------------+
-                    v                       (TccLink1,TccLink2)            |            |
-              +-----------------------+ 1.3 POST /tcc/api/v1/tcc/          | TCC        |
-              | Use TCC               |----------------------------------->| SERVER     |
-              |                   cBLU|                                    |            |
-              +-----------------------+  +---------------------------------|    cPNK {o}|
-                  |          |           |                                 +------------+
-                  |          |           |                                         | TCC WS @MessageMapping("/tccLink/{path}")
-        +---------+          +----------------------+                              | ^ ^
-        |1.1 TccLink1=/microservice/A    |          |1.2 TccLink2=/microservice/B  | | |2.2.1 Websocket /topic/tccLink/A<-(ALL confirm OK)
-        |POST                            |          |POST                          | | |
-        v                                |          v                              | |2.1.2 Websocket /topic/tccLink/B<-(ALL confirm OK)
-   +--------------+                      |         +--------------+                | | |
-   |              |                      |         |              |                | | |
-   | Microservice |<---------------------+         | Microservice |<---------------+ | |
+                    |                                                        +------------+
+                    v                       (TccLink1,TccLink2)              |            |
+              +-----------------------+ 1.3 POST /tcc/api/v1/tcc/            | TCC        |
+              | Use TCC               |------------------------------------->| SERVER     |
+              |                   cBLU|                                      |            |
+              +-----------------------+  +-----------------------------------|    cPNK {o}|
+                  |          |           |                                   +------------+
+                  |          |           |    1.2 TccLink2=/microservice/B    |3. TCC WS @MessageMapping("/tccLink/{path}")
+        +---------+          +----------------------+                         |  ^       ^ 
+        |1.1 TccLink1=/microservice/A    |          |                         |  |       |
+        |POST                            |          |POST                     |  |       |
+        v                                |          v                         |3.2 Websocket /topic/tccLink/B<-(ALL confirm OK)
+   +--------------+                      |         +--------------+           |  |       |
+   |              |                      |         |              |           |  |       |
+   | Microservice |<---------------------+         | Microservice |<----------+  |       |
    | A            |2.1 PUT /microservice/A/confirm | B            |2.2 PUT /microservice/B/confirm
-   |              |                                |              |                  | |
-   |              |                                |              |                  | |
-   |      cYEL {o}|                                |      cYEL {o}|<-----------------+ |
+   |              |                                |              |              |       |
+   |              |                                |              |              |       |
+   |      cYEL {o}|                                |      cYEL {o}|<-------------+       |
    +--------------+                                +--------------+2.2.1 Websocket (B confirm OK)->/app/tccLink/B
-          ^2.1.1 Websocket                                                             |
-          |          (A confirm OK)->/app/tccLink/A                                    |
-          +----------------------------------------------------------------------------+
- 
+          ^                                                                              |
+          |2.1.1 Websocket (A confirm OK)->/app/tccLink/A                                |
+          +------------------------------------------------------------------------------+
+                                          3.1 Websocket /topic/tccLink/A<-(ALL confirm OK)
 @endditaa
 
 
