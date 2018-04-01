@@ -35,21 +35,22 @@
               +-----------------------+  +-----------------------------------|    cPNK {o}|
                   |          |           |                                   +------------+
                   |          |           |    1.2 TccLink2=/microservice/B    |3. TCC WS @MessageMapping("/tccLink/{path}")
-        +---------+          +----------------------+                         |  ^       ^ 
-        |1.1 TccLink1=/microservice/A    |          |                         |  |       |
-        |POST                            |          |POST                     |  |       |
-        v                                |          v                         |3.2 Websocket /topic/tccLink/B<-(ALL confirm OK)
+        +---------+          +-------------------------+                      |  ^       ^ 
+        |1.1 TccLink1=/microservice/A    |             |                      |  |       |
+        |POST                            |             |POST                  |  |       |
+        v                                |             v                      |3.2 Websocket /topic/tccLink/B<-(ALL confirm OK)
    +--------------+                      |         +--------------+           |  |       |
    |              |                      |         |              |           |  |       |
    | Microservice |<---------------------+         | Microservice |<----------+  |       |
    | A            |2.1 PUT /microservice/A/confirm | B            |2.2 PUT /microservice/B/confirm
    |              |                                |              |              |       |
-   |              |                                |              |              |       |
-   |      cYEL {o}|                                |      cYEL {o}|<-------------+       |
-   +--------------+                                +--------------+2.2.1 Websocket (B confirm OK)->/app/tccLink/B
-          ^                                                                              |
-          |2.1.1 Websocket (A confirm OK)->/app/tccLink/A                                |
-          +------------------------------------------------------------------------------+
+   |              |                                |              |<-------------+       |
+   |      cYEL {o}|                                |      cYEL {o}|2.2.1 Websocket (B confirm OK)->/app/tccLink/B
+   +--------------+                                +--------------+                      |
+        ^4.1 ALL OK then transaction commit        4.2 ALL OK then transaction commit    |  
+        |                                                                                |
+        |2.1.1 Websocket (A confirm OK)->/app/tccLink/A                                  |
+        +--------------------------------------------------------------------------------+
                                           3.1 Websocket /topic/tccLink/A<-(ALL confirm OK)
 @endditaa
 
