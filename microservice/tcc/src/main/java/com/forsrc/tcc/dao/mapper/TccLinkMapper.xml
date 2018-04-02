@@ -31,5 +31,7 @@
             t_tcc_link TCC_LINK
         WHERE
             TCC_LINK.path = #{path}
+        ORDER BY create DESC
+        LIMIT 1
     </select>
 </mapper>
