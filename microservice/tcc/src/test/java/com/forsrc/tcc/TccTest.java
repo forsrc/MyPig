@@ -71,6 +71,7 @@ public class TccTest extends MyApplicationTests {
             System.out.println("UserTcc --> " + dto);
             TccDto tccDto = new TccDto();
             tccDto.setExpire(expire);
+            tccDto.setMicroservice("");
             List<TccLinkDto> links = new ArrayList<>();
             TccLinkDto tccLinkDto = new TccLinkDto();
             tccLinkDto.setExpire(expire);

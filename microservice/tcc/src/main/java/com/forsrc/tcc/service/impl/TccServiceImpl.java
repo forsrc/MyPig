@@ -307,4 +307,8 @@ public class TccServiceImpl implements TccService {
         return tccMapper.setTccMicroservice(microservice);
     }
 
+    @Transactional(readOnly = true)
+    public List<Tcc> getTryStatusList(String microservice) {
+        return tccMapper.getTryStatusListByMicroservice(microservice);
+    }
 }

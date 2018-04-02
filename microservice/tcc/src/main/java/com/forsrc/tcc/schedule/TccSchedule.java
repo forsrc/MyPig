@@ -43,10 +43,15 @@ public class TccSchedule {
 
     @Scheduled(cron = "0,10,20,30,40,50 * * * * *")
     public void tcc() throws TccException{
-        String microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
+        String microservice = null;
+        try {
+            microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
+        } catch (Exception e) {
+            return;
+        }
         int size = tccService.setTccMicroservice(microservice);
-        LOGGER.info("--> TccSchedule -> microservice: {} -> {}", microservice, size);
-        List<Tcc> list = tccService.getTryStatusList();
+        LOGGER.info("--> TccSchedule -> microservice: {} -> size: {}", microservice, size);
+        List<Tcc> list = tccService.getTryStatusList(microservice);
         LOGGER.info("--> TccSchedule {} -> size: {}", dateFormat.format(new Date()), list.size());
         for (Tcc tcc : list) {
             LOGGER.info("--> TccSchedule tcc: {}", tcc);

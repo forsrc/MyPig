@@ -42,4 +42,8 @@ public interface TccService {
 
     @Transactional(readOnly = true)
     public List<Tcc> getTryStatusList();
+
+    @Transactional(readOnly = true)
+    public List<Tcc> getTryStatusList(String microservice);
+
 }
