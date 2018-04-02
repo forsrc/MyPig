@@ -302,4 +302,9 @@ public class TccServiceImpl implements TccService {
         return tccLinkMapper.getByPath(path);
     }
 
+    @Override
+    public int setTccMicroservice(String microservice) {
+        return tccMapper.setTccMicroservice(microservice);
+    }
+
 }

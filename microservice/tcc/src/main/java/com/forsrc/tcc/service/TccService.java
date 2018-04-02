@@ -26,6 +26,8 @@ public interface TccService {
     @Transactional(readOnly = true)
     public TccLink getTccLinkByPath(String path);
 
+    public int setTccMicroservice(String microservice);
+
     public Tcc save(Tcc tcc);
 
     public Tcc update(Tcc tcc);
