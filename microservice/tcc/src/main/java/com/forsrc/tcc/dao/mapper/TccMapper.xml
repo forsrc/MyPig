@@ -49,6 +49,7 @@
             TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        ORDER BY create ASC
         LIMIT 100
     </select>
 
@@ -72,6 +73,7 @@
             TCC_LINK.path = #{path}
         AND
             TCC.id = TCC_LINK.tcc_id
+        ORDER BY create DESC
         LIMIT 1
     </select>
 
