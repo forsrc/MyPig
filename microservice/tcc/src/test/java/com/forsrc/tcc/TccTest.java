@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,17 +22,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forsrc.MyApplicationTests;
 import com.forsrc.common.core.sso.dto.UserTccDto;
+import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.dto.TccDto;
 import com.forsrc.common.core.tcc.dto.TccLinkDto;
+import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
+import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.tcc.domain.entity.Tcc;
+import com.forsrc.tcc.domain.entity.TccLink;
+import com.netflix.discovery.EurekaClient;
 
 public class TccTest extends MyApplicationTests {
 
@@ -41,9 +44,66 @@ public class TccTest extends MyApplicationTests {
     @Qualifier("tccLoadBalancedOAuth2RestTemplate")
     private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
+    @Autowired
+    private EurekaClient discoveryClient;
+
+    @Autowired
+    private TccFeignClient tccFeignClient;
+
+    @Autowired
+    private UserTccFeignClient userTccFeignClient;
+
     @After
     public void init() {
 
+    }
+
+    @Test
+    public void testFeignClient() throws Exception {
+
+        try {
+            String microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
+            LOGGER.info("--> microservice: {}", microservice);
+        } catch (Exception e) {
+            TimeUnit.SECONDS.sleep(3);
+            testFeignClient();
+            return;
+        }
+        String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
+        for (int i = 0; i < 10; i++) {
+            UserTcc userTcc = new UserTcc();
+            UUID id = UUID.randomUUID();
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 30);
+            Date expire = calendar.getTime();
+            userTcc.setAuthorities("ROLE_" + id.toString());
+            userTcc.setUsername(id.toString());
+            userTcc.setPassword(id.toString());
+            userTcc.setEnabled(0);
+            userTcc.setExpire(expire);
+
+            ResponseEntity<UserTcc> userTccResponseEntity = userTccFeignClient.tccTry(userTcc,
+                    tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            UserTcc dto = userTccResponseEntity.getBody();
+            System.out.println("UserTcc --> " + dto);
+            Tcc tcc = new Tcc();
+            tcc.setExpire(expire);
+            tcc.setMicroservice("");
+            List<TccLink> links = new ArrayList<>();
+            TccLink tccLink = new TccLink();
+            tccLink.setExpire(expire);
+            tccLink.setUri(userTccUrl);
+            tccLink.setPath(dto.getId().toString());
+            links.add(tccLink);
+            tcc.setLinks(links);
+
+            ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
+                    tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            System.out.println("Tcc --> " + r.getBody());
+        }
 
     }
 
@@ -54,7 +114,7 @@ public class TccTest extends MyApplicationTests {
         String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             UserTccDto userTccDto = new UserTccDto();
             UUID id = UUID.randomUUID();
             Calendar calendar = Calendar.getInstance();
@@ -109,30 +169,25 @@ public class TccTest extends MyApplicationTests {
             return response;
         } catch (Exception e) {
             LOGGER.warn("--> {}: {}", e.getClass(), e.getMessage());
-            
+
             if (retry >= 0) {
                 return resend(url, body, httpMethod, retry);
             }
             if (e instanceof HttpStatusCodeException) {
-                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                HttpStatusCodeException hsce = (HttpStatusCodeException) e;
                 LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
-                return ResponseEntity
-                        .status(hsce.getStatusCode())
-                        .header("tccUrl", url)
+                return ResponseEntity.status(hsce.getStatusCode()).header("tccUrl", url)
                         .header("responseBody", hsce.getResponseBodyAsString())
-                        .header("errorMessage", hsce.getMessage())
-                        .headers(hsce.getResponseHeaders())
-                        .build();
+                        .header("errorMessage", hsce.getMessage()).headers(hsce.getResponseHeaders()).build();
             }
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    //.header("responseBody", e.getResponseBodyAsString())
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    // .header("responseBody", e.getResponseBodyAsString())
                     .header("errorMessage", e.getMessage())
-                    //.headers(e.getResponseHeaders())
+                    // .headers(e.getResponseHeaders())
                     .body(e.getMessage());
         }
     }
- 
+
     private synchronized ResponseEntity<String> resend(String url, Object body, HttpMethod httpMethod, int retry) {
         LOGGER.warn("--> Retry {}: {} -> {} -> {}", retry, url, body, httpMethod);
         tccLoadBalancedOAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(null);
