@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,8 +53,8 @@ public class TccController implements TccFeignClient {
     @GetMapping(path = "/sync/{id}")
     @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Tcc> get(
-            @RequestHeader("Authorization") String accessToken,
-            @PathVariable("id") String id) {
+            @PathVariable("id") String id,
+            @RequestHeader("Authorization") String accessToken) {
         LOGGER.info("--> tcc id: {}", id);
         Assert.notNull(id, "Tcc id is null");
         Tcc tcc = tccService.get(UUID.fromString(id));
@@ -73,8 +74,8 @@ public class TccController implements TccFeignClient {
     @PostMapping(path = "/sync/")
     @HystrixCommand(fallbackMethod = "tccTryFallBack")
     public ResponseEntity<Tcc> tccTry(
-            @RequestHeader("Authorization") String accessToken,
-            @RequestBody Tcc tcc) throws TccTryException {
+            @RequestBody Tcc tcc,
+            @RequestHeader("Authorization") String accessToken) throws TccTryException {
         LOGGER.info("--> tcc: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         tcc.setStatus(0);
@@ -91,7 +92,7 @@ public class TccController implements TccFeignClient {
             @RequestHeader("Authorization") String accessToken,
             @RequestBody Tcc tcc) throws TccException {
         final DeferredResult<ResponseEntity<Tcc>> result = new DeferredResult<>();
-        handle(result, () -> tccTry(accessToken, tcc));
+        handle(result, () -> tccTry(tcc, accessToken));
         return result;
     }
 
