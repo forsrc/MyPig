@@ -13,11 +13,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
+import com.forsrc.tcc.listener.PortApplicationListener;
 import com.forsrc.tcc.service.TccService;
 import com.netflix.discovery.EurekaClient;
 
@@ -35,18 +34,36 @@ public class TccSchedule {
     private EurekaClient discoveryClient;
 
     @Autowired
+    private PortApplicationListener port;
+    
+    @Autowired
     @Qualifier("tccOAuth2RestTemplate")
     public OAuth2RestTemplate tccOAuth2RestTemplate;
 
     @Autowired
     private TccService tccService;
 
-    @Scheduled(cron = "0,10,20,30,40,50 * * * * *")
-    public void tcc() throws TccException{
-        String microservice = null;
+    private static String microservice = null;
+
+    private String getMicroservice() {
+        if (microservice != null) {
+            return microservice;
+        }
         try {
             microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
+            if (!microservice.endsWith(":" + port.getPort())) {
+                microservice = String.format("%s:%s", microservice, port.getPort());
+            }
+            return microservice;
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Scheduled(cron = "0,10,20,30,40,50 * * * * *")
+    public void tcc() throws TccException{
+        String microservice = getMicroservice();
+        if (microservice == null) {
             return;
         }
         int size = tccService.setTccMicroservice(microservice);
