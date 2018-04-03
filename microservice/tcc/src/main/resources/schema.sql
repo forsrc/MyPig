@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS t_tcc;
 CREATE TABLE t_tcc (
   id          UUID NOT NULL,
+  microservice varchar(200),
   times       tinyint(2) NOT NULL,
   status      tinyint(2) NOT NULL,
   expire      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -64,6 +64,9 @@ public class Tcc implements java.io.Serializable {
     @Column(name = "times", length = 2, nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer times;
 
+    @Column(name = "microservice", length = 200, nullable = false, columnDefinition = "VARCHAR(200) DEFAULT ''")
+    private String microservice;
+
     @OneToMany(targetEntity = TccLink.class, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "tcc_id", referencedColumnName = "id", insertable = false, updatable = false,
         foreignKey = @ForeignKey(javax.persistence.ConstraintMode.CONSTRAINT))
@@ -125,11 +128,21 @@ public class Tcc implements java.io.Serializable {
         this.times = times;
     }
 
+    public String getMicroservice() {
+        return microservice;
+    }
+
+    public void setMicroservice(String microservice) {
+        this.microservice = microservice;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"links\":\"%s\"} ",
-                id, create, update, expire, status, times, links);
+                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"links\":\"%s\"} ",
+                id, create, update, expire, status, times, microservice, links);
     }
+
+
 
 }

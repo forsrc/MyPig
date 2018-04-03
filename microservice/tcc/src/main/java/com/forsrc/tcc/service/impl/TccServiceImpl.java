@@ -302,4 +302,13 @@ public class TccServiceImpl implements TccService {
         return tccLinkMapper.getByPath(path);
     }
 
+    @Override
+    public int setTccMicroservice(String microservice) {
+        return tccMapper.setTccMicroservice(microservice);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Tcc> getTryStatusList(String microservice) {
+        return tccMapper.getTryStatusListByMicroservice(microservice);
+    }
 }
