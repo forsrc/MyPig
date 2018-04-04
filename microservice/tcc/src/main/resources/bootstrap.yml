@@ -87,7 +87,12 @@ springboot-sso-server:
       enabled: true
     listOfServers: forsrc.local:10000
     ServerListRefreshInterval: 15000
-
+microservice-tcc:
+  ribbon:
+    eureka:
+      enabled: true
+    listOfServers: forsrc.local:10020
+    ServerListRefreshInterval: 15000
 
 logging:
   level:
