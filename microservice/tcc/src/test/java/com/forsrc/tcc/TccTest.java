@@ -119,7 +119,7 @@ public class TccTest extends MyApplicationTests {
         } catch (Exception e) {
             if (retry >= 0) {
                 try {
-                    TimeUnit.MILLISECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e1) {
                 }
                 return sendUserTcc(userTcc, --retry);
@@ -139,7 +139,7 @@ public class TccTest extends MyApplicationTests {
         } catch (Exception e) {
             if (retry >= 0) {
                 try {
-                    TimeUnit.MILLISECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e1) {
                 }
                 return sendTcc(tcc, --retry);
