@@ -6,11 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.cglib.beans.BeanCopier;
-
-import com.forsrc.common.core.sso.dto.UserTccDto;
 
 public class BeanCopierUtils {
 
@@ -22,16 +19,22 @@ public class BeanCopierUtils {
         beanCopier.copy(s, t, null);
     }
 
-    public static <S, T> List<T> copy(List<S> list, Class<T> tc) throws InstantiationException, IllegalAccessException {
+    public static <S, T> List<T> copy(List<S> list, Class<T> tc) {
 
         BeanCopier beanCopier = getBeanCopier(list.get(0).getClass(), tc);
-        List<T> l = new ArrayList<>(list.size());
-        for (S s : list) {
-            T t = tc.newInstance();
-            beanCopier.copy(s, t, null);
-            l.add(t);
+        List<T> targets = new ArrayList<>(list.size());
+        try {
+            for (S s : list) {
+                T t = tc.newInstance();
+                beanCopier.copy(s, t, null);
+                targets.add(t);
+            }
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        return l;
+        return targets;
 
     }
 
