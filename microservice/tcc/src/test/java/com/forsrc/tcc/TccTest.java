@@ -86,7 +86,7 @@ public class TccTest extends MyApplicationTests {
             userTcc.setExpire(expire);
 
             ResponseEntity<UserTcc> userTccResponseEntity = userTccFeignClient.tccTry(userTcc,
-                    tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
             UserTcc dto = userTccResponseEntity.getBody();
             System.out.println("UserTcc --> " + dto);
             Tcc tcc = new Tcc();
@@ -101,7 +101,7 @@ public class TccTest extends MyApplicationTests {
             tcc.setLinks(links);
 
             ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
-                    tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
             System.out.println("Tcc --> " + r.getBody());
         }
 
