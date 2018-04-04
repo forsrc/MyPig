@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,7 @@ import com.forsrc.common.core.sso.dto.UserTccDto;
 import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.dto.TccDto;
 import com.forsrc.common.core.tcc.dto.TccLinkDto;
+import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.tcc.domain.entity.Tcc;
@@ -73,7 +75,7 @@ public class TccTest extends MyApplicationTests {
             return;
         }
         String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             UserTcc userTcc = new UserTcc();
             UUID id = UUID.randomUUID();
             Calendar calendar = Calendar.getInstance();
@@ -85,8 +87,9 @@ public class TccTest extends MyApplicationTests {
             userTcc.setEnabled(0);
             userTcc.setExpire(expire);
 
-            ResponseEntity<UserTcc> userTccResponseEntity = userTccFeignClient.tccTry(userTcc,
-                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+//            ResponseEntity<UserTcc> userTccResponseEntity = userTccFeignClient.tccTry(userTcc,
+//                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            ResponseEntity<UserTcc> userTccResponseEntity = sendUserTcc(userTcc, 2);
             UserTcc dto = userTccResponseEntity.getBody();
             System.out.println("UserTcc --> " + dto);
             Tcc tcc = new Tcc();
@@ -100,13 +103,53 @@ public class TccTest extends MyApplicationTests {
             links.add(tccLink);
             tcc.setLinks(links);
 
-            ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
-                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+//            ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
+//                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            ResponseEntity<Tcc> r = sendTcc(tcc, 2);
             System.out.println("Tcc --> " + r.getBody());
         }
 
     }
 
+    public ResponseEntity<UserTcc> sendUserTcc(UserTcc userTcc, int retry) {
+        
+        try {
+            return userTccFeignClient.tccTry(userTcc,
+                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+        } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1);
+                } catch (InterruptedException e1) {
+                }
+                return sendUserTcc(userTcc, --retry);
+            }
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .header("errorMessage", e.getMessage())
+//                    .body(null);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<Tcc> sendTcc(Tcc tcc, int retry) {
+        
+        try {
+            return tccFeignClient.tccTry(tcc,
+                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+        } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1);
+                } catch (InterruptedException e1) {
+                }
+                return sendTcc(tcc, --retry);
+            }
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .header("errorMessage", e.getMessage())
+//                    .body(null);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
     @Test
     public void test() throws Exception {
 
