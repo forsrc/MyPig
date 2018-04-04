@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.sso.domain.entity.UserTcc;
 
-@FeignClient(name = "springboot-sso-server", path = "/sso/api/v1/tcc/user")
+@FeignClient(name = "SPRINGBOOT-SSO-SERVER", path = "/sso/api/v1/tcc/user")
 public interface UserTccFeignClient {
 
 
