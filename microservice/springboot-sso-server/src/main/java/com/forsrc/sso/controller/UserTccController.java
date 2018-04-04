@@ -2,7 +2,6 @@ package com.forsrc.sso.controller;
 
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -45,7 +43,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/sync/")
-    public ResponseEntity<UserTcc> tccTry(@RequestBody UserTcc tcc, @RequestParam("access_token") String accessToken) throws TccException {
+    public ResponseEntity<UserTcc> tccTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         Assert.notNull(tcc, "UserTcc is null");
         Assert.notNull(tcc.getUsername(), "UserTcc username is nul");
         Assert.notNull(tcc.getPassword(), "UserTcc password is nul");
@@ -67,7 +65,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/")
-    public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestParam("access_token") String accessToken) throws TccException {
+    public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<UserTcc>> result = new DeferredResult<>();
 
         handleCreate(result, () -> tccTry(tcc, accessToken));
@@ -76,7 +74,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/sync/confirm/{id}")
-    public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestParam("access_token") String accessToken) throws TccException {
+    public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
         try {
@@ -97,7 +95,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/confirm/{id}")
-    public DeferredResult<ResponseEntity<Void>> confirmResult(@PathVariable("id") String id, @RequestParam("access_token") String accessToken) throws TccException {
+    public DeferredResult<ResponseEntity<Void>> confirmResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
 
         handle(result, () -> confirm(id, accessToken));
@@ -107,7 +105,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/sync/cancel/{id}")
-    public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestParam("access_token") String accessToken) throws TccException{
+    public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException{
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
         try {
@@ -127,7 +125,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/cancel/{id}")
-    public DeferredResult<ResponseEntity<Void>> cancelResult(@PathVariable("id") String id, @RequestParam("access_token") String accessToken) throws TccException {
+    public DeferredResult<ResponseEntity<Void>> cancelResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
 
         handle(result, () -> cancel(id, accessToken));
