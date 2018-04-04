@@ -1,32 +1,29 @@
 package com.forsrc.common.core.tcc.feignclient;
 
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
 
-@FeignClient(name = "MICROSERVICE-TCC")
+@FeignClient(name = "microservice-tcc", path = "/tcc/api/v1/tcc/user/api/v1/tcc")
 public interface TccFeignClient {
 
-    @PostMapping(path = "/api/v1/tcc/user/api/v1/tcc/")
-    public ResponseEntity<Tcc> tccTry(
-            @RequestBody Tcc tcc,
-            @RequestParam("access_token") String accessToken) throws TccException;
-
-    @PutMapping(path = "/api/v1/tcc/user/api/v1/tcc/confirm/{id}")
-    public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestParam("access_token") String accessToken)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public ResponseEntity<Tcc> tccTry(@RequestBody Tcc tcc, @RequestHeader("Authorization") String accessToken)
             throws TccException;
 
-    @DeleteMapping(path = "/api/v1/tcc/user/api/v1/tcc/cancel/{id}")
-    public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestParam("access_token") String accessToken)
-            throws TccException;
+    @RequestMapping(value = "/confirm/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> confirm(@PathVariable("id") String id,
+            @RequestHeader("Authorization") String accessToken) throws TccException;
+
+    @RequestMapping(value = "/cancel/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> cancel(@PathVariable("id") String id,
+            @RequestHeader("Authorization") String accessToken) throws TccException;
 
 }
