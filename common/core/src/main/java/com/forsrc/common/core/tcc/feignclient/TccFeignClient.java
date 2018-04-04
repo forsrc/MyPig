@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
 
-@FeignClient(name = "microservice-tcc", path = "/tcc/api/v1/tcc/user/api/v1/tcc")
+@FeignClient(name = "MICROSERVICE-TCC", path = "/tcc/api/v1/tcc/user/api/v1/tcc")
 public interface TccFeignClient {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
