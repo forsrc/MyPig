@@ -163,13 +163,20 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-    public ResponseEntity<Void> confirm(String id, String accessToken, int retry) {
+    public ResponseEntity<Void> confirm(String id, String accessToken, final int retry) {
         if (accessToken == null) {
             accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
         }
         try {
             return userTccFeignClient.confirm(id, "Bearer " + accessToken);
         } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
+                return confirm(id, null, retry - 1);
+            }
             if (e instanceof HttpStatusCodeException) {
                 HttpStatusCodeException hsce = (HttpStatusCodeException)e;
                 LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
@@ -180,13 +187,6 @@ public class TccServiceImpl implements TccService {
                         .header("errorMessage", hsce.getMessage())
                         .headers(hsce.getResponseHeaders())
                         .build();
-            }
-            if (retry >= 0) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e1) {
-                }
-                return confirm(id, null, --retry);
             }
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -257,13 +257,20 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-    public ResponseEntity<Void> cancel(String id, String accessToken, int retry) {
+    public ResponseEntity<Void> cancel(String id, String accessToken, final int retry) {
         if (accessToken == null) {
             accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
         }
         try {
             return userTccFeignClient.cancel(id, "Bearer " + accessToken);
         } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
+                return cancel(id, null, retry - 1);
+            }
             if (e instanceof HttpStatusCodeException) {
                 HttpStatusCodeException hsce = (HttpStatusCodeException)e;
                 LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
@@ -274,13 +281,6 @@ public class TccServiceImpl implements TccService {
                         .header("errorMessage", hsce.getMessage())
                         .headers(hsce.getResponseHeaders())
                         .build();
-            }
-            if (retry >= 0) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e1) {
-                }
-                return confirm(id, null, --retry);
             }
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
