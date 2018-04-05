@@ -119,5 +119,15 @@ public class BeanCopierUtils {
         });
         System.out.println(new BeanCopierUtils.TypeReference<String>() {
         }.getType());
+
+        TccDto tcc = new TccDto();
+        tcc.setId(UUID.randomUUID());
+        tcc.setTimes(1);
+        TccLinkDto tccLinkDto = BeanCopierUtils.copy(tcc, TccLinkDto.class);
+        System.out.println(tccLinkDto);
+        List<TccLinkDto> list = new ArrayList<>();
+        list.add(tccLinkDto);
+        List<TccDto> listAfter = BeanCopierUtils.copy(list, TccDto.class);
+        System.out.println(listAfter.get(0));
     }
 }
