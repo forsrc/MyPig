@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
 import com.forsrc.common.core.tcc.exception.TccException;
+import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.listener.PortApplicationListener;
 import com.forsrc.tcc.service.TccService;
@@ -42,6 +43,9 @@ public class TccSchedule {
 
     @Autowired
     private TccService tccService;
+
+    @Autowired
+    private TccFeignClient tccFeignClient;
 
     private static String microservice = null;
 

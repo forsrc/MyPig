@@ -29,7 +29,7 @@ eureka:
   client:
     initialInstanceInfoReplicationIntervalSeconds: 60
     #registerWithEureka: false
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
 #  dashboard:

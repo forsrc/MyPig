@@ -1,18 +1,17 @@
 package com.forsrc.common.core.utils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.cglib.beans.BeanCopier;
 
-import com.forsrc.common.core.tcc.dto.TccDto;
-import com.forsrc.common.core.tcc.dto.TccLinkDto;
-
 public class BeanCopierUtils {
 
+    private static final String TYPE_NAME_PREFIX = "class ";
     private static final Map<String, BeanCopier> MAP = new HashMap<>();
     private static final Map<Class<?>, Object> MAP_INSTANCE = new HashMap<>();
 
@@ -85,7 +84,41 @@ public class BeanCopierUtils {
         return t;
     }
 
+    public static String getClassName(Type type) {
+        String className = type.toString();
+        if (className.startsWith(TYPE_NAME_PREFIX)) {
+            className = className.substring(TYPE_NAME_PREFIX.length());
+        }
+        return className;
+    }
+
+    public static abstract class TypeReference<T> implements Comparable<TypeReference<T>> {
+        protected final Type _type;
+
+        protected TypeReference() {
+            Type superClass = getClass().getGenericSuperclass();
+            if (superClass instanceof Class<?>) { // sanity check, should never happen
+                throw new IllegalArgumentException(
+                        "Internal error: TypeReference constructed without actual type information");
+            }
+            _type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
+        }
+
+        public Type getType() {
+            return _type;
+        }
+
+        @Override
+        public int compareTo(TypeReference<T> o) {
+            return 0;
+        }
+    }
+
     public static void main(String[] args) {
+        System.out.println(new BeanCopierUtils.TypeReference<String>() {
+        });
+        System.out.println(new BeanCopierUtils.TypeReference<String>() {
+        }.getType());
 
         TccDto tcc = new TccDto();
         tcc.setId(UUID.randomUUID());

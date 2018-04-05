@@ -34,6 +34,7 @@ import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.exception.TccTryException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.common.core.tcc.functional.TccSupplier;
+import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -125,7 +126,7 @@ public class TccController implements TccFeignClient {
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken
             ) throws TccException {
-        UUID uuid = UUID.fromString(id);
+        UUID uuid = StringUtils.toUuid(id);
         Tcc tcc = null;
         try {
             tcc = tccService.confirm(uuid, accessToken.replace("Bearer ", ""));
@@ -171,7 +172,7 @@ public class TccController implements TccFeignClient {
     public ResponseEntity<Void> cancel(@PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
 
-        UUID uuid = UUID.fromString(id);
+        UUID uuid = StringUtils.toUuid(id);
         try {
             Tcc tcc = tccService.cancel(uuid, accessToken.replace("Bearer ", ""));
             return ResponseEntity

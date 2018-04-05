@@ -10,6 +10,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -26,12 +27,17 @@ import com.forsrc.tcc.config.RibbonClinetConfig;
 @EnableDiscoveryClient
 @EnableOAuth2Sso
 @EnableResourceServer
-@EnableFeignClients
+//@EnableFeignClients
 @EnableCircuitBreaker
 @EnableScheduling
-@RibbonClient(name = "springboot-sso-server", configuration = RibbonClinetConfig.class)
 @EnableHystrix
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@RibbonClients(
+        {
+            @RibbonClient(name = "springboot-sso-server", configuration = RibbonClinetConfig.class),
+            @RibbonClient(name = "microservice-tcc", configuration = RibbonClinetConfig.class)
+        }
+        )
 public class MyApplication {
 
     public static void main(String[] args) {
