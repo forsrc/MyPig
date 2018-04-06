@@ -12,7 +12,11 @@ public interface TccMapper {
 
     public List<Tcc> getTryStatusList();
 
+    public List<Tcc> getTryStatusListByMicroservice(@Param("microservice") String microservice);
+
     public Tcc getByTccLinkPath(@Param("path") String path);
 
     public int updateStatus(@Param("tcc") Tcc tcc);
+
+    public int setTccMicroservice(@Param("microservice") String microservice);
 }

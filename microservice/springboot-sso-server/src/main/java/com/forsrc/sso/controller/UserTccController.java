@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
@@ -33,7 +34,7 @@ import com.forsrc.sso.service.UserTccService;
 
 @RestController
 @RequestMapping("/api/v1/tcc/user")
-public class UserTccController{
+public class UserTccController implements UserTccFeignClient {
 
 
     @Autowired

@@ -25,11 +25,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.exception.TccAlreadyCancelException;
 import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
+import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.tcc.dao.TccDao;
 import com.forsrc.tcc.dao.TccLinkDao;
@@ -38,6 +40,7 @@ import com.forsrc.tcc.dao.mapper.TccMapper;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
+import com.netflix.discovery.EurekaClient;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
@@ -63,6 +66,9 @@ public class TccServiceImpl implements TccService {
 
     @Autowired
     private JmsTemplate jmsTemplate;
+
+    @Autowired
+    private UserTccFeignClient userTccFeignClient;
 
     @Override
     @Transactional(readOnly = true)
@@ -104,7 +110,7 @@ public class TccServiceImpl implements TccService {
         if (new Date().compareTo(tcc.getExpire()) > 0) {
             LOGGER.info("--> Timeout: {} -> {}", tcc.getId(), tcc.getExpire());
             if (Status.TRY.getStatus() == tcc.getStatus().intValue()) {
-                cance(tcc, accessToken);
+                cancel(tcc, accessToken);
             }
             return tcc;
         }
@@ -137,7 +143,8 @@ public class TccServiceImpl implements TccService {
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/confirm");
-            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT, 1);
+            //ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT, 1);
+            ResponseEntity<Void> response = confirm(link.getPath().toString(), accessToken, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -156,6 +163,41 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
+    public ResponseEntity<Void> confirm(String id, String accessToken, final int retry) {
+        if (accessToken == null) {
+            accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
+        }
+        try {
+            return userTccFeignClient.confirm(id, "Bearer " + accessToken);
+        } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
+                return confirm(id, null, retry - 1);
+            }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccId", id)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("tccId", id)
+                    //.header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    //.headers(e.getResponseHeaders())
+                    .build();
+        }
+    }
+
     @Override
     public Tcc cancel(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.getOne(uuid);
@@ -166,7 +208,7 @@ public class TccServiceImpl implements TccService {
         if (new Date().compareTo(tcc.getExpire()) > 0) {
             LOGGER.info("--> Timeout: {} -> {}", tcc.getId(), tcc.getExpire());
             if (Status.TRY.getStatus() == tcc.getStatus().intValue()) {
-                cance(tcc, accessToken);
+                cancel(tcc, accessToken);
             }
             return tcc;
         }
@@ -183,17 +225,18 @@ public class TccServiceImpl implements TccService {
             throw new TccCancelException(uuid, "Error tcc status: " + tcc.getStatus());
         }
 
-        cance(tcc, accessToken);
+        cancel(tcc, accessToken);
         return tcc;
     }
 
-    private Tcc cance(Tcc tcc, String accessToken) {
+    private Tcc cancel(Tcc tcc, String accessToken) {
 
         boolean isError = false;
         List<TccLink> links = tcc.getLinks();
         for (TccLink link : links) {
             String uri = String.format("%s%s", link.getUri(), "/cancel");
-            ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE, 1);
+            //ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE, 1);
+            ResponseEntity<Void> response = cancel(link.getPath().toString(), accessToken, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -212,6 +255,41 @@ public class TccServiceImpl implements TccService {
         this.update(tcc);
         this.jmsTemplate.convertAndSend("jms/queues/tcc", tcc.toString());
         return tcc;
+    }
+
+    public ResponseEntity<Void> cancel(String id, String accessToken, final int retry) {
+        if (accessToken == null) {
+            accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
+        }
+        try {
+            return userTccFeignClient.cancel(id, "Bearer " + accessToken);
+        } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
+                return cancel(id, null, retry - 1);
+            }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccId", id)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("tccId", id)
+                    //.header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    //.headers(e.getResponseHeaders())
+                    .build();
+        }
     }
 
     private ResponseEntity<Void> send(String uri, String id, String accessToken, HttpMethod httpMethod, int retry) {
@@ -240,6 +318,10 @@ public class TccServiceImpl implements TccService {
         } catch (Exception e) {
             LOGGER.warn("--> {}: {}", e.getClass(), e.getMessage());
             if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
                 return resend(uri, id, null, httpMethod, --retry);
             }
             if (e instanceof HttpStatusCodeException) {
@@ -302,4 +384,13 @@ public class TccServiceImpl implements TccService {
         return tccLinkMapper.getByPath(path);
     }
 
+    @Override
+    public int setTccMicroservice(String microservice) {
+        return tccMapper.setTccMicroservice(microservice);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Tcc> getTryStatusList(String microservice) {
+        return tccMapper.getTryStatusListByMicroservice(microservice);
+    }
 }

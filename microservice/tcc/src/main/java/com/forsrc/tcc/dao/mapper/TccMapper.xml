@@ -49,6 +49,35 @@
             TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        ORDER BY create ASC
+        LIMIT 100
+    </select>
+
+    <select id="getTryStatusListByMicroservice" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            TCC.*,
+            TCC_LINK.tcc_id    AS links_tcc_id,
+            TCC_LINK.id        AS links_id,
+            TCC_LINK.uri       AS links_uri,
+            TCC_LINK.path      AS links_path,
+            TCC_LINK.expire    AS links_expire,
+            TCC_LINK.create    AS links_create,
+            TCC_LINK.update    AS links_update,
+            TCC_LINK.status    AS links_status
+        FROM
+            t_tcc TCC
+        LEFT JOIN
+            t_tcc_link TCC_LINK
+        WHERE
+            microservice = #{microservice}
+        AND
+            TCC.status = 0
+        AND
+            TCC.id = TCC_LINK.tcc_id
+        -- AND
+            -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        ORDER BY create ASC
         LIMIT 100
     </select>
 
@@ -72,6 +101,7 @@
             TCC_LINK.path = #{path}
         AND
             TCC.id = TCC_LINK.tcc_id
+        ORDER BY create DESC
         LIMIT 1
     </select>
 
@@ -84,4 +114,20 @@
         WHERE
             id = #{tcc.id, javaType=java.util.UUID, typeHandler=com.forsrc.common.core.mybatis.handler.UUIDTypeHandler}
     </update>
+
+    <update id="setTccMicroservice">
+        <![CDATA[
+        UPDATE
+            t_tcc
+        SET
+            microservice = #{microservice},
+            update = CURRENT_TIMESTAMP
+        WHERE
+            status = 0
+        AND
+            microservice = ''
+        LIMIT 100
+        ]]>
+    </update>
+
 </mapper>
