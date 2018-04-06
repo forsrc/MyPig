@@ -116,6 +116,7 @@
     </update>
 
     <update id="setTccMicroservice">
+        <![CDATA[
         UPDATE
             t_tcc
         SET
@@ -123,7 +124,10 @@
             update = CURRENT_TIMESTAMP
         WHERE
             status = 0
+        AND
+            microservice = ''
         LIMIT 100
+        ]]>
     </update>
 
 </mapper>
