@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
             @Index(name = "index_authorities_username", columnList = "username") },
             uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "authority" })}
         )
-@IdClass(Authority.class)
+@IdClass(AuthorityPk.class)
 public class Authority implements java.io.Serializable {
 
     private static final long serialVersionUID = -1985182093016989312L;
@@ -53,7 +53,7 @@ public class Authority implements java.io.Serializable {
     }
 
     @Column(name = "version", insertable = false, updatable = false, nullable = false, columnDefinition = "INT DEFAULT 0")
-    //@Version
+    @Version
     private int version;
 
     public Authority() {
