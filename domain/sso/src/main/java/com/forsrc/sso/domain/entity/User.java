@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -50,6 +51,10 @@ public class User implements java.io.Serializable {
     protected void onUpdate() {
         this.update = new Date();
     }
+
+    @Column(name = "version", insertable = false, updatable = false, nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Version
+    private int version;
 
     public String getUsername() {
         return username;
@@ -91,11 +96,19 @@ public class User implements java.io.Serializable {
         this.update = update;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"create\":\"%s\", \"update\":\"%s\"} ",
-                username, password, enabled, create, update);
+                "{\"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"version\":\"%s\"}",
+                username, password, enabled, create, update, version);
     }
 
 }
