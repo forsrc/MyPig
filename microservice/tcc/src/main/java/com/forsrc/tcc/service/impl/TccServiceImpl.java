@@ -152,6 +152,7 @@ public class TccServiceImpl implements TccService {
                 isError = true;
             }
             link.setStatus(status);
+            link.setVersion(link.getVersion() + 1);
         }
 
         tcc.setTimes(tcc.getTimes() + 1);
