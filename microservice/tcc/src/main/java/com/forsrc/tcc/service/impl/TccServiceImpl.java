@@ -80,17 +80,21 @@ public class TccServiceImpl implements TccService {
     public Tcc save(Tcc tcc) {
         tccDao.save(tcc);
         List<TccLink> links = tcc.getLinks();
-        for (TccLink link : links) {
-            link.setTccId(tcc.getId());
+        if (links != null && !links.isEmpty()) {
+            for (TccLink link : links) {
+                link.setTccId(tcc.getId());
+            }
+            tccLinkDao.save(links);
         }
-        tccLinkDao.save(links);
         return tcc;
     }
 
     @Override
     public Tcc update(Tcc tcc) {
         List<TccLink> links = tcc.getLinks();
-        tccLinkDao.save(links);
+        if (links != null && !links.isEmpty()) {
+            tccLinkDao.save(links);
+        }
         return tccDao.save(tcc);
     }
 
@@ -151,17 +155,19 @@ public class TccServiceImpl implements TccService {
             if (!HttpStatus.NO_CONTENT.equals(response.getStatusCode()) && status != Status.CONFIRM.getStatus()) {
                 isError = true;
             }
-            link.setStatus(status);
-            link.setVersion(link.getVersion() + 1);
+//            TccLink tccLink4Update = tccLinkDao.getOne(link.getId());
+//            tccLink4Update.setStatus(status);
+//            tccLinkDao.save(tccLink4Update);
         }
 
-        tcc.setTimes(tcc.getTimes() + 1);
+        Tcc tcc4Update = tccDao.getOne(tcc.getId());
+        tcc4Update.setTimes(tcc.getTimes() + 1);
         if (!isError) {
-            tcc.setStatus(Status.CONFIRM.getStatus());
+            tcc4Update.setStatus(Status.CONFIRM.getStatus());
         }
-        this.update(tcc);
+        tccDao.save(tcc4Update);
         this.jmsTemplate.convertAndSend("jms/queues/tcc", tcc.toString());
-        return tcc;
+        return tcc4Update;
     }
 
     public ResponseEntity<Void> confirm(String id, String accessToken, final int retry) {
