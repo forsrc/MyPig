@@ -25,6 +25,8 @@ public class TccLinkDto implements java.io.Serializable {
 
     private Integer status;
 
+    private int version;
+
     public UUID getId() {
         return id;
     }
@@ -89,11 +91,19 @@ public class TccLinkDto implements java.io.Serializable {
         this.status = status;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"tccId\":\"%s\", \"uri\":\"%s\", \"path\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\"} ",
-                id, tccId, uri, path, create, update, expire, status);
+                "{\"id\":\"%s\", \"tccId\":\"%s\", \"uri\":\"%s\", \"path\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"version\":\"%s\"}",
+                id, tccId, uri, path, create, update, expire, status, version);
     }
 
 }
