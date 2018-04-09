@@ -2,14 +2,14 @@
 
 DROP TABLE IF EXISTS t_tcc;
 CREATE TABLE t_tcc (
-  id          UUID          NOT NULL,
-  microservice varchar(200) NOT NULL DEFAULT '',
-  times       tinyint(2)    NOT NULL DEFAULT 0,
-  status      tinyint(2)    NOT NULL DEFAULT 0,
-  version     int           NOT NULL DEFAULT 0,
-  expire      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  create      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  update      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id           UUID          NOT NULL,
+  microservice varchar(200)  NOT NULL DEFAULT '',
+  times        tinyint(2)    NOT NULL DEFAULT 0,
+  status       tinyint(2)    NOT NULL DEFAULT 0,
+  version      int           NOT NULL DEFAULT 0,
+  expire       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  create       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
