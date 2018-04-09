@@ -68,7 +68,7 @@ public class Tcc implements java.io.Serializable {
     @Column(name = "microservice", length = 200, nullable = false, columnDefinition = "VARCHAR(200) DEFAULT ''")
     private String microservice;
 
-    @Column(name = "version", insertable = false, updatable = false, nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Column(name = "version", insertable = false, updatable = true, nullable = false, columnDefinition = "INT DEFAULT 0")
     @Version
     private int version;
 
