@@ -110,9 +110,12 @@
             t_tcc
         SET
             status = #{tcc.status, jdbcType=INTEGER},
+            version = version + 1,
             update = CURRENT_TIMESTAMP
         WHERE
             id = #{tcc.id, javaType=java.util.UUID, typeHandler=com.forsrc.common.core.mybatis.handler.UUIDTypeHandler}
+        AND
+            version = #{tcc.version, jdbcType=INTEGER}
     </update>
 
     <update id="setTccMicroservice">
@@ -121,9 +124,12 @@
             t_tcc
         SET
             microservice = #{microservice},
+            version = version + 1,
             update = CURRENT_TIMESTAMP
         WHERE
             status = 0
+        AND
+            version = 0
         AND
             microservice = ''
         LIMIT 100
