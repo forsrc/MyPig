@@ -18,6 +18,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -66,6 +67,10 @@ public class Tcc implements java.io.Serializable {
 
     @Column(name = "microservice", length = 200, nullable = false, columnDefinition = "VARCHAR(200) DEFAULT ''")
     private String microservice;
+
+    @Column(name = "version", insertable = false, updatable = false, nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Version
+    private int version;
 
     @OneToMany(targetEntity = TccLink.class, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "tcc_id", referencedColumnName = "id", insertable = false, updatable = false,
@@ -136,11 +141,19 @@ public class Tcc implements java.io.Serializable {
         this.microservice = microservice;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"links\":\"%s\"} ",
-                id, create, update, expire, status, times, microservice, links);
+                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"links\":\"%s\", \"version\":\"%s\"}",
+                id, create, update, expire, status, times, microservice, links, version);
     }
 
 
