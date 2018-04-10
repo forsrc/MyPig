@@ -205,6 +205,41 @@ public class TccServiceImpl implements TccService {
         }
     }
 
+    public ResponseEntity<Void> confirm(String id, String accessToken, final int retry) {
+        if (accessToken == null) {
+            accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
+        }
+        try {
+            return userTccFeignClient.confirm(id, "Bearer " + accessToken);
+        } catch (Exception e) {
+            if (retry >= 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ie) {
+                }
+                return confirm(id, null, retry - 1);
+            }
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException hsce = (HttpStatusCodeException)e;
+                LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
+                return ResponseEntity
+                        .status(hsce.getStatusCode())
+                        .header("tccId", id)
+                        .header("responseBody", hsce.getResponseBodyAsString())
+                        .header("errorMessage", hsce.getMessage())
+                        .headers(hsce.getResponseHeaders())
+                        .build();
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("tccId", id)
+                    //.header("responseBody", e.getResponseBodyAsString())
+                    .header("errorMessage", e.getMessage())
+                    //.headers(e.getResponseHeaders())
+                    .build();
+        }
+    }
+
     @Override
     public Tcc cancel(UUID uuid, String accessToken) throws TccException{
         Tcc tcc = tccDao.getOne(uuid);
