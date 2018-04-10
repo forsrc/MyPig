@@ -52,6 +52,7 @@
         |2.1.1 Websocket (A confirm OK)->/app/tccLink/A                                  |
         +--------------------------------------------------------------------------------+
                                           3.1 Websocket /topic/tccLink/A<-(ALL confirm OK)
+
 @endditaa
 
 

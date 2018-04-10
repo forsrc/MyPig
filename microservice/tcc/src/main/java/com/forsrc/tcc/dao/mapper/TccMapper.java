@@ -19,5 +19,4 @@ public interface TccMapper {
     public int updateStatus(@Param("tcc") Tcc tcc);
 
     public int setTccMicroservice(@Param("microservice") String microservice);
-
 }
