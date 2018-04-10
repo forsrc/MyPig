@@ -14,6 +14,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -63,6 +64,10 @@ public class UserTcc implements java.io.Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date expire;
+
+    @Column(name = "version", insertable = false, updatable = true, nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Version
+    private int version;
 
     public String getUsername() {
         return username;
@@ -136,11 +141,19 @@ public class UserTcc implements java.io.Serializable {
         this.expire = expire;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\"} ",
-                id, username, password, enabled, authorities, status, create, update, expire);
+                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"version\":\"%s\"}",
+                id, username, password, enabled, authorities, status, create, update, expire, version);
     }
 
 }

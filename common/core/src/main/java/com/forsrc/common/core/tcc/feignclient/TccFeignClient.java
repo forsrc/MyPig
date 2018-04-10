@@ -2,7 +2,6 @@ package com.forsrc.common.core.tcc.feignclient;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 
-import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.tcc.domain.entity.Tcc;
 
 @FeignClient(name = "MICROSERVICE-TCC", path = "/tcc/api/v1/tcc")

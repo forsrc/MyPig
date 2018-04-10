@@ -24,6 +24,8 @@ public class TccDto implements java.io.Serializable {
 
     private String microservice;
 
+    private int version;
+
     private List<TccLinkDto> links;
 
     public UUID getId() {
@@ -90,11 +92,19 @@ public class TccDto implements java.io.Serializable {
         this.microservice = microservice;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"links\":\"%s\"} ",
-                id, create, update, expire, status, times, microservice, links);
+                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"version\":\"%s\", \"links\":\"%s\"}",
+                id, create, update, expire, status, times, microservice, version, links);
     }
 
 }

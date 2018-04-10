@@ -34,6 +34,8 @@ public class UserTccDto implements java.io.Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date expire;
 
+    private int version;
+
     public String getUsername() {
         return username;
     }
@@ -106,11 +108,19 @@ public class UserTccDto implements java.io.Serializable {
         this.expire = expire;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\"} ",
-                id, username, password, enabled, authorities, status, create, update, expire);
+                "{\"id\":\"%s\", \"username\":\"%s\", \"password\":\"%s\", \"enabled\":\"%s\", \"authorities\":\"%s\", \"status\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"version\":\"%s\"}",
+                id, username, password, enabled, authorities, status, create, update, expire, version);
     }
 
 }
