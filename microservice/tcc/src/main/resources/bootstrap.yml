@@ -94,6 +94,17 @@ microservice-tcc:
     listOfServers: forsrc.local:10020
     ServerListRefreshInterval: 15000
 
+feign:
+  hystrix:
+    enabled: true
+ribbon:
+  ReadTimeout:    10000
+  ConnectTimeout:  2000
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 10000
+
 logging:
   level:
     org.springframework.jms.listener.DefaultMessageListenerContainer: WARN

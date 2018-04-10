@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
             @Index(name = "index_authorities_username", columnList = "username") },
             uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "authority" })}
         )
-@IdClass(Authority.class)
+@IdClass(AuthorityPk.class)
 public class Authority implements java.io.Serializable {
 
     private static final long serialVersionUID = -1985182093016989312L;
@@ -50,6 +51,10 @@ public class Authority implements java.io.Serializable {
     protected void onUpdate() {
         this.update = new Date();
     }
+
+    @Column(name = "version", insertable = false, updatable = true, nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Version
+    private int version;
 
     public Authority() {
     }
@@ -91,10 +96,18 @@ public class Authority implements java.io.Serializable {
         this.update = update;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
-        return String.format("{\"username\":\"%s\", \"authority\":\"%s\", \"create\":\"%s\", \"update\":\"%s\"} ",
-                username, authority, create, update);
+        return String.format("{\"username\":\"%s\", \"authority\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"version\":\"%s\"}",
+                username, authority, create, update, version);
     }
 
 
