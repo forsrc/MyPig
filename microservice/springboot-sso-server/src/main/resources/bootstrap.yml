@@ -71,7 +71,16 @@ server:
   port: 10000
   context-path: /sso
 
-
+feign:
+  hystrix:
+    enabled: true
+ribbon:
+  ReadTimeout:    10000
+  ConnectTimeout:  2000
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 10000
 
 eureka:
   instance:
