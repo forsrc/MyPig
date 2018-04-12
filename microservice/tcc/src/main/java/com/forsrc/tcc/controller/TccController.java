@@ -63,6 +63,7 @@ public class TccController implements TccFeignClient {
     }
 
     @GetMapping(path = "/{id}")
+    @HystrixCommand()
     public DeferredResult<ResponseEntity<Tcc>> getDeferredResult(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable("id") String id) throws TccException {
@@ -89,6 +90,7 @@ public class TccController implements TccFeignClient {
     }
 
     @PostMapping(path = "/")
+    @HystrixCommand()
     public DeferredResult<ResponseEntity<Tcc>> tccTryDeferredResult(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody Tcc tcc) throws TccException {
@@ -122,6 +124,7 @@ public class TccController implements TccFeignClient {
 
     @Override
     @PutMapping(path = "/sync/confirm/{id}")
+    @HystrixCommand()
     public ResponseEntity<Void> confirm(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken
@@ -144,6 +147,7 @@ public class TccController implements TccFeignClient {
     }
 
     @PutMapping(path = "/confirm/{id}")
+    @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken
@@ -169,6 +173,7 @@ public class TccController implements TccFeignClient {
 
     @Override
     @PutMapping(path = "/sync/cancel")
+    @HystrixCommand()
     public ResponseEntity<Void> cancel(@PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
 
@@ -189,6 +194,7 @@ public class TccController implements TccFeignClient {
     }
 
     @PutMapping(path = "/cancel")
+    @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") String id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
