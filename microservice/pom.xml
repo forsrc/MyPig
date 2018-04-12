@@ -112,6 +112,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring-boot-admin.version}</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -126,7 +131,7 @@
             <dependency>
                 <groupId>de.codecentric</groupId>
                 <artifactId>spring-boot-admin-dependencies</artifactId>
-                <version>1.5.7</version>
+                <version>${spring-boot-admin.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
