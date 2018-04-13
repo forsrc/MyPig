@@ -68,8 +68,8 @@ public class UserTccServiceImpl implements UserTccService {
     public UserTcc tccTry(UserTcc userTcc) {
         userTcc.setId(null);
         userTcc.setPassword(PasswordEncoderConfig.PASSWORD_ENCODER.encode(userTcc.getPassword()));
-        userTcc = userTccDao.save(userTcc);
         userTcc.setStatus(Status.TRY.getStatus());
+        userTcc = userTccDao.save(userTcc);
         return userTcc;
     }
 
