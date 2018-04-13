@@ -43,13 +43,13 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
-        WHERE
+        ON
             TCC.status = 0
         AND
             TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
-        ORDER BY create ASC
+        ORDER BY "create" ASC
         LIMIT 100
     </select>
 
@@ -69,15 +69,15 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
-        WHERE
-            microservice = #{microservice}
+        ON
+            microservice = #{microservice, jdbcType=VARCHAR}
         AND
             TCC.status = 0
         AND
             TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
-        ORDER BY create ASC
+        ORDER BY "create" ASC
         LIMIT 100
     </select>
 
@@ -97,11 +97,11 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
-        WHERE
-            TCC_LINK.path = #{path}
+        ON
+            TCC_LINK.path = #{path, jdbcType=VARCHAR}
         AND
             TCC.id = TCC_LINK.tcc_id
-        ORDER BY create DESC
+        ORDER BY "create" DESC
         LIMIT 1
     </select>
 
@@ -120,19 +120,30 @@
 
     <update id="setTccMicroservice">
         <![CDATA[
+        WITH T_FOR_UPDATE as (
+            SELECT
+                id
+            FROM
+                t_tcc
+            WHERE
+                status = 0
+            AND
+                version = 0
+            AND
+                microservice = ''
+            LIMIT 100
+            FOR UPDATE
+        )
         UPDATE
-            t_tcc
+            t_tcc TCC
         SET
-            microservice = #{microservice},
+            microservice = #{microservice, jdbcType=VARCHAR},
             version = version + 1,
             update = CURRENT_TIMESTAMP
+        FROM
+            T_FOR_UPDATE
         WHERE
-            status = 0
-        AND
-            version = 0
-        AND
-            microservice = ''
-        LIMIT 100
+            TCC.id = T_FOR_UPDATE.id;
         ]]>
     </update>
 
