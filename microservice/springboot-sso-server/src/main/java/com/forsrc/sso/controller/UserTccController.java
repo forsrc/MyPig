@@ -56,7 +56,7 @@ public class UserTccController implements UserTccFeignClient {
         try {
             userTcc = userTccService.tccTry(tcc);
         } catch (Exception e) {
-            throw new TccTryException(null, e.getMessage());
+            throw new TccTryException(tcc.getId(), e.getMessage());
         }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
