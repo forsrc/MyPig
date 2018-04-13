@@ -43,10 +43,10 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             TCC.status = 0
-        AND
-            TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
         ORDER BY create ASC
@@ -69,12 +69,12 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             microservice = #{microservice}
         AND
             TCC.status = 0
-        AND
-            TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
         ORDER BY create ASC
@@ -97,10 +97,10 @@
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             TCC_LINK.path = #{path}
-        AND
-            TCC.id = TCC_LINK.tcc_id
         ORDER BY create DESC
         LIMIT 1
     </select>
