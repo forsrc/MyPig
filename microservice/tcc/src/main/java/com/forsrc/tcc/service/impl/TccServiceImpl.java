@@ -83,6 +83,7 @@ public class TccServiceImpl implements TccService {
         if (links != null && !links.isEmpty()) {
             for (TccLink link : links) {
                 link.setTccId(tcc.getId());
+                link.setStatus(Status.TRY.getStatus());
             }
             tccLinkDao.save(links);
         }
