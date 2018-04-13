@@ -9,16 +9,16 @@ spring:
     admin:
       url: http://forsrc.local:13000
   datasource:
-    url: jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
-    username: sa
-    password: sa
-    driver-class-name: org.h2.Driver
+    url:               jdbc:postgresql://forsrc.local:5432/sso # jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
+    username:          postgres
+    password:          postgres
+    driver-class-name: org.postgresql.Driver # org.h2.Driver
     schema:
     - classpath:schema.sql
     data:
     - classpath:data.sql
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect # org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
