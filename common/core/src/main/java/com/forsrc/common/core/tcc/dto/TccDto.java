@@ -99,6 +99,7 @@ public class TccDto implements java.io.Serializable {
     public void setVersion(int version) {
         this.version = version;
     }
+
     @Override
     public String toString() {
         return String.format(
