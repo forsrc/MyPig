@@ -22,6 +22,7 @@ import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @Controller
 public class TccWebSocket {
@@ -34,6 +35,7 @@ public class TccWebSocket {
 
     @MessageMapping("/tcc/{tccId}")
     @SendTo("/topic/tcc")
+    @HystrixCommand()
     @Transactional(rollbackFor = { Exception.class })
     public WsUserTccDto tcc(@DestinationVariable("tccId") String tccId, @Payload Message<WsUserTccDto> message,
             SimpMessageHeaderAccessor headerAccessor, Principal user) throws Exception {
@@ -53,6 +55,7 @@ public class TccWebSocket {
 
     @MessageMapping("/tccLink/{path}")
     @SendTo("/topic/tccLink")
+    @HystrixCommand()
     public WsUserTccDto tccLink(@DestinationVariable("path") String path,
             @Payload Message<WsUserTccDto> message, SimpMessageHeaderAccessor headerAccessor, Principal user)
             throws Exception {

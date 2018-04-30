@@ -9,6 +9,7 @@
         <result property="expire" column="expire" />
         <result property="create" column="create" />
         <result property="update" column="update" />
+        <result property="version" column="version" />
         <result property="status" column="status" />
         <collection property="links"
             javaType="ArrayList"
@@ -23,6 +24,7 @@
             <result property="expire" column="links_expire" />
             <result property="create" column="links_create" />
             <result property="update" column="links_update" />
+            <result property="version" column="links_version" />
             <result property="status" column="links_status" />
         </collection>
     </resultMap>
@@ -38,15 +40,16 @@
             TCC_LINK.expire    AS links_expire,
             TCC_LINK.create    AS links_create,
             TCC_LINK.update    AS links_update,
+            TCC_LINK.version   AS links_version,
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             TCC.status = 0
-        AND
-            TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
         ORDER BY create ASC
@@ -64,17 +67,18 @@
             TCC_LINK.expire    AS links_expire,
             TCC_LINK.create    AS links_create,
             TCC_LINK.update    AS links_update,
+            TCC_LINK.version   AS links_version,
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             microservice = #{microservice}
         AND
             TCC.status = 0
-        AND
-            TCC.id = TCC_LINK.tcc_id
         -- AND
             -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
         ORDER BY create ASC
@@ -92,15 +96,16 @@
             TCC_LINK.expire    AS links_expire,
             TCC_LINK.create    AS links_create,
             TCC_LINK.update    AS links_update,
+            TCC_LINK.version   AS links_version,
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
         LEFT JOIN
             t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
         WHERE
             TCC_LINK.path = #{path}
-        AND
-            TCC.id = TCC_LINK.tcc_id
         ORDER BY create DESC
         LIMIT 1
     </select>

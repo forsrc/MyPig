@@ -53,6 +53,10 @@ public class ZipkinConfig {
     @Qualifier("tccOAuth2RestTemplate")
     private OAuth2RestTemplate tccOAuth2RestTemplate;
 
+    @Autowired
+    @Qualifier("tccLoadBalancedOAuth2RestTemplate")
+    private OAuth2RestTemplate tccLoadBalancedOAuth2RestTemplate;
+
     @Bean
     public Sender sender() {
         return OkHttpSender.create(zipkinUrl + "/api/v2/spans");
@@ -87,8 +91,18 @@ public class ZipkinConfig {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(tccOAuth2RestTemplate.getInterceptors());
         interceptors.add(clientInterceptor);
         tccOAuth2RestTemplate.setInterceptors(interceptors);
+
         interceptors = new ArrayList<>(loadBalancedRestTemplate.getInterceptors());
         interceptors.add(clientInterceptor);
         loadBalancedRestTemplate.setInterceptors(interceptors);
+
+        interceptors = new ArrayList<>(tccLoadBalancedOAuth2RestTemplate.getInterceptors());
+        interceptors.add(clientInterceptor);
+        tccLoadBalancedOAuth2RestTemplate.setInterceptors(interceptors);
+
+        interceptors = new ArrayList<>(restTemplate.getInterceptors());
+        interceptors.add(clientInterceptor);
+        restTemplate.setInterceptors(interceptors);
     }
+
 }
