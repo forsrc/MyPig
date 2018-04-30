@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import brave.Tracing;
@@ -48,6 +49,10 @@ public class ZipkinConfig {
     @Qualifier("loadBalancedRestTemplate")
     private RestTemplate loadBalancedRestTemplate;
 
+    @Autowired
+    @Qualifier("tccOAuth2RestTemplate")
+    private OAuth2RestTemplate tccOAuth2RestTemplate;
+    
     @Bean
     public Sender sender() {
         return OkHttpSender.create(zipkinUrl + "/api/v2/spans");
@@ -82,8 +87,13 @@ public class ZipkinConfig {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
         interceptors.add(clientInterceptor);
         restTemplate.setInterceptors(interceptors);
+
         interceptors = new ArrayList<>(loadBalancedRestTemplate.getInterceptors());
         interceptors.add(clientInterceptor);
         loadBalancedRestTemplate.setInterceptors(interceptors);
+
+        interceptors = new ArrayList<>(tccOAuth2RestTemplate.getInterceptors());
+        interceptors.add(clientInterceptor);
+        tccOAuth2RestTemplate.setInterceptors(interceptors);
     }
 }

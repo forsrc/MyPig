@@ -12,7 +12,7 @@ spring:
     url: jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;
     username: sa
     password: sa
-    driver-class: org.h2.Driver
+    driver-class-name: org.h2.Driver
     schema:
     - classpath:schema.sql
     data:
@@ -71,7 +71,16 @@ server:
   port: 10000
   context-path: /sso
 
-
+feign:
+  hystrix:
+    enabled: true
+ribbon:
+  ReadTimeout:    10000
+  ConnectTimeout:  2000
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 10000
 
 eureka:
   instance:

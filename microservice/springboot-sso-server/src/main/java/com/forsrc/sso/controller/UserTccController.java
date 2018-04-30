@@ -2,7 +2,6 @@ package com.forsrc.sso.controller;
 
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +30,7 @@ import com.forsrc.common.core.tcc.functional.TccSupplier;
 import com.forsrc.common.utils.StringUtils;
 import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.sso.service.UserTccService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/api/v1/tcc/user")
@@ -44,6 +44,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/sync/")
+    @HystrixCommand()
     public ResponseEntity<UserTcc> tccTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         Assert.notNull(tcc, "UserTcc is null");
         Assert.notNull(tcc.getUsername(), "UserTcc username is nul");
@@ -55,7 +56,7 @@ public class UserTccController implements UserTccFeignClient {
         try {
             userTcc = userTccService.tccTry(tcc);
         } catch (Exception e) {
-            throw new TccTryException(null, e.getMessage());
+            throw new TccTryException(tcc.getId(), e.getMessage());
         }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -66,6 +67,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/")
+    @HystrixCommand()
     public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<UserTcc>> result = new DeferredResult<>();
 
@@ -75,6 +77,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/sync/confirm/{id}")
+    @HystrixCommand()
     public ResponseEntity<Void> confirm(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
@@ -96,7 +99,8 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/confirm/{id}")
-    public DeferredResult<ResponseEntity<Void>> confirmResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
+    @HystrixCommand()
+    public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
 
         handle(result, () -> confirm(id, accessToken));
@@ -106,6 +110,7 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/sync/cancel/{id}")
+    @HystrixCommand()
     public ResponseEntity<Void> cancel(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException{
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
@@ -126,7 +131,8 @@ public class UserTccController implements UserTccFeignClient {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/cancel/{id}")
-    public DeferredResult<ResponseEntity<Void>> cancelResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
+    @HystrixCommand()
+    public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") String id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
 
         handle(result, () -> cancel(id, accessToken));
