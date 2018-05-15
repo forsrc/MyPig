@@ -44,7 +44,7 @@
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
-        LEFT JOIN
+        INNER JOIN
             t_tcc_link TCC_LINK
         ON
             TCC.id = TCC_LINK.tcc_id
@@ -71,7 +71,7 @@
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
-        LEFT JOIN
+        INNER JOIN
             t_tcc_link TCC_LINK
         ON
             TCC.id = TCC_LINK.tcc_id
@@ -100,7 +100,7 @@
             TCC_LINK.status    AS links_status
         FROM
             t_tcc TCC
-        LEFT JOIN
+        INNER JOIN
             t_tcc_link TCC_LINK
         ON
             TCC.id = TCC_LINK.tcc_id
