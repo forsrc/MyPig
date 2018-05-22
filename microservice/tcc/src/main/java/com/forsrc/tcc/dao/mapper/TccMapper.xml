@@ -4,8 +4,8 @@
 <mapper namespace="com.forsrc.tcc.dao.mapper.TccMapper">
 
     <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.Tcc">
-        <id property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
-        <result property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
         <result property="expire" column="expire" />
         <result property="create" column="create" />
         <result property="update" column="update" />
@@ -14,13 +14,12 @@
         <collection property="links"
             javaType="ArrayList"
             ofType="com.forsrc.tcc.domain.entity.TccLink"
-            column="links_tcc_id"
-            typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler">
+            column="links_tcc_id">
 
-            <result property="tccId" column="links_tcc_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
-            <result property="id" column="links_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+            <result property="tccId" column="links_tcc_id"/>
+            <result property="id" column="links_id"/>
             <result property="uri" column="links_uri" />
-            <result property="path" column="links_path" />
+            <result property="resourceId" column="links_resource_id" />
             <result property="expire" column="links_expire" />
             <result property="create" column="links_create" />
             <result property="update" column="links_update" />
@@ -33,15 +32,15 @@
         resultMap="resultMap">
         SELECT
             TCC.*,
-            TCC_LINK.tcc_id    AS links_tcc_id,
-            TCC_LINK.id        AS links_id,
-            TCC_LINK.uri       AS links_uri,
-            TCC_LINK.path      AS links_path,
-            TCC_LINK.expire    AS links_expire,
-            TCC_LINK.create    AS links_create,
-            TCC_LINK.update    AS links_update,
-            TCC_LINK.version   AS links_version,
-            TCC_LINK.status    AS links_status
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
         FROM
             t_tcc TCC
         INNER JOIN
@@ -60,15 +59,15 @@
         resultMap="resultMap">
         SELECT
             TCC.*,
-            TCC_LINK.tcc_id    AS links_tcc_id,
-            TCC_LINK.id        AS links_id,
-            TCC_LINK.uri       AS links_uri,
-            TCC_LINK.path      AS links_path,
-            TCC_LINK.expire    AS links_expire,
-            TCC_LINK.create    AS links_create,
-            TCC_LINK.update    AS links_update,
-            TCC_LINK.version   AS links_version,
-            TCC_LINK.status    AS links_status
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
         FROM
             t_tcc TCC
         INNER JOIN
@@ -85,19 +84,19 @@
         LIMIT 100
     </select>
 
-    <select id="getByTccLinkPath" resultType="com.forsrc.tcc.domain.entity.Tcc"
+    <select id="getByTccLinkResourceId" resultType="com.forsrc.tcc.domain.entity.Tcc"
         resultMap="resultMap">
         SELECT
             TCC.*,
-            TCC_LINK.tcc_id    AS links_tcc_id,
-            TCC_LINK.id        AS links_id,
-            TCC_LINK.uri       AS links_uri,
-            TCC_LINK.path      AS links_path,
-            TCC_LINK.expire    AS links_expire,
-            TCC_LINK.create    AS links_create,
-            TCC_LINK.update    AS links_update,
-            TCC_LINK.version   AS links_version,
-            TCC_LINK.status    AS links_status
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
         FROM
             t_tcc TCC
         INNER JOIN
@@ -105,7 +104,7 @@
         ON
             TCC.id = TCC_LINK.tcc_id
         WHERE
-            TCC_LINK.path = #{path}
+            TCC_LINK.resource_id = #{resourceId}
         ORDER BY create DESC
         LIMIT 1
     </select>
@@ -133,8 +132,6 @@
             update = CURRENT_TIMESTAMP
         WHERE
             status = 0
-        AND
-            version = 0
         AND
             microservice = ''
         LIMIT 100

@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +30,6 @@ import com.forsrc.common.core.sso.dto.UserTccDto;
 import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.dto.TccDto;
 import com.forsrc.common.core.tcc.dto.TccLinkDto;
-import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.tcc.domain.entity.Tcc;
@@ -99,9 +97,9 @@ public class TccTest extends MyApplicationTests {
             TccLink tccLink = new TccLink();
             tccLink.setExpire(expire);
             tccLink.setUri(userTccUrl);
-            tccLink.setPath(dto.getId().toString());
+            tccLink.setResourceId(dto.getId());
             links.add(tccLink);
-            tcc.setLinks(links);
+            tcc.setTccLinks(links);
 
 //            ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
 //                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
@@ -179,9 +177,9 @@ public class TccTest extends MyApplicationTests {
             TccLinkDto tccLinkDto = new TccLinkDto();
             tccLinkDto.setExpire(expire);
             tccLinkDto.setUri(userTccUrl);
-            tccLinkDto.setPath(dto.getId().toString());
+            tccLinkDto.setResourceId(dto.getId());
             links.add(tccLinkDto);
-            tccDto.setLinks(links);
+            tccDto.setTccLinks(links);
             response = send(tccUrl, tccDto, HttpMethod.POST, 2);
             TccDto tcc = objectMapper.readValue(response.getBody(), TccDto.class);
             System.out.println("Tcc --> " + tcc);

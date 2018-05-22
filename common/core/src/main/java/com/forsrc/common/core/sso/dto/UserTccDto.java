@@ -1,10 +1,6 @@
 package com.forsrc.common.core.sso.dto;
 
 import java.util.Date;
-import java.util.UUID;
-
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.deser.std.FromStringDeserializer.UUIDDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,8 +10,8 @@ public class UserTccDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -6158323457702043074L;
 
-    @JsonDeserialize(using = UUIDDeserializer.class)
-    private UUID id;
+    //@JsonDeserialize(using = UUIDDeserializer.class)
+    private Long id;
 
     private String username;
 
@@ -60,11 +56,11 @@ public class UserTccDto implements java.io.Serializable {
         this.enabled = enabled;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

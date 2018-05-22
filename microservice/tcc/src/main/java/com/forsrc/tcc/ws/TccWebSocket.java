@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.forsrc.common.core.tcc.dto.WsUserTccDto;
 import com.forsrc.common.core.tcc.status.Status;
-import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
@@ -37,13 +36,13 @@ public class TccWebSocket {
     @SendTo("/topic/tcc")
     @HystrixCommand()
     @Transactional(rollbackFor = { Exception.class })
-    public WsUserTccDto tcc(@DestinationVariable("tccId") String tccId, @Payload Message<WsUserTccDto> message,
+    public WsUserTccDto tcc(@DestinationVariable("tccId") Long tccId, @Payload Message<WsUserTccDto> message,
             SimpMessageHeaderAccessor headerAccessor, Principal user) throws Exception {
         LOGGER.info("ws ttc: {} -> {} -> {} -> {}", tccId, user.getName(), message, headerAccessor);
 
         WsUserTccDto dto = message.getPayload();
         LOGGER.info("ws ttc: {} -> {}", tccId, dto);
-        Tcc tcc = tccService.get(StringUtils.toUuid(tccId));
+        Tcc tcc = tccService.get(tccId);
         tcc.setStatus(dto.getStatus());
         tccService.update(tcc);
 
@@ -53,22 +52,22 @@ public class TccWebSocket {
         return dto;
     }
 
-    @MessageMapping("/tccLink/{path}")
+    @MessageMapping("/tccLink/{resourceId}")
     @SendTo("/topic/tccLink")
     @HystrixCommand()
-    public WsUserTccDto tccLink(@DestinationVariable("path") String path,
+    public WsUserTccDto tccLink(@DestinationVariable("resourceId") Long resourceId,
             @Payload Message<WsUserTccDto> message, SimpMessageHeaderAccessor headerAccessor, Principal user)
             throws Exception {
-        LOGGER.info("ws tccLink: {} -> {} -> {} -> {}", path, user.getName(), message, headerAccessor);
+        LOGGER.info("ws tccLink: {} -> {} -> {} -> {}", resourceId, user.getName(), message, headerAccessor);
 
         WsUserTccDto dto = message.getPayload();
-        LOGGER.info("ws tccLink: {} -> {}", path, dto);
-        TccLink tccLink = tccService.getTccLinkByPath(path);
+        LOGGER.info("ws tccLink: {} -> {}", resourceId, dto);
+        TccLink tccLink = tccService.getTccLinkByResourceId(resourceId);
         tccLink.setStatus(dto.getStatus());
         tccService.update(tccLink);
 
-        Tcc tcc = tccService.getTccByPath(path);
-        List<TccLink> links = tcc.getLinks();
+        Tcc tcc = tccService.getTccByResourceId(resourceId);
+        List<TccLink> links = tcc.getTccLinks();
         boolean isSucc = true;
         for (TccLink link : links) {
             isSucc &= Status.CONFIRM.getStatus() == link.getStatus();
@@ -78,11 +77,11 @@ public class TccWebSocket {
             for (TccLink link : links) {
                 dto.setId(link.getId());
                 dto.setStatus(link.getStatus());
-                messagingTemplate.convertAndSend(String.format("/topic/tccLink/%s", link.getPath()), dto);
+                messagingTemplate.convertAndSend(String.format("/topic/tccLink/%s", link.getResourceId()), dto);
             }
 
         } else {
-            messagingTemplate.convertAndSend(String.format("/topic/tccLink/%s", path), dto);
+            messagingTemplate.convertAndSend(String.format("/topic/tccLink/%s", resourceId), dto);
         }
 
         return dto;

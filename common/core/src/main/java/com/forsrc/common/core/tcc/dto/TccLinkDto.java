@@ -1,7 +1,6 @@
 package com.forsrc.common.core.tcc.dto;
 
 import java.util.Date;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -9,13 +8,13 @@ public class TccLinkDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -3603568859174762821L;
 
-    private UUID id;
+    private Long id;
 
-    private UUID tccId;
+    private Long tccId;
 
     private String uri;
 
-    private String path;
+    private Long resourceId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date create;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -27,11 +26,11 @@ public class TccLinkDto implements java.io.Serializable {
 
     private int version;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,11 +50,11 @@ public class TccLinkDto implements java.io.Serializable {
         this.expire = expire;
     }
 
-    public UUID getTccId() {
+    public Long getTccId() {
         return tccId;
     }
 
-    public void setTccId(UUID tccId) {
+    public void setTccId(Long tccId) {
         this.tccId = tccId;
     }
 
@@ -75,12 +74,12 @@ public class TccLinkDto implements java.io.Serializable {
         this.update = update;
     }
 
-    public String getPath() {
-        return path;
+    public Long getResourceId() {
+        return resourceId;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
     }
 
     public Integer getStatus() {
@@ -102,8 +101,8 @@ public class TccLinkDto implements java.io.Serializable {
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"tccId\":\"%s\", \"uri\":\"%s\", \"path\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"version\":\"%s\"}",
-                id, tccId, uri, path, create, update, expire, status, version);
+                "{\"id\":\"%s\", \"tccId\":\"%s\", \"uri\":\"%s\", \"resourceId\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"version\":\"%s\"}",
+                id, tccId, uri, resourceId, create, update, expire, status, version);
     }
 
 }

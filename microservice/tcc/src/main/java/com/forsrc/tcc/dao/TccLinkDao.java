@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.forsrc.tcc.domain.entity.TccLink;
 
 @Repository
-@RepositoryRestResource(collectionResourceRel = "tccLink", path = "tccLink")
+@RepositoryRestResource(collectionResourceRel = "tccLink", path = "tccLink", exported = false)
 public interface TccLinkDao extends JpaRepository<TccLink, UUID>, PagingAndSortingRepository<TccLink, UUID> {
 
 }
