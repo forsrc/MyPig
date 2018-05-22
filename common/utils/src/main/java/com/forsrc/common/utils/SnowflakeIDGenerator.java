@@ -40,6 +40,8 @@ public class SnowflakeIDGenerator /* implements IDGenerator */ {
     // private static Logger log =
     // LoggerFactory.getLogger(SnowflakeIDGenerator.class);
 
+    private static final SnowflakeIDGenerator SNOWFLAKE_ID_GENERATOR = new SnowflakeIDGenerator(0);
+
     private final long datacenterIdBits = 10L;
     private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
     private final long sequenceBits = 12L;
@@ -147,5 +149,9 @@ public class SnowflakeIDGenerator /* implements IDGenerator */ {
     // @Override
     public void shutdown() {
         // To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public static SnowflakeIDGenerator get() {
+        return SnowflakeIDGenerator.SNOWFLAKE_ID_GENERATOR;
     }
 }
