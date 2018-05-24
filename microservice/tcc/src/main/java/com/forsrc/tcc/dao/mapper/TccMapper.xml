@@ -11,7 +11,7 @@
         <result property="update" column="update" />
         <result property="version" column="version" />
         <result property="status" column="status" />
-        <collection property="links"
+        <collection property="tccLinks"
             javaType="ArrayList"
             ofType="com.forsrc.tcc.domain.entity.TccLink"
             column="links_tcc_id">
