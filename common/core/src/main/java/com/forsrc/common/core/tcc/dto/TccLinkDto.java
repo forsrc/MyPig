@@ -3,7 +3,9 @@ package com.forsrc.common.core.tcc.dto;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TccLinkDto implements java.io.Serializable {
 
     private static final long serialVersionUID = -3603568859174762821L;
