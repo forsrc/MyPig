@@ -76,6 +76,7 @@ public class UserTccController implements UserTccFeignClient {
     @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/sync/confirm/{id}")
     @HystrixCommand()
+
     public ResponseEntity<Void> confirm(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
