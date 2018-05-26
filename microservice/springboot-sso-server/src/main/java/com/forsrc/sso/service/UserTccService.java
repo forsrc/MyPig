@@ -12,8 +12,8 @@ public interface UserTccService {
 
     public UserTcc tccTry(UserTcc tcc) throws TccException;
 
-    public UserTcc confirm(String id) throws TccException;
+    public UserTcc confirm(Long id) throws TccException;
 
-    public UserTcc cancel(String id) throws TccException;
+    public UserTcc cancel(Long id) throws TccException;
 
 }

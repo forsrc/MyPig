@@ -3,9 +3,7 @@ package com.forsrc.tcc.ws;
 import java.lang.reflect.Type;
 import java.security.Principal;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -35,16 +32,9 @@ import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.Transport;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.forsrc.common.core.utils.WebSocketClientUtils;
 import com.forsrc.common.utils.CompletableFutureUtils;
-import com.forsrc.common.utils.StringUtils;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 
@@ -62,7 +52,7 @@ public class TccWsDemo {
 
     @MessageMapping("/demo/{tccId}")
     @SendTo("/topic/demo")
-    public String send(@DestinationVariable("tccId") String tccId, @Payload Message<String> message,
+    public String send(@DestinationVariable("tccId") Long tccId, @Payload Message<String> message,
             SimpMessageHeaderAccessor headerAccessor, Principal user) throws Exception {
         String sessionId = headerAccessor.getSessionId();
         LOGGER.info("SimpMessageHeaderAccessor: {} -> {}", sessionId, headerAccessor);
@@ -70,7 +60,7 @@ public class TccWsDemo {
         LOGGER.info("Principal: {} -> {}", user.getName(), user);
         // messagingTemplate.
         String text = message.getPayload();
-        Tcc tcc = tccService.get(StringUtils.toUuid(tccId));
+        Tcc tcc = tccService.get(tccId);
 
         messagingTemplate.convertAndSend("/topic/demo", "test 1");
         messagingTemplate.convertAndSend("/topic/demo", "test 2", createHeaders(sessionId));
@@ -80,7 +70,7 @@ public class TccWsDemo {
         messagingTemplate.convertAndSendToUser(user.getName(), "/usermessage", "test messagingTemplate",
                 createHeaders(sessionId));
 
-        return tcc != null ? tcc.toString() : tccId;
+        return tcc != null ? tcc.toString() : String.valueOf(tccId);
     }
 
     private MessageHeaders createHeaders(String sessionId) {

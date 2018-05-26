@@ -2,14 +2,11 @@ package com.forsrc.tcc.domain.entity;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -32,9 +29,9 @@ public class Tcc implements java.io.Serializable {
     private static final long serialVersionUID = 4706144731706609711L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "create", insertable = false, updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
@@ -75,13 +72,13 @@ public class Tcc implements java.io.Serializable {
     @OneToMany(targetEntity = TccLink.class, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "tcc_id", referencedColumnName = "id", insertable = false, updatable = false,
         foreignKey = @ForeignKey(javax.persistence.ConstraintMode.CONSTRAINT))
-    private List<TccLink> links;
+    private List<TccLink> tccLinks;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -117,12 +114,12 @@ public class Tcc implements java.io.Serializable {
         this.update = update;
     }
 
-    public List<TccLink> getLinks() {
-        return links;
+    public List<TccLink> getTccLinks() {
+        return tccLinks;
     }
 
-    public void setLinks(List<TccLink> links) {
-        this.links = links;
+    public void setTccLinks(List<TccLink> tccLinks) {
+        this.tccLinks = tccLinks;
     }
 
     public Integer getTimes() {
@@ -152,8 +149,8 @@ public class Tcc implements java.io.Serializable {
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"links\":\"%s\", \"version\":\"%s\"}",
-                id, create, update, expire, status, times, microservice, links, version);
+                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"tccLinks\":\"%s\", \"version\":\"%s\"}",
+                id, create, update, expire, status, times, microservice, tccLinks, version);
 
     }
 

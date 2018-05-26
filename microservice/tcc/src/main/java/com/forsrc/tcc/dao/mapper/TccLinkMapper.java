@@ -8,6 +8,6 @@ import com.forsrc.tcc.domain.entity.TccLink;
 @Mapper
 public interface TccLinkMapper {
 
-    public TccLink getByPath(@Param("path") String path);
+    public TccLink getByResourceId(@Param("resourceId") Long resourceId);
 
 }

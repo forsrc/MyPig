@@ -4,11 +4,11 @@
 <mapper namespace="com.forsrc.tcc.dao.mapper.TccLinkMapper">
 
     <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.TccLink">
-        <id property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
-        <result property="id" column="id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
-        <result property="tccId" column="tcc_id" typeHandler="com.forsrc.common.core.mybatis.handler.UUIDTypeHandler"/>
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="tccId" column="tcc_id"/>
         <result property="uri" column="uri" />
-        <result property="path" column="path" />
+        <result property="resourceId" column="resource_id" />
         <result property="expire" column="expire" />
         <result property="create" column="create" />
         <result property="update" column="update" />
@@ -16,13 +16,13 @@
 
     </resultMap>
 
-    <select id="getByPath" resultType="com.forsrc.tcc.domain.entity.Tcc"
+    <select id="getByResourceId" resultType="com.forsrc.tcc.domain.entity.Tcc"
         resultMap="resultMap">
         SELECT
             id,
             tcc_id,
             uri,
-            path,
+            resource_id,
             expire,
             create,
             update,
@@ -30,7 +30,7 @@
         FROM
             t_tcc_link TCC_LINK
         WHERE
-            TCC_LINK.path = #{path}
+            TCC_LINK.resource_id = #{resourceId}
         ORDER BY create DESC
         LIMIT 1
     </select>

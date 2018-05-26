@@ -17,11 +17,11 @@ public interface TccBaseFeignClient<T> {
             throws TccException;
 
     @RequestMapping(value = "/confirm/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> confirm(@PathVariable("id") String id,
+    public ResponseEntity<Void> confirm(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException;
 
     @RequestMapping(value = "/cancel/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> cancel(@PathVariable("id") String id,
+    public ResponseEntity<Void> cancel(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException;
 
 }

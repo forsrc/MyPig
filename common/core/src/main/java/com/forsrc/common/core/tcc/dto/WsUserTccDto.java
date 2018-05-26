@@ -1,14 +1,13 @@
 package com.forsrc.common.core.tcc.dto;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import com.forsrc.common.core.tcc.exception.TccException;
 
 public class WsUserTccDto implements Serializable {
     private static final long serialVersionUID = -6117408218100477113L;
 
-    private UUID id;
+    private Long id;
 
     private int status;
 
@@ -19,16 +18,16 @@ public class WsUserTccDto implements Serializable {
     public WsUserTccDto() {
     }
 
-    public WsUserTccDto(UUID id, int status) {
+    public WsUserTccDto(Long id, int status) {
         this.id = id;
         this.status = status;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

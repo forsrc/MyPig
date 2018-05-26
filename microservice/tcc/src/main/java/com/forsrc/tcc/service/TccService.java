@@ -15,16 +15,16 @@ import com.forsrc.tcc.domain.entity.TccLink;
 public interface TccService {
 
     @Transactional(readOnly = true)
-    public Tcc get(UUID id);
+    public Tcc get(Long id);
 
     @Transactional(readOnly = true)
     public TccLink getTccLink(UUID id);
 
     @Transactional(readOnly = true)
-    public Tcc getTccByPath(String path);
+    public Tcc getTccByResourceId(Long resourceId);
 
     @Transactional(readOnly = true)
-    public TccLink getTccLinkByPath(String path);
+    public TccLink getTccLinkByResourceId(Long resourceId);
 
     public int setTccMicroservice(String microservice);
 
@@ -34,11 +34,11 @@ public interface TccService {
 
     public TccLink update(TccLink tccLink);
 
-    public void delete(UUID id);
+    public void delete(Long id);
 
-    public Tcc confirm(UUID uuid, String accessToken) throws TccException;
+    public Tcc confirm(Long id, String accessToken) throws TccException;
 
-    public Tcc cancel(UUID uuid, String accessToken) throws TccException;
+    public Tcc cancel(Long id, String accessToken) throws TccException;
 
     @Transactional(readOnly = true)
     public List<Tcc> getTryStatusList();

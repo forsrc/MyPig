@@ -2,15 +2,16 @@ package com.forsrc.common.core.tcc.dto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TccDto implements java.io.Serializable {
 
     private static final long serialVersionUID = 4706144731706609711L;
 
-    private UUID id;
+    private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date create;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -26,13 +27,13 @@ public class TccDto implements java.io.Serializable {
 
     private int version;
 
-    private List<TccLinkDto> links;
+    private List<TccLinkDto> tccLinks;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -68,12 +69,12 @@ public class TccDto implements java.io.Serializable {
         this.update = update;
     }
 
-    public List<TccLinkDto> getLinks() {
-        return links;
+    public List<TccLinkDto> getTccLinks() {
+        return tccLinks;
     }
 
-    public void setLinks(List<TccLinkDto> links) {
-        this.links = links;
+    public void setTccLinks(List<TccLinkDto> tccLinks) {
+        this.tccLinks = tccLinks;
     }
 
     public Integer getTimes() {
@@ -103,8 +104,8 @@ public class TccDto implements java.io.Serializable {
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"version\":\"%s\", \"links\":\"%s\"}",
-                id, create, update, expire, status, times, microservice, version, links);
+                "{\"id\":\"%s\", \"create\":\"%s\", \"update\":\"%s\", \"expire\":\"%s\", \"status\":\"%s\", \"times\":\"%s\", \"microservice\":\"%s\", \"version\":\"%s\", \"tccLinks\":\"%s\"}",
+                id, create, update, expire, status, times, microservice, version, tccLinks);
     }
 
 }

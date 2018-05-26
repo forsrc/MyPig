@@ -21,8 +21,6 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
@@ -31,8 +29,8 @@ import com.forsrc.common.core.tcc.exception.TccAlreadyConfirmException;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
-import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.common.core.tcc.status.Status;
+import com.forsrc.common.utils.SnowflakeIDGenerator;
 import com.forsrc.tcc.dao.TccDao;
 import com.forsrc.tcc.dao.TccLinkDao;
 import com.forsrc.tcc.dao.mapper.TccLinkMapper;
@@ -40,7 +38,6 @@ import com.forsrc.tcc.dao.mapper.TccMapper;
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.domain.entity.TccLink;
 import com.forsrc.tcc.service.TccService;
-import com.netflix.discovery.EurekaClient;
 
 @Service
 @Transactional(rollbackFor = { Exception.class })
@@ -72,16 +69,18 @@ public class TccServiceImpl implements TccService {
 
     @Override
     @Transactional(readOnly = true)
-    public Tcc get(UUID id) {
+    public Tcc get(Long id) {
         return tccDao.getOne(id);
     }
 
     @Override
     public Tcc save(Tcc tcc) {
+        tcc.setId(SnowflakeIDGenerator.get().getId());
         tccDao.save(tcc);
-        List<TccLink> links = tcc.getLinks();
+        List<TccLink> links = tcc.getTccLinks();
         if (links != null && !links.isEmpty()) {
             for (TccLink link : links) {
+                link.setId(SnowflakeIDGenerator.get().getId());
                 link.setTccId(tcc.getId());
                 link.setStatus(Status.TRY.getStatus());
             }
@@ -92,7 +91,7 @@ public class TccServiceImpl implements TccService {
 
     @Override
     public Tcc update(Tcc tcc) {
-        List<TccLink> links = tcc.getLinks();
+        List<TccLink> links = tcc.getTccLinks();
         if (links != null && !links.isEmpty()) {
             tccLinkDao.save(links);
         }
@@ -100,16 +99,16 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(Long id) {
         tccDao.delete(id);
     }
 
     @Override
-    public Tcc confirm(UUID uuid, String accessToken) throws TccException{
-        Tcc tcc = tccDao.findOne(uuid);
+    public Tcc confirm(Long id, String accessToken) throws TccException{
+        Tcc tcc = tccDao.findOne(id);
         LOGGER.info("--> confirm: {}", tcc);
         if (tcc == null) {
-            throw new TccConfirmException(uuid, "Not found tcc: " + uuid);
+            throw new TccConfirmException(id, "Not found tcc: " + id);
         }
 
         if (new Date().compareTo(tcc.getExpire()) > 0) {
@@ -126,7 +125,7 @@ public class TccServiceImpl implements TccService {
         // return tcc;
         // }
         if (tcc.getStatus() != null && Status.CANCEL.getStatus() == tcc.getStatus().intValue()) {
-            throw new TccAlreadyCancelException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
+            throw new TccAlreadyCancelException(id, "Already confirmed, Tccs tatus: " + tcc.getStatus());
         }
         if (tcc.getStatus() != null && Status.CONFIRM.getStatus() == tcc.getStatus().intValue()) {
             // throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: "
@@ -135,7 +134,7 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
         if (tcc.getStatus() != null && Status.TRY.getStatus() != tcc.getStatus().intValue()) {
-            throw new TccConfirmException(uuid, "Error tcc status: " + tcc.getStatus());
+            throw new TccConfirmException(id, "Error tcc status: " + tcc.getStatus());
         }
 
         confirmTcc(tcc, accessToken);
@@ -145,11 +144,11 @@ public class TccServiceImpl implements TccService {
     public Tcc confirmTcc(Tcc tcc, String accessToken) {
 
         boolean isError = false;
-        List<TccLink> links = tcc.getLinks();
+        List<TccLink> links = tcc.getTccLinks();
         for (TccLink link : links) {
             //String uri = String.format("%s%s", link.getUri(), "/confirm");
             //ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.PUT, 1);
-            ResponseEntity<Void> response = confirmTccLink(link.getPath().toString(), accessToken, 1);
+            ResponseEntity<Void> response = confirmTccLink(link.getResourceId(), accessToken, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -171,26 +170,26 @@ public class TccServiceImpl implements TccService {
         return tcc4Update;
     }
 
-    public ResponseEntity<Void> confirmTccLink(String path, String accessToken, final int retry) {
+    public ResponseEntity<Void> confirmTccLink(Long resourceId, String accessToken, final int retry) {
         if (accessToken == null) {
             accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
         }
         try {
-            return userTccFeignClient.confirm(path, "Bearer " + accessToken);
+            return userTccFeignClient.confirm(resourceId, "Bearer " + accessToken);
         } catch (Exception e) {
             if (retry >= 0) {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException ie) {
                 }
-                return confirmTccLink(path, null, retry - 1);
+                return confirmTccLink(resourceId, null, retry - 1);
             }
             if (e instanceof HttpStatusCodeException) {
                 HttpStatusCodeException hsce = (HttpStatusCodeException)e;
                 LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
                 return ResponseEntity
                         .status(hsce.getStatusCode())
-                        .header("tccId", path)
+                        .header("tccId", String.valueOf(resourceId))
                         .header("responseBody", hsce.getResponseBodyAsString())
                         .header("errorMessage", hsce.getMessage())
                         .headers(hsce.getResponseHeaders())
@@ -198,7 +197,7 @@ public class TccServiceImpl implements TccService {
             }
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .header("tccId", path)
+                    .header("tccId", String.valueOf(resourceId))
                     //.header("responseBody", e.getResponseBodyAsString())
                     .header("errorMessage", e.getMessage())
                     //.headers(e.getResponseHeaders())
@@ -207,11 +206,11 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc cancel(UUID uuid, String accessToken) throws TccException{
-        Tcc tcc = tccDao.getOne(uuid);
+    public Tcc cancel(Long id, String accessToken) throws TccException{
+        Tcc tcc = tccDao.getOne(id);
         LOGGER.info("--> cancel: {}", tcc);
         if (tcc == null) {
-            throw new TccCancelException(uuid, "Not found tcc: " + uuid);
+            throw new TccCancelException(id, "Not found tcc: " + id);
         }
         if (new Date().compareTo(tcc.getExpire()) > 0) {
             LOGGER.info("--> Timeout: {} -> {}", tcc.getId(), tcc.getExpire());
@@ -227,10 +226,10 @@ public class TccServiceImpl implements TccService {
             return tcc;
         }
         if (tcc.getStatus() != null && Status.CONFIRM.getStatus() == tcc.getStatus().intValue()) {
-            throw new TccAlreadyConfirmException(uuid, "Already confirmed, Tccs tatus: " + tcc.getStatus());
+            throw new TccAlreadyConfirmException(id, "Already confirmed, Tccs tatus: " + tcc.getStatus());
         }
         if (tcc.getStatus() != null && Status.TRY.getStatus() != tcc.getStatus().intValue()) {
-            throw new TccCancelException(uuid, "Error tcc status: " + tcc.getStatus());
+            throw new TccCancelException(id, "Error tcc status: " + tcc.getStatus());
         }
 
         cancelTcc(tcc, accessToken);
@@ -240,11 +239,11 @@ public class TccServiceImpl implements TccService {
     private Tcc cancelTcc(Tcc tcc, String accessToken) {
 
         boolean isError = false;
-        List<TccLink> links = tcc.getLinks();
+        List<TccLink> links = tcc.getTccLinks();
         for (TccLink link : links) {
             //String uri = String.format("%s%s", link.getUri(), "/cancel");
             //ResponseEntity<Void> response = send(uri, link.getPath().toString(), accessToken, HttpMethod.DELETE, 1);
-            ResponseEntity<Void> response = cancelTccLink(link.getPath().toString(), accessToken, 1);
+            ResponseEntity<Void> response = cancelTccLink(link.getResourceId(), accessToken, 1);
             LOGGER.info("--> response: {}", response);
             String tccLinkStatus = response.getHeaders().getFirst("tccLinkStatus");
             int status = StringUtils.isEmpty(tccLinkStatus) ? Status.ERROR.getStatus() : Integer.valueOf(tccLinkStatus);
@@ -265,26 +264,26 @@ public class TccServiceImpl implements TccService {
         return tcc;
     }
 
-    public ResponseEntity<Void> cancelTccLink(String path, String accessToken, final int retry) {
+    public ResponseEntity<Void> cancelTccLink(Long resourceId, String accessToken, final int retry) {
         if (accessToken == null) {
             accessToken = tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue();
         }
         try {
-            return userTccFeignClient.cancel(path, "Bearer " + accessToken);
+            return userTccFeignClient.cancel(resourceId, "Bearer " + accessToken);
         } catch (Exception e) {
             if (retry >= 0) {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException ie) {
                 }
-                return cancelTccLink(path, null, retry - 1);
+                return cancelTccLink(resourceId, null, retry - 1);
             }
             if (e instanceof HttpStatusCodeException) {
                 HttpStatusCodeException hsce = (HttpStatusCodeException)e;
                 LOGGER.warn("--> {}: {} -> {}", e.getClass(), hsce.getStatusCode(), hsce.getResponseBodyAsString());
                 return ResponseEntity
                         .status(hsce.getStatusCode())
-                        .header("tccId", path)
+                        .header("tccId", String.valueOf(resourceId))
                         .header("responseBody", hsce.getResponseBodyAsString())
                         .header("errorMessage", hsce.getMessage())
                         .headers(hsce.getResponseHeaders())
@@ -292,7 +291,7 @@ public class TccServiceImpl implements TccService {
             }
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .header("tccId", path)
+                    .header("tccId", String.valueOf(resourceId))
                     //.header("responseBody", e.getResponseBodyAsString())
                     .header("errorMessage", e.getMessage())
                     //.headers(e.getResponseHeaders())
@@ -383,13 +382,13 @@ public class TccServiceImpl implements TccService {
     }
 
     @Override
-    public Tcc getTccByPath(String path) {
-        return tccMapper.getByTccLinkPath(path);
+    public Tcc getTccByResourceId(Long resourceId) {
+        return tccMapper.getByTccLinkResourceId(resourceId);
     }
 
     @Override
-    public TccLink getTccLinkByPath(String path) {
-        return tccLinkMapper.getByPath(path);
+    public TccLink getTccLinkByResourceId(Long resourceId) {
+        return tccLinkMapper.getByResourceId(resourceId);
     }
 
     @Override

@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +30,6 @@ import com.forsrc.common.core.sso.dto.UserTccDto;
 import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.dto.TccDto;
 import com.forsrc.common.core.tcc.dto.TccLinkDto;
-import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.tcc.domain.entity.Tcc;
@@ -58,6 +56,8 @@ public class TccTest extends MyApplicationTests {
     @Autowired
     private UserTccFeignClient userTccFeignClient;
 
+    private static final String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
+
     @After
     public void init() {
 
@@ -74,45 +74,64 @@ public class TccTest extends MyApplicationTests {
             testFeignClient();
             return;
         }
-        String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
+
         for (int i = 0; i < 100; i++) {
-            UserTcc userTcc = new UserTcc();
-            UUID id = UUID.randomUUID();
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MINUTE, 30);
-            Date expire = calendar.getTime();
-            userTcc.setAuthorities("ROLE_" + id.toString());
-            userTcc.setUsername(id.toString());
-            userTcc.setPassword(id.toString());
-            userTcc.setEnabled(0);
-            userTcc.setExpire(expire);
+            UserTcc userTcc = createUserTcc();
+            UserTcc userTcc1 = createUserTcc();
+            UserTcc userTcc2 = createUserTcc();
 
-//            ResponseEntity<UserTcc> userTccResponseEntity = userTccFeignClient.tccTry(userTcc,
-//                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            // ResponseEntity<UserTcc> userTccResponseEntity =
+            // userTccFeignClient.tccTry(userTcc,
+            // "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
             ResponseEntity<UserTcc> userTccResponseEntity = sendUserTcc(userTcc, 2);
+            ResponseEntity<UserTcc> userTccResponseEntity1 = sendUserTcc(userTcc, 2);
+            ResponseEntity<UserTcc> userTccResponseEntity2 = sendUserTcc(userTcc, 2);
             UserTcc dto = userTccResponseEntity.getBody();
+            UserTcc dto1 = userTccResponseEntity1.getBody();
+            UserTcc dto2 = userTccResponseEntity2.getBody();
             System.out.println("UserTcc --> " + dto);
-            Tcc tcc = new Tcc();
-            tcc.setExpire(expire);
-            tcc.setMicroservice("");
-            List<TccLink> links = new ArrayList<>();
-            TccLink tccLink = new TccLink();
-            tccLink.setExpire(expire);
-            tccLink.setUri(userTccUrl);
-            tccLink.setPath(dto.getId().toString());
-            links.add(tccLink);
-            tcc.setLinks(links);
+            Tcc tcc = createTcc(dto, dto1, dto2);
 
-//            ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
-//                    "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
+            // ResponseEntity<Tcc> r = tccFeignClient.tccTry(tcc,
+            // "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
             ResponseEntity<Tcc> r = sendTcc(tcc, 2);
             System.out.println("Tcc --> " + r.getBody());
         }
 
     }
 
+    private UserTcc createUserTcc() {
+        UserTcc userTcc = new UserTcc();
+        UUID id = UUID.randomUUID();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 30);
+        Date expire = calendar.getTime();
+        userTcc.setAuthorities("ROLE_" + id.toString());
+        userTcc.setUsername(id.toString());
+        userTcc.setPassword(id.toString());
+        userTcc.setEnabled(0);
+        userTcc.setExpire(expire);
+        return userTcc;
+    }
+
+    private Tcc createTcc(UserTcc... dto) {
+        Tcc tcc = new Tcc();
+        tcc.setMicroservice("");
+        List<TccLink> links = new ArrayList<>();
+        for (UserTcc userTcc : dto) {
+            TccLink tccLink = new TccLink();
+            tccLink.setExpire(userTcc.getExpire());
+            tcc.setExpire(userTcc.getExpire());
+            tccLink.setUri(userTccUrl);
+            tccLink.setResourceId(userTcc.getId());
+            links.add(tccLink);
+        }
+        tcc.setTccLinks(links);
+        return tcc;
+    }
+
     public ResponseEntity<UserTcc> sendUserTcc(UserTcc userTcc, int retry) {
-        
+
         try {
             return userTccFeignClient.tccTry(userTcc,
                     "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
@@ -124,15 +143,15 @@ public class TccTest extends MyApplicationTests {
                 }
                 return sendUserTcc(userTcc, --retry);
             }
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .header("errorMessage", e.getMessage())
-//                    .body(null);
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            // .header("errorMessage", e.getMessage())
+            // .body(null);
             throw new RuntimeException(e.getMessage());
         }
     }
 
     public ResponseEntity<Tcc> sendTcc(Tcc tcc, int retry) {
-        
+
         try {
             return tccFeignClient.tccTry(tcc,
                     "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
@@ -144,12 +163,13 @@ public class TccTest extends MyApplicationTests {
                 }
                 return sendTcc(tcc, --retry);
             }
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .header("errorMessage", e.getMessage())
-//                    .body(null);
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            // .header("errorMessage", e.getMessage())
+            // .body(null);
             throw new RuntimeException(e.getMessage());
         }
     }
+
     @Test
     public void test() throws Exception {
 
@@ -179,9 +199,9 @@ public class TccTest extends MyApplicationTests {
             TccLinkDto tccLinkDto = new TccLinkDto();
             tccLinkDto.setExpire(expire);
             tccLinkDto.setUri(userTccUrl);
-            tccLinkDto.setPath(dto.getId().toString());
+            tccLinkDto.setResourceId(dto.getId());
             links.add(tccLinkDto);
-            tccDto.setLinks(links);
+            tccDto.setTccLinks(links);
             response = send(tccUrl, tccDto, HttpMethod.POST, 2);
             TccDto tcc = objectMapper.readValue(response.getBody(), TccDto.class);
             System.out.println("Tcc --> " + tcc);
