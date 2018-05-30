@@ -1,0 +1,83 @@
+version: '3'
+services:
+
+  mypig-springboot-eureka-server:
+    build:
+      context: ./microservice/springboot-eureka-server
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-eureka-server-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 11100
+    ports:
+    - 11100:11100
+
+  mypig-springboot-admin:
+    build:
+      context: ./microservice/springboot-admin
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-admin-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 13000
+    ports:
+    - 13000:13000
+
+  mypig-springboot-zipkin-server:
+    build:
+      context: ./microservice/springboot-zipkin-server
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-zipkin-server-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 11110
+    ports:
+    - 11110:11110
+
+  mypig-springboot-config-server:
+    build:
+      context: ./microservice/springboot-config-server
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-config-server-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 12000
+    ports:
+    - 12000:12000
+
+  mypig-springboot-sso-server:
+    build:
+      context: ./microservice/springboot-sso-server
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-sso-server-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 10000
+    ports:
+    - 10000:10000
+
+  mypig-springboot-api-gateway:
+    build:
+      context: ./microservice/springboot-api-gateway
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-api-gateway-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 8088
+    ports:
+    - 8088:8088
+
+  mypig-tcc:
+    build:
+      context: ./microservice/tcc
+      dockerfile: Dockerfile
+      args:
+        ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-tcc-0.0.1-SNAPSHOT.jar
+        ARG_RES_FILE: ${PWD}/src/main/resources
+        ARG_PORT: 10020
+    ports:
+    - 10020:10020
+
+networks:
+  forsrc.local:
+    driver: bridge
