@@ -3,10 +3,10 @@ spring:
     name: springboot-api-gateway
   cloud:
     config:
-      uri: http://forsrc.local:12000/config
+      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
   boot:
     admin:
-      url: http://forsrc.local:13000/
+      url: ${ADMIN_SERVER:http://forsrc.local:13000}
   aop:
     proxy-target-class: true
 
@@ -14,21 +14,21 @@ spring:
 security:
   oauth2:
     client:
-      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
-      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/authorize
       client-id:              forsrc
       client-secret:          forsrc
       scope:                  read, write
     resource:
       filter-order:           3
-      userInfoUri:            http://forsrc.local:10000/sso/me
+      userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
-      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
+      token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 
 management:
-  
+
   context-path: /mgmt
   security:
     enabled: false
@@ -61,13 +61,11 @@ zuul:
 
 eureka:
   instance:
-    home-page-url:           http://forsrc.local:${server.port}${server.context-path}
-    health-check-url:        http://forsrc.local:${server.port}${server.context-path}/mgmt/health
-    secure-health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
-    status-page-url:         http://forsrc.local:${server.port}${server.context-path}/mgmt/info
+    host:                    http://forsrc.local:${server.port}
+    home-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}
+    health-check-url:        ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
+    secure-health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
+    status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
   client:
     serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka
-
-
-
+      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100}/eureka

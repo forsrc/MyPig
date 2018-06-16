@@ -1,16 +1,11 @@
 
-spring:
-  application:
-    name: springboot-config-server
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/forsrc/MyPig-config
+#spring:
+  #application:
+    #name: springboot-config-server
 
 
 
-server:
-  port: 12000
-  context-path: /config
 
+#server:
+  #port: 12000
+  #context-path: /config

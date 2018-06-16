@@ -3,13 +3,13 @@ spring:
     name: springboot-eureka-server
   cloud:
     config:
-      uri: http://forsrc.local:12000/config
-  
+      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+
   boot:
     admin:
+      url:       ${ADMIN_SERVER:http://forsrc.local:13000}
       client:
         enabled: true
-      url: http://forsrc.local:13000/
 
 
 #spring.cloud.dashboard.springboot-eureka-server:
@@ -22,7 +22,7 @@ spring:
 
 eureka:
   instance:
-    hostname: forsrc.local
+    hostname: ${HOST_NAME:forsrc.local}
     metadata-map:
       cluster: SPRINGBOOT-EUREKA-SERVER
       management.context-path: ${management.context-path}
@@ -52,5 +52,3 @@ management:
 server:
   port: 11100
   context-path: /
-
-

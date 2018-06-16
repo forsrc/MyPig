@@ -13,9 +13,9 @@ RUN mkdir app/config
 ADD ${ARG_RES_FILE} app/config
 
 ADD entrypoint.sh /
-RUN chmod u+x /entrypoint.sh
 
-RUN chmod -R u+x /app
+RUN chmod 777 /entrypoint.sh
+RUN chmod -R 777 /app
 
 EXPOSE ${ARG_PORT}
 
