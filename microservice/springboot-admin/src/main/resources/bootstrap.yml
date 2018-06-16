@@ -73,7 +73,5 @@ eureka:
       cluster: MAIN
       management.context-path: ${management.context-path}
   client:
-    registerWithEureka: true
-    fetchRegistry: true
     serviceUrl:
-      defaultZone:
+      defaultZone: ${EUREKA_SERVER:http://forsrc.local:11100}/eureka
