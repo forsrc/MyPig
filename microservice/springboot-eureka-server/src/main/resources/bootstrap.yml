@@ -22,16 +22,16 @@ spring:
 
 eureka:
   instance:
-    hostname:  ${HOST_NAME:forsrc.local:${server.port}}
+    hostname:                  ${HOST_NAME:http://forsrc.local:${server.port}}
     metadata-map:
-      cluster: SPRINGBOOT-EUREKA-SERVER
+      cluster:                 SPRINGBOOT-EUREKA-SERVER
       management.context-path: ${management.context-path}
   client:
     initialInstanceInfoReplicationIntervalSeconds: 60
-    #registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry:      false
     serviceUrl:
-      defaultZone: ${eureka.instance.hostname}/eureka
+      defaultZone:      ${eureka.instance.hostname}/eureka
 #  dashboard:
 #    enabled: true
 
