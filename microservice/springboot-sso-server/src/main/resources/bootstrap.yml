@@ -92,7 +92,7 @@ eureka:
     status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
   client:
     serviceUrl:
-      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100}/eureka
+      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
 
 tcc:
   ws: ${TCC_WS:ws://forsrc.local:10020/tcc/ws/tcc}
