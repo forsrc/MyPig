@@ -64,14 +64,14 @@ server:
 
 eureka:
   instance:
-    host:                    http://forsrc.local:${server.port}
-    home-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}
-    health-check-url:        ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    secure-health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.port}${server.context-path}/mgmt/health
-    status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.port}${server.context-path}/mgmt/info
+    host:                      http://forsrc.local:${server.port}
+    home-page-url:             ${HOST_NAME:${eureka.instance.host}}
+    health-check-url:          ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
+    secure-health-check-url:   ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
+    status-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
     metadata-map:
       cluster: MAIN
       management.context-path: ${management.context-path}
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_SERVER:http://forsrc.local:11100}/eureka
+      defaultZone:             ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
