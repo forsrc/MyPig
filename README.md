@@ -15,4 +15,5 @@
     springboot-eureka-server | 11100 | 3           |
     springboot-config-server | 12000 | 2           |
     springboot-admin         | 13000 | 1           |
+    springboot-zipkin-server | 11110 | 1           |
     user                     | 10010 | 6           |
