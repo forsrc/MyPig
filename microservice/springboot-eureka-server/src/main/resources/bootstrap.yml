@@ -22,16 +22,21 @@ spring:
 
 eureka:
   instance:
-    hostname: ${HOST_NAME:forsrc.local}
+    host:                      http://forsrc.local:${server.port}
+    home-page-url:             ${HOST_NAME:${eureka.instance.host}}
+    health-check-url:          ${HOST_NAME:${eureka.instance.host}}/mgmt/health
+    secure-health-check-url:   ${HOST_NAME:${eureka.instance.host}}/mgmt/health
+    status-page-url:           ${HOST_NAME:${eureka.instance.host}}/mgmt/info
     metadata-map:
-      cluster: SPRINGBOOT-EUREKA-SERVER
+      cluster:                 SPRINGBOOT-EUREKA-SERVER
       management.context-path: ${management.context-path}
   client:
     initialInstanceInfoReplicationIntervalSeconds: 60
-    #registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry:      false
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+      defaultZone:      ${EUREKA_SERVER:${eureka.instance.host}/eureka}
+
 #  dashboard:
 #    enabled: true
 
