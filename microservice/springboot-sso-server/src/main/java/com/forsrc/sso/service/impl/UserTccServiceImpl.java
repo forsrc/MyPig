@@ -30,6 +30,7 @@ import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.status.Status;
 import com.forsrc.common.core.utils.WebSocketClientUtils;
 import com.forsrc.common.utils.CompletableFutureUtils;
+import com.forsrc.common.utils.SnowflakeIDGenerator;
 import com.forsrc.common.utils.StringUtils;
 import com.forsrc.sso.config.PasswordEncoderConfig;
 import com.forsrc.sso.dao.UserTccDao;
@@ -66,7 +67,7 @@ public class UserTccServiceImpl implements UserTccService {
 
     @Override
     public UserTcc tccTry(UserTcc userTcc) {
-        userTcc.setId(null);
+        userTcc.setId(SnowflakeIDGenerator.get().getId());
         userTcc.setPassword(PasswordEncoderConfig.PASSWORD_ENCODER.encode(userTcc.getPassword()));
         userTcc.setStatus(Status.TRY.getStatus());
         userTcc = userTccDao.save(userTcc);
@@ -75,9 +76,9 @@ public class UserTccServiceImpl implements UserTccService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class, TccException.class})
-    public UserTcc confirm(String id) throws TccConfirmException {
-        UUID uuid = StringUtils.toUuid(id);
-        UserTcc userTcc = userTccDao.getOne(uuid);
+    public UserTcc confirm(Long id) throws TccConfirmException {
+
+        UserTcc userTcc = userTccDao.getOne(id);
         Assert.notNull(userTcc, "Not found userTcc: " + id);
         LOGGER.info("--> {}", userTcc);
         if (new Date().compareTo(userTcc.getExpire()) > 0) {
@@ -102,7 +103,7 @@ public class UserTccServiceImpl implements UserTccService {
             try {
                 confirm(id, userTcc.getStatus());
             } catch (Exception e) {
-                throw new TccConfirmException(uuid, e.getMessage());
+                throw new TccConfirmException(id, e.getMessage());
             }
             return userTcc;
         } else {
@@ -113,9 +114,9 @@ public class UserTccServiceImpl implements UserTccService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class, TccException.class})
-    public UserTcc cancel(String id) {
-        UUID uuid = StringUtils.toUuid(id);
-        UserTcc userTcc = userTccDao.getOne(uuid);
+    public UserTcc cancel(Long id) {
+
+        UserTcc userTcc = userTccDao.getOne(id);
         Assert.notNull(userTcc, "Not found userTcc: " + id);
         LOGGER.info("--> {}", userTcc);
         if (userTcc.getStatus() == Status.TRY.getStatus()) {
@@ -128,9 +129,9 @@ public class UserTccServiceImpl implements UserTccService {
     }
 
     @Transactional(rollbackFor = {Exception.class, TccException.class})
-    private void confirm(String id, int status) throws InterruptedException, ExecutionException, TimeoutException {
-        UUID uuid = StringUtils.toUuid(id);
-        WsUserTccDto dto = new WsUserTccDto(uuid, status);
+    private void confirm(Long id, int status) throws InterruptedException, ExecutionException, TimeoutException {
+
+        WsUserTccDto dto = new WsUserTccDto(id, status);
         final CompletableFuture<WsUserTccDto> completableFuture = CompletableFutureUtils.withTimeout(Duration.ofSeconds(10));
         WebSocketClientUtils.get(tccWs, new MappingJackson2MessageConverter(), tccOAuth2RestTemplate)
                 .set(String.format("/topic/tccLink/%s", id), new TccStompSessionHandler(completableFuture))

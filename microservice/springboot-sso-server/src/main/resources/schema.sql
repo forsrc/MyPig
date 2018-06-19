@@ -25,7 +25,7 @@ CREATE TABLE authorities (
   version   int          NOT NULL DEFAULT 0,
   create    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY u_auth_username (username,authority)
+  UNIQUE KEY uk_auth_username (username,authority)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -41,7 +41,7 @@ CREATE TABLE oauth_access_token (
   refresh_token     varchar(256) DEFAULT NULL,
   create            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY u_authentication_id (authentication_id)
+  UNIQUE KEY uk_authentication_id (authentication_id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -98,13 +98,13 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS t_sso_user_tcc;
 CREATE TABLE t_sso_user_tcc (
-  id          UUID         NOT NULL,
+  id          bigint       NOT NULL,
   username    varchar(50)  NOT NULL,
   password    varchar(200) NOT NULL,
   enabled     tinyint(1)   NOT NULL DEFAULT 0,
   authorities varchar(200) NOT NULL DEFAULT 'ROLE_USER',
   status      tinyint(2)   NOT NULL DEFAULT 0,
-  version      int         NOT NULL DEFAULT 0,
+  version     int          NOT NULL DEFAULT 0,
   expire      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   create      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -1,7 +1,6 @@
 package com.forsrc.tcc.controller;
 
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +33,7 @@ import com.forsrc.common.core.tcc.exception.TccTryException;
 import com.forsrc.common.core.tcc.feignclient.TccFeignClient;
 import com.forsrc.common.core.tcc.functional.TccSupplier;
 import com.forsrc.common.core.tcc.status.Status;
-import com.forsrc.common.utils.StringUtils;
+
 import com.forsrc.tcc.domain.entity.Tcc;
 import com.forsrc.tcc.service.TccService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -55,11 +53,11 @@ public class TccController implements TccFeignClient {
     @GetMapping(path = "/sync/{id}")
     @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Tcc> get(
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) {
-        LOGGER.info("--> tcc id: {}", id);
+        LOGGER.info("--> get id: {}", id);
         Assert.notNull(id, "Tcc id is null");
-        Tcc tcc = tccService.get(UUID.fromString(id));
+        Tcc tcc = tccService.get(id);
         return ResponseEntity.ok().body(tcc);
     }
 
@@ -67,9 +65,9 @@ public class TccController implements TccFeignClient {
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Tcc>> getDeferredResult(
             @RequestHeader("Authorization") String accessToken,
-            @PathVariable("id") String id) throws TccException {
+            @PathVariable("id") Long id) throws TccException {
         final DeferredResult<ResponseEntity<Tcc>> result = new DeferredResult<>();
-        handle(result, () -> get(accessToken, id));
+        handle(result, () -> get(id, accessToken));
         return result;
     }
 
@@ -79,7 +77,7 @@ public class TccController implements TccFeignClient {
     public ResponseEntity<Tcc> tccTry(
             @RequestBody Tcc tcc,
             @RequestHeader("Authorization") String accessToken) throws TccTryException {
-        LOGGER.info("--> tcc: {}", tcc);
+        LOGGER.info("--> tccTry: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         tcc.setStatus(Status.TRY.getStatus());
         tcc.setTimes(0);
@@ -104,7 +102,7 @@ public class TccController implements TccFeignClient {
     public ResponseEntity<Tcc> tccTryFallBack(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody Tcc tcc) throws TccException {
-        LOGGER.info("--> tcc: {}", tcc);
+        LOGGER.info("--> tccTryFallBack: {}", tcc);
         Assert.notNull(tcc, "Tcc is null");
         return ResponseEntity.ok().body(tcc);
     }
@@ -114,7 +112,7 @@ public class TccController implements TccFeignClient {
     @ExceptionHandler(TccTryException.class)
     public ResponseEntity<Map<String, Object>> error(HttpServletRequest request, HttpServletResponse response, TccTryException e)
             throws TccException {
-        LOGGER.error("--> TccConfirmException: {} : {}", request.getRequestURI(), e.getMessage());
+        LOGGER.error("--> TccTryException: {} : {}", request.getRequestURI(), e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .header("tccType", "try")
@@ -128,13 +126,13 @@ public class TccController implements TccFeignClient {
     @PutMapping(path = "/sync/confirm/{id}")
     @HystrixCommand()
     public ResponseEntity<Void> confirm(
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken
             ) throws TccException {
-        UUID uuid = StringUtils.toUuid(id);
+        LOGGER.info("--> /confirm: {}", id);
         Tcc tcc = null;
         try {
-            tcc = tccService.confirm(uuid, accessToken.replace("Bearer ", ""));
+            tcc = tccService.confirm(id, accessToken.replace("Bearer ", ""));
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .header("tccType", "confirm")
@@ -144,14 +142,14 @@ public class TccController implements TccFeignClient {
                     .build();
         } catch (TccException e) {
             LOGGER.error("--> /confirm: {}", e.getMessage());
-            throw new TccConfirmException(uuid, e.getMessage(), e.getStatus());
+            throw new TccConfirmException(id, e.getMessage(), e.getStatus());
         }
     }
 
     @PutMapping(path = "/confirm/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken
             ) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
@@ -176,12 +174,11 @@ public class TccController implements TccFeignClient {
     @Override
     @PutMapping(path = "/sync/cancel")
     @HystrixCommand()
-    public ResponseEntity<Void> cancel(@PathVariable("id") String id,
+    public ResponseEntity<Void> cancel(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
-
-        UUID uuid = StringUtils.toUuid(id);
+        LOGGER.info("--> /cancel: {}", id);
         try {
-            Tcc tcc = tccService.cancel(uuid, accessToken.replace("Bearer ", ""));
+            Tcc tcc = tccService.cancel(id, accessToken.replace("Bearer ", ""));
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .header("tccType", "cancel")
@@ -191,13 +188,13 @@ public class TccController implements TccFeignClient {
                     .build();
         }  catch (TccException e) {
             LOGGER.error("--> /cancel: {}", e.getMessage());
-            throw new TccCancelException(uuid, e.getMessage(), e.getStatus());
+            throw new TccCancelException(id, e.getMessage(), e.getStatus());
         }
     }
 
     @PutMapping(path = "/cancel")
     @HystrixCommand()
-    public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") String id,
+    public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
         handle(result, () -> confirm(id, accessToken));

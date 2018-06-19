@@ -67,9 +67,9 @@ public class TccTestController {
             TccLinkDto tccLinkDto = new TccLinkDto();
             tccLinkDto.setExpire(expire);
             tccLinkDto.setUri(userTccUrl);
-            tccLinkDto.setPath(dto.getId().toString());
+            tccLinkDto.setResourceId(dto.getId());
             links.add(tccLinkDto);
-            tccDto.setLinks(links);
+            tccDto.setTccLinks(links);
             response = send(tccUrl, tccDto, HttpMethod.POST, 2);
             TccDto tcc = objectMapper.readValue(response.getBody(), TccDto.class);
             System.out.println("Tcc --> " + tcc);

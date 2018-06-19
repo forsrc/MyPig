@@ -1,12 +1,9 @@
 package com.forsrc.sso.domain.entity;
 
 import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.PrePersist;
@@ -25,9 +22,9 @@ public class UserTcc implements java.io.Serializable {
     private static final long serialVersionUID = 7053075402341362549L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @Column(name = "username", length = 200, nullable = false)
     private String username;
@@ -93,11 +90,11 @@ public class UserTcc implements java.io.Serializable {
         this.enabled = enabled;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

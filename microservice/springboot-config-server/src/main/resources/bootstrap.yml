@@ -3,7 +3,7 @@ spring:
     name: springboot-config-server
   boot:
     admin:
-      url: http://forsrc.local:13000
+      url: ${ADMIN_SERVER:http://forsrc.local:13000}
 
 management:
   context-path: /mgmt
@@ -16,9 +16,10 @@ server:
 
 eureka:
   instance:
-    home-page-url: http://forsrc.local:${server.port}${server.context-path}
-    health-check-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/health
-    status-page-url: http://forsrc.local:${server.port}${server.context-path}/mgmt/info
+    host:             http://forsrc.local:${server.port}
+    home-page-url:    ${HOST_NAME:${eureka.instance.host}}${server.context-path}
+    health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
+    status-page-url:  ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
   client:
     serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka
+      defaultZone:    ${EUREKA_SERVER:http://forsrc.local:11100/eureka}

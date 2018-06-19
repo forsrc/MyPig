@@ -3,13 +3,13 @@ spring:
     name: springboot-eureka-server
   cloud:
     config:
-      uri: http://forsrc.local:12000/config
-  
+      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+
   boot:
     admin:
+      url:       ${ADMIN_SERVER:http://forsrc.local:13000}
       client:
         enabled: true
-      url: http://forsrc.local:13000/
 
 
 #spring.cloud.dashboard.springboot-eureka-server:
@@ -22,16 +22,21 @@ spring:
 
 eureka:
   instance:
-    hostname: forsrc.local
+    host:                      http://forsrc.local:${server.port}
+    home-page-url:             ${HOST_NAME:${eureka.instance.host}}
+    health-check-url:          ${HOST_NAME:${eureka.instance.host}}/mgmt/health
+    secure-health-check-url:   ${HOST_NAME:${eureka.instance.host}}/mgmt/health
+    status-page-url:           ${HOST_NAME:${eureka.instance.host}}/mgmt/info
     metadata-map:
-      cluster: SPRINGBOOT-EUREKA-SERVER
+      cluster:                 SPRINGBOOT-EUREKA-SERVER
       management.context-path: ${management.context-path}
   client:
     initialInstanceInfoReplicationIntervalSeconds: 60
-    #registerWithEureka: false
-    fetchRegistry: false
+    registerWithEureka: true
+    fetchRegistry:      false
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+      defaultZone:      ${EUREKA_SERVER:${eureka.instance.host}/eureka}
+
 #  dashboard:
 #    enabled: true
 
@@ -52,5 +57,3 @@ management:
 server:
   port: 11100
   context-path: /
-
-

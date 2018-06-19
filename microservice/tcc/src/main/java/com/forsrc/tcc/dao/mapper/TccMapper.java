@@ -14,7 +14,7 @@ public interface TccMapper {
 
     public List<Tcc> getTryStatusListByMicroservice(@Param("microservice") String microservice);
 
-    public Tcc getByTccLinkPath(@Param("path") String path);
+    public Tcc getByTccLinkResourceId(@Param("resourceId") Long resourceId);
 
     public int updateStatus(@Param("tcc") Tcc tcc);
 
