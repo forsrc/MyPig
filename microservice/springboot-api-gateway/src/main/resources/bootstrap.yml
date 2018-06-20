@@ -20,7 +20,6 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      filter-order:           3
       userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
@@ -28,14 +27,17 @@ security:
 
 
 management:
-
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
 server:
   port: 8088
-  context-path: /api
+  servlet:
+    context-path: /api
+
 
 zuul:
   sensitive-headers: Cookie,Set-Cookie,Authorization

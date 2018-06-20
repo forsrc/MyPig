@@ -57,19 +57,21 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      filter-order:           3
       userInfoUri:            /me
       preferTokenInfo:        false
       id:                     forsrc
       token-info-uri:         /oauth/check_token
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
 server:
   port: 10000
-  context-path: /sso
+  servlet:
+    context-path: /sso
 
 feign:
   hystrix:

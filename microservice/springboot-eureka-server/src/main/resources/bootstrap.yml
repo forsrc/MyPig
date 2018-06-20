@@ -50,10 +50,13 @@ eureka:
 #  instanceUrlSuffix: ${server.context-path}/hystrix.stream
 
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
 server:
   port: 11100
-  context-path: /
+  servlet:
+    context-path: /

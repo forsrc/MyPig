@@ -14,12 +14,9 @@ spring:
         clusters:  default
         location:  SPRINGBOOT-ADMIN
         enabled:   true
-      username:    forsrc@gmail.com
-      password:    forsrc
-      client:
-        metadata:
-          user.name:     forsrc@gmail.com
-          user.password: forsrc
+      #client:
+        #username:  forsrc@gmail.com
+        #password:  forsrc
   aop:
     proxy-target-class: true
 
@@ -37,11 +34,13 @@ ribbon:
     enabled: true
 
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
-security:
+security: 
   basic:
     enabled: false
   oauth2:
@@ -59,7 +58,8 @@ security:
 
 server:
   port: 13000
-  context-path: /
+  servlet:
+    context-path: /
 
 
 eureka:

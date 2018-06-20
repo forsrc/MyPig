@@ -44,7 +44,9 @@ eureka:
       defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
 
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 

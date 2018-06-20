@@ -6,13 +6,16 @@ spring:
       url: ${ADMIN_SERVER:http://forsrc.local:13000}
 
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
 server:
   port: 12000
-  context-path: /config
+  servlet:
+    context-path: /config
 
 eureka:
   instance:

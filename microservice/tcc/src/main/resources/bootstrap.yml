@@ -57,20 +57,22 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      filter-order:           3
       userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 management:
-  context-path: /mgmt
+  server:
+    servlet:
+      context-path: /mgmt
   security:
     enabled: false
 
 server:
   port: 10020
-  context-path: /tcc
+  servlet:
+    context-path: /tcc
 
 eureka:
   instance:
