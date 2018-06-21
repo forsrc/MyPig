@@ -15,6 +15,7 @@ spring:
         url:      ${ADMIN_SERVER:http://forsrc.local:13000}
         username: forsrc@gmail.com
         password: forsrc
+
   aop:
     proxy-target-class: true
 

@@ -14,6 +14,7 @@ spring:
     user:
       name:        forsrc@gmail.com
       password:    forsrc
+ 
   boot:
 #    admin:          # Admin 1.5.7
 #       url:         ${ADMIN_SERVER:http://forsrc.local:13000}${server.context-path}
@@ -51,6 +52,7 @@ spring:
 #  combineHostPort:       true
 #  instanceUrlSuffix:     ${server.servlet.context-path}/hystrix.stream
 
+
 #ribbon:
 #  eureka:
 #    enabled: true
@@ -79,6 +81,7 @@ security:
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 
+
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
@@ -92,5 +95,4 @@ eureka:
     registryFetchIntervalSeconds:  5
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
-
 

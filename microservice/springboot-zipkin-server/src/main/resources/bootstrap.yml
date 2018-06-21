@@ -25,6 +25,7 @@ spring:
     continue-on-error:   false
     schema:              classpath:zipkin.sql
 
+
 #  sleuth:
 #   # not use sleuth stream to trace zipkin server itself
 #    enabled: false
@@ -62,4 +63,5 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
+
 

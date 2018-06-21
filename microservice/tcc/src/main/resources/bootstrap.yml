@@ -51,6 +51,7 @@ spring:
     sampler:
       probability: 1.0
 
+
   artemis:
     embedded:
       queues: jms/queues/tcc

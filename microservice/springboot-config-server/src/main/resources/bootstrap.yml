@@ -42,3 +42,4 @@ eureka:
     registryFetchIntervalSeconds:  5
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+

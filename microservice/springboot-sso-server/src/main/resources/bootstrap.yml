@@ -51,6 +51,7 @@ spring:
       name:   ${spring.application.name}
     enabled:  true
     base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
+
   sleuth:
     traceId128: true
     sampler:
@@ -84,6 +85,16 @@ management:
       show-details: ALWAYS
 
 
+feign:
+  hystrix:
+    enabled: true
+ribbon:
+  ReadTimeout:    10000
+  ConnectTimeout:  2000
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 10000
 
 feign:
   hystrix:
@@ -110,6 +121,7 @@ eureka:
     registryFetchIntervalSeconds:  5
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+
 
 tcc:
   ws: ${TCC_WS:ws://forsrc.local:10020/tcc/ws/tcc}

@@ -12,10 +12,12 @@ spring:
 
   boot:
     admin:
+      url:       ${ADMIN_SERVER:http://forsrc.local:13000}
       client:
         url:      ${ADMIN_SERVER:http://forsrc.local:13000}
         username: forsrc@gmail.com
         password: forsrc
+
 
 
 eureka:
@@ -34,6 +36,7 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
     initialInstanceInfoReplicationIntervalSeconds: 20
+
 
 
 #turbine:

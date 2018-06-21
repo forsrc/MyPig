@@ -19,4 +19,3 @@ public class SleuthConfig {
 //        return Reporter.CONSOLE;
 //    }
 
-}

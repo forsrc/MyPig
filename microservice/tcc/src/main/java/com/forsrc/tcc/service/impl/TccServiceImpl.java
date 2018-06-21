@@ -105,6 +105,7 @@ public class TccServiceImpl implements TccService {
 
     @Override
     public Tcc confirm(Long id, String accessToken) throws TccException{
+
         Tcc tcc = tccDao.getOne(id);
         LOGGER.info("--> confirm: {}", tcc);
         if (tcc == null) {
