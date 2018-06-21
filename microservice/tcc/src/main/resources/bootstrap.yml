@@ -1,4 +1,7 @@
-
+server:
+  port: 10020
+  servlet:
+    context-path: /tcc
 
 spring:
   application:
@@ -8,7 +11,10 @@ spring:
       uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
   boot:
     admin:
-      url: ${ADMIN_SERVER:http://forsrc.local:13000}
+      client:
+        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        username: forsrc@gmail.com
+        password: forsrc
 
   cache:
     type: redis
@@ -17,19 +23,20 @@ spring:
     port: ${REDIS_PORT:6379}
 
   datasource:
-    url:               ${DB_URL:jdbc:h2:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
+    url:               ${DB_URL:jdbc:h2:c:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
     username:          ${DB_USERNAME:sa}
     password:          ${DB_PASSWORD:sa}
     driver-class-name: ${DB_DRIVER:org.h2.Driver}
-    schema:
-    - classpath:schema.sql
+#    schema:
+#    - classpath:schema.sql
     data:
+    - classpath:schema.sql
     - classpath:data.sql
   jpa:
     database-platform: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto:        create
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
@@ -39,6 +46,10 @@ spring:
       name:   ${spring.application.name}
     enabled:  true
     base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
 
   artemis:
     embedded:
@@ -63,27 +74,27 @@ security:
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 management:
-  server:
-    servlet:
-      context-path: /mgmt
-  security:
-    enabled: false
-
-server:
-  port: 10020
-  servlet:
-    context-path: /tcc
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
 
 eureka:
   instance:
-    host:                    http://forsrc.local:${server.port}
-    home-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}
-    health-check-url:        ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    secure-health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
+    registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
 
 springboot-sso-server:
   ribbon:

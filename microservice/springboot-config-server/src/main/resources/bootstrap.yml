@@ -1,28 +1,44 @@
-spring:
-  application:
-    name: springboot-config-server
-  boot:
-    admin:
-      url: ${ADMIN_SERVER:http://forsrc.local:13000}
-
-management:
-  server:
-    servlet:
-      context-path: /mgmt
-  security:
-    enabled: false
-
 server:
   port: 12000
   servlet:
     context-path: /config
 
+spring:
+  application:
+    name: springboot-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/forsrc/MyPig-config.git
+  boot:
+    admin:
+      client:
+        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+
+
 eureka:
   instance:
-    host:             http://forsrc.local:${server.port}
-    home-page-url:    ${HOST_NAME:${eureka.instance.host}}${server.context-path}
-    health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    status-page-url:  ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
+    registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:    ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}

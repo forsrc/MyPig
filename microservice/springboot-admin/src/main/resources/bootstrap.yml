@@ -1,3 +1,8 @@
+server:
+  port: 13000
+  servlet:
+    context-path: /
+
 spring:
   application:
     name: springboot-admin
@@ -10,7 +15,7 @@ spring:
       name:        forsrc@gmail.com
       password:    forsrc
   boot:
-#    admin:
+#    admin:          # Admin 1.5.7
 #       url:         ${ADMIN_SERVER:http://forsrc.local:13000}${server.context-path}
 #       routes:
 #         endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
@@ -37,18 +42,18 @@ spring:
   aop:
     proxy-target-class: true
 
-turbine:
-#  aggregator:
-#    cluster-config:
-#    - SPRINGBOOT-ADMIN
-  clusterNameExpression: metadata['cluster']
-  appConfig:             SPRINGBOOT-ADMIN
-  combineHostPort:       true
-  instanceUrlSuffix:     ${server.servlet..context-path}/hystrix.stream
+#turbine:
+##  aggregator:
+##    cluster-config:
+##    - SPRINGBOOT-ADMIN
+#  clusterNameExpression: metadata['cluster']
+#  appConfig:             SPRINGBOOT-ADMIN
+#  combineHostPort:       true
+#  instanceUrlSuffix:     ${server.servlet.context-path}/hystrix.stream
 
-ribbon:
-  eureka:
-    enabled: true
+#ribbon:
+#  eureka:
+#    enabled: true
 
 management:
   endpoints:
@@ -73,22 +78,19 @@ security:
       id:                     forsrc
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
-server:
-  port: 13000
-  servlet:
-    context-path: /
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
 
 
-# eureka:
-#   instance:
-#     host:                      http://forsrc.local:${server.port}
-#     home-page-url:             ${HOST_NAME:${eureka.instance.host}}
-#     health-check-url:          ${HOST_NAME:${eureka.instance.host}}${server.servlet.context-path}/mgmt/health
-#     secure-health-check-url:   ${HOST_NAME:${eureka.instance.host}}${server.servlet.context-path}/mgmt/health
-#     status-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.servlet.context-path}/mgmt/info
-#     metadata-map:
-#       cluster: MAIN
-#       management.context-path: ${management.context-path}
-#   client:
-#     serviceUrl:
-#       defaultZone:             ${EUREKA_SERVER:http://forsrc.local:11100/eureka}

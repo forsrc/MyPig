@@ -48,10 +48,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //                .antMatchers(HttpMethod.DELETE,  "/**").access("#oauth2.hasScope('write')")
 
         http.authorizeRequests()
+                .antMatchers("/actuator/**")
+                .authenticated()
                 .anyRequest()
                 .authenticated();
         http.authorizeRequests()
-                .antMatchers("/mgmt/**", "/**/mgmt/**")
+                .antMatchers("/actuator/**", "/**/test/**")
                 .permitAll()
                 ;
     }
