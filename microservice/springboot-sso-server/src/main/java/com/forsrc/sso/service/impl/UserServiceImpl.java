@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#username")
     public User getByUsername(String username) {
-        return userDao.findOne(username);
+        return userDao.getOne(username);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
             @CacheEvict(value = CACHE_VALUE, key = "#username")
             })
     public void delete(String username) {
-        userDao.delete(username);
+        userDao.deleteById(username);
     }
 
 }

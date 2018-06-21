@@ -9,7 +9,13 @@ import brave.sampler.Sampler;
 public class SleuthConfig {
 
     @Bean
-    public Sampler defaultSampler(){
+    public Sampler defaultSampler() {
         return Sampler.ALWAYS_SAMPLE;
     }
-}
+
+//    @Bean
+//    // @ConditionalOnProperty(value = "sample.zipkin.enabled", havingValue = "false")
+//    public Reporter<Span> spanReporter() {
+//        return Reporter.CONSOLE;
+//    }
+

@@ -1,4 +1,7 @@
-
+server:
+  port: 10010
+  servlet:
+    context-path: /user
 
 spring:
   application:
@@ -8,7 +11,10 @@ spring:
       uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
   boot:
     admin:
-      url: ${ADMIN_SERVER:http://forsrc.local:13000}
+      client:
+        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        username: forsrc@gmail.com
+        password: forsrc
 
   zipkin:
    base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
@@ -22,28 +28,33 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      filter-order:           3
       userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 management:
-  context-path: /mgmt
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
 
-server:
-  port: 10010
-  context-path: /user
+
 
 eureka:
   instance:
-    host:                    http://forsrc.local:${server.port}
-    home-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}
-    health-check-url:        ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    secure-health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
+    registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+

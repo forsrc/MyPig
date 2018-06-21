@@ -84,7 +84,7 @@ public class TccServiceImpl implements TccService {
                 link.setTccId(tcc.getId());
                 link.setStatus(Status.TRY.getStatus());
             }
-            tccLinkDao.save(links);
+            tccLinkDao.saveAll(links);
         }
         return tcc;
     }
@@ -93,19 +93,20 @@ public class TccServiceImpl implements TccService {
     public Tcc update(Tcc tcc) {
         List<TccLink> links = tcc.getTccLinks();
         if (links != null && !links.isEmpty()) {
-            tccLinkDao.save(links);
+            tccLinkDao.saveAll(links);
         }
         return tccDao.save(tcc);
     }
 
     @Override
     public void delete(Long id) {
-        tccDao.delete(id);
+        tccDao.deleteById(id);
     }
 
     @Override
     public Tcc confirm(Long id, String accessToken) throws TccException{
-        Tcc tcc = tccDao.findOne(id);
+
+        Tcc tcc = tccDao.getOne(id);
         LOGGER.info("--> confirm: {}", tcc);
         if (tcc == null) {
             throw new TccConfirmException(id, "Not found tcc: " + id);
@@ -373,7 +374,7 @@ public class TccServiceImpl implements TccService {
 
     @Override
     public TccLink getTccLink(UUID id) {
-        return tccLinkDao.findOne(id);
+        return tccLinkDao.getOne(id);
     }
 
     @Override

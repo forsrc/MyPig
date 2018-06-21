@@ -19,15 +19,15 @@ import brave.Tracing;
 import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
+import brave.spring.web.TracingAsyncClientHttpRequestInterceptor;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
-import brave.spring.webmvc.TracingHandlerInterceptor;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
-@Configuration
-@Import({ TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class })
+//@Configuration
+@Import({ TracingClientHttpRequestInterceptor.class, TracingAsyncClientHttpRequestInterceptor.class})
 public class ZipkinConfig {
 
     @Value("${spring.zipkin.base-url}")
@@ -36,7 +36,7 @@ public class ZipkinConfig {
     private String serviceName;
 
     @Autowired
-    private TracingHandlerInterceptor serverInterceptor;
+    private TracingAsyncClientHttpRequestInterceptor requestInterceptor;
 
     @Autowired
     private TracingClientHttpRequestInterceptor clientInterceptor;

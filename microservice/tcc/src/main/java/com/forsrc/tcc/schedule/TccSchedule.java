@@ -9,17 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 
 import com.forsrc.common.core.tcc.exception.TccException;
+import com.forsrc.tcc.customizer.MyWebServerFactoryCustomizer;
 import com.forsrc.tcc.domain.entity.Tcc;
-import com.forsrc.tcc.listener.PortApplicationListener;
 import com.forsrc.tcc.service.TccService;
 import com.netflix.discovery.EurekaClient;
-
+import  org.springframework.boot.context.ApplicationPidFileWriter;;
 @Component
 public class TccSchedule {
 
@@ -32,10 +33,10 @@ public class TccSchedule {
 
     @Autowired
     private EurekaClient discoveryClient;
-
+ 
     @Autowired
-    private PortApplicationListener port;
-    
+    private MyWebServerFactoryCustomizer myWebServerFactoryCustomizer;
+
     @Autowired
     @Qualifier("tccOAuth2RestTemplate")
     public OAuth2RestTemplate tccOAuth2RestTemplate;
@@ -51,8 +52,8 @@ public class TccSchedule {
         }
         try {
             microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
-            if (!microservice.endsWith(":" + port.getPort())) {
-                microservice = String.format("%s:%s", microservice, port.getPort());
+            if (!microservice.endsWith(":" + myWebServerFactoryCustomizer.getPort())) {
+                microservice = String.format("%s:%s", microservice, myWebServerFactoryCustomizer.getPort());
             }
             return microservice;
         } catch (Exception e) {

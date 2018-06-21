@@ -64,7 +64,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .addFilterAfter(this.createCSRFHeaderFilter(), CsrfFilter.class)
                 ;
         http.authorizeRequests()
-            .antMatchers("/mgmt/**", "/**/mgmt/**")
+            .antMatchers("/actuator/**", "/**/actuator/**")
             .permitAll();
     }
 

@@ -1,3 +1,8 @@
+server:
+  port: 11100
+  servlet:
+    context-path: /
+
 spring:
   application:
     name: springboot-eureka-server
@@ -9,36 +14,30 @@ spring:
     admin:
       url:       ${ADMIN_SERVER:http://forsrc.local:13000}
       client:
-        enabled: true
+        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        username: forsrc@gmail.com
+        password: forsrc
 
 
-#spring.cloud.dashboard.springboot-eureka-server:
-#  environment: .*
-#  instances:
-#    management:
-#      port:   11100
-#      scheme: http
-#      path:   /eureka/mgmt
 
 eureka:
   instance:
-    host:                      http://forsrc.local:${server.port}
-    home-page-url:             ${HOST_NAME:${eureka.instance.host}}
-    health-check-url:          ${HOST_NAME:${eureka.instance.host}}/mgmt/health
-    secure-health-check-url:   ${HOST_NAME:${eureka.instance.host}}/mgmt/health
-    status-page-url:           ${HOST_NAME:${eureka.instance.host}}/mgmt/info
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
-      cluster:                 SPRINGBOOT-EUREKA-SERVER
-      management.context-path: ${management.context-path}
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
-    initialInstanceInfoReplicationIntervalSeconds: 60
-    registerWithEureka: true
-    fetchRegistry:      false
+    registryFetchIntervalSeconds:  5
+    registerWithEureka:            true
+    fetchRegistry:                 false
     serviceUrl:
-      defaultZone:      ${EUREKA_SERVER:${eureka.instance.host}/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+    initialInstanceInfoReplicationIntervalSeconds: 20
 
-#  dashboard:
-#    enabled: true
+
 
 #turbine:
 ##  aggregator:
@@ -50,10 +49,11 @@ eureka:
 #  instanceUrlSuffix: ${server.context-path}/hystrix.stream
 
 management:
-  context-path: /mgmt
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
 
-server:
-  port: 11100
-  context-path: /
