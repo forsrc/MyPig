@@ -16,6 +16,10 @@ spring:
         username: forsrc@gmail.com
         password: forsrc
 
+  data:
+    rest:
+      base-path:  /rest
+  
   datasource:
     url:                 ${DB_URL:jdbc:h2:/tmp/db/h2/zipkin.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
     username:            ${DB_USERNAME:sa}

@@ -43,14 +43,14 @@ spring:
   aop:
     proxy-target-class: true
 
-#turbine:
-##  aggregator:
-##    cluster-config:
-##    - SPRINGBOOT-ADMIN
-#  clusterNameExpression: metadata['cluster']
-#  appConfig:             SPRINGBOOT-ADMIN
-#  combineHostPort:       true
-#  instanceUrlSuffix:     ${server.servlet.context-path}/hystrix.stream
+turbine:
+  aggregator:
+    cluster-config:
+    - default
+    - SPRINGBOOT-ADMIN
+  clusterNameExpression: new String("default") # metadata['cluster']
+  appConfig:             SPRINGBOOT-ADMIN
+  combineHostPort:       true
 
 
 #ribbon:
@@ -81,11 +81,10 @@ security:
       token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
 
 
-
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:

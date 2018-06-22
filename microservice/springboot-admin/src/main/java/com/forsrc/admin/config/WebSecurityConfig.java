@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers(adminContextPath + "/assets/**").permitAll()
             .antMatchers(adminContextPath + "/login").permitAll()
+            .antMatchers(adminContextPath + "/actuator/hystrix.stream").permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()
