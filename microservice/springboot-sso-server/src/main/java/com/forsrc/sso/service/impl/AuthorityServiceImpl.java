@@ -53,7 +53,7 @@ public class AuthorityServiceImpl implements AuthorityService {
      */
     @CachePut(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#list.get(0).username")
     public List<Authority> update(List<Authority> list) {
-       return authorityDao.save(list);
+       return authorityDao.saveAll(list);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class AuthorityServiceImpl implements AuthorityService {
      */
     @CachePut(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#list.get(0).username")
     public List<Authority> save(List<Authority> list) {
-        return authorityDao.save(list);
+        return authorityDao.saveAll(list);
     }
 
 }

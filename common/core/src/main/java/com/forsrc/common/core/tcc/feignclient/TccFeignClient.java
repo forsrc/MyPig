@@ -1,6 +1,6 @@
 package com.forsrc.common.core.tcc.feignclient;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import com.forsrc.tcc.domain.entity.Tcc;
 

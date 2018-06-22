@@ -83,11 +83,11 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 ;
 
         http.authorizeRequests()
-                .antMatchers("/mgmt/**")
+                .antMatchers("/actuator/**")
                 .permitAll()
             .and()
                 .csrf()
-                .ignoringAntMatchers("/mgmt/**")
+                .ignoringAntMatchers("/actuator/**")
                 .csrfTokenRepository(csrfTokenRepository())
             .and()
                 .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
@@ -116,7 +116,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/mgmt/**", "/static/**", "/ui/**");
+        web.ignoring().antMatchers("/actuator/**", "/static/**", "/ui/**");
     }
 
     @Override

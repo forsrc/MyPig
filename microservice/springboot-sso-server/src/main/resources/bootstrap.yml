@@ -1,3 +1,7 @@
+server:
+  port: 10000
+  servlet:
+    context-path: /sso
 
 spring:
   application:
@@ -7,21 +11,25 @@ spring:
       uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
   boot:
     admin:
-      url: ${ADMIN_SERVER:http://forsrc.local:13000}
+      client:
+        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        username: forsrc@gmail.com
+        password: forsrc
   datasource:
-    url:               ${DB_URL:jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
-    username:          ${DB_USERNAME:sa}
-    password:          ${DB_PASSWORD:sa}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
-    schema:
-    - classpath:schema.sql
+    url:                 ${DB_URL:jdbc:h2:/tmp/db/h2/sso.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
+    username:            ${DB_USERNAME:sa}
+    password:            ${DB_PASSWORD:sa}
+    driver-class-name:   ${DB_DRIVER:org.h2.Driver}
+#    schema:
+#    - classpath:schema.sql
     data:
+    - classpath:schema.sql
     - classpath:data.sql
   jpa:
-    database-platform: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
-    show-sql: true
+    database-platform:   ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
+    show-sql:            true
     hibernate:
-      ddl-auto: update
+      ddl-auto:          create
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
@@ -44,6 +52,11 @@ spring:
     enabled:  true
     base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
 
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
+
 security:
   oauth2:
     #sso:
@@ -57,19 +70,20 @@ security:
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      filter-order:           3
       userInfoUri:            /me
       preferTokenInfo:        false
       id:                     forsrc
       token-info-uri:         /oauth/check_token
-management:
-  context-path: /mgmt
-  security:
-    enabled: false
 
-server:
-  port: 10000
-  context-path: /sso
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
 
 feign:
   hystrix:
@@ -82,17 +96,20 @@ hystrix:
     default:
       execution.isolation.thread.timeoutInMilliseconds: 10000
 
-
 eureka:
   instance:
-    host:                    http://forsrc.local:${server.port}
-    home-page-url:           ${HOST_NAME:${eureka.instance.host}}${server.context-path}
-    health-check-url:        ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    secure-health-check-url: ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/health
-    status-page-url:         ${HOST_NAME:${eureka.instance.host}}${server.context-path}/mgmt/info
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
+    registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:           ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+
 
 tcc:
   ws: ${TCC_WS:ws://forsrc.local:10020/tcc/ws/tcc}

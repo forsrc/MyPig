@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -19,15 +20,15 @@ import brave.Tracing;
 import brave.http.HttpTracing;
 import brave.propagation.B3Propagation;
 import brave.propagation.ExtraFieldPropagation;
+import brave.spring.web.TracingAsyncClientHttpRequestInterceptor;
 import brave.spring.web.TracingClientHttpRequestInterceptor;
-import brave.spring.webmvc.TracingHandlerInterceptor;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
-@Configuration
-@Import({ TracingClientHttpRequestInterceptor.class, TracingHandlerInterceptor.class })
+//@Configuration
+@Import({ TracingClientHttpRequestInterceptor.class, TracingAsyncClientHttpRequestInterceptor.class })
 public class ZipkinConfig {
 
     @Value("${spring.zipkin.base-url}")
@@ -36,7 +37,7 @@ public class ZipkinConfig {
     private String serviceName;
 
     @Autowired
-    private TracingHandlerInterceptor serverInterceptor;
+    private TracingAsyncClientHttpRequestInterceptor requestInterceptor;
 
     @Autowired
     private TracingClientHttpRequestInterceptor clientInterceptor;
@@ -70,6 +71,7 @@ public class ZipkinConfig {
 
     /** Controls aspects of tracing such as the name that shows up in the UI */
     @Bean
+    @Primary
     public Tracing tracing() {
         return Tracing.newBuilder()
                 .localServiceName(serviceName)
@@ -82,6 +84,7 @@ public class ZipkinConfig {
     // decides how to name and tag spans. By default they are named the same as the
     // http method.
     @Bean
+    @Primary
     public HttpTracing httpTracing(Tracing tracing) {
         return HttpTracing.create(tracing);
     }

@@ -1,8 +1,6 @@
 package com.forsrc.sso.controller;
 
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +77,6 @@ public class UserTccController implements UserTccFeignClient {
     @PutMapping(path = "/sync/confirm/{id}")
     @HystrixCommand()
     public ResponseEntity<Void> confirm(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
-
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
         try {
@@ -112,7 +109,6 @@ public class UserTccController implements UserTccFeignClient {
     @DeleteMapping(path = "/sync/cancel/{id}")
     @HystrixCommand()
     public ResponseEntity<Void> cancel(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException{
-
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
         try {
@@ -133,7 +129,6 @@ public class UserTccController implements UserTccFeignClient {
     @DeleteMapping(path = "/cancel/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
-
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
 
         handle(result, () -> cancel(id, accessToken));
