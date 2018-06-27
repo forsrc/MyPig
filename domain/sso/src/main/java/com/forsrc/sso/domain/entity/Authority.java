@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "authorities", indexes = {
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
             uniqueConstraints = { @UniqueConstraint(columnNames = { "username", "authority" })}
         )
 @IdClass(AuthorityPk.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Authority implements java.io.Serializable {
 
     private static final long serialVersionUID = -1985182093016989312L;
