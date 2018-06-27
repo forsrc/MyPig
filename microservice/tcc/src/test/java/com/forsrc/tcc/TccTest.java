@@ -84,8 +84,8 @@ public class TccTest extends MyApplicationTests {
             // userTccFeignClient.tccTry(userTcc,
             // "Bearer " + tccLoadBalancedOAuth2RestTemplate.getAccessToken().getValue());
             ResponseEntity<UserTcc> userTccResponseEntity = sendUserTcc(userTcc, 2);
-            ResponseEntity<UserTcc> userTccResponseEntity1 = sendUserTcc(userTcc, 2);
-            ResponseEntity<UserTcc> userTccResponseEntity2 = sendUserTcc(userTcc, 2);
+            ResponseEntity<UserTcc> userTccResponseEntity1 = sendUserTcc(userTcc1, 2);
+            ResponseEntity<UserTcc> userTccResponseEntity2 = sendUserTcc(userTcc2, 2);
             UserTcc dto = userTccResponseEntity.getBody();
             UserTcc dto1 = userTccResponseEntity1.getBody();
             UserTcc dto2 = userTccResponseEntity2.getBody();
