@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 //@ComponentScan(basePackages = "com.forsrc")
 @EnableAutoConfiguration
 @EnableConfigServer
-@EnableEurekaClient
+//@EnableEurekaClient
 @EnableDiscoveryClient
 public class MyApplication {
 

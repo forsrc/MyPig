@@ -8,6 +8,7 @@ spring:
     name: springboot-config-server
   cloud:
     config:
+      label: master
       server:
         git:
           uri: https://github.com/forsrc/MyPig-config.git
