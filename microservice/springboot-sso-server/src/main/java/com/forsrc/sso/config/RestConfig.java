@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.client.token.grant.password.ResourceO
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forsrc.common.core.spring.MyOAuth2RestTemplate;
 
 @Configuration
@@ -62,4 +63,5 @@ public class RestConfig {
         tccOAuth2RestTemplate.setRequestFactory(requestFactory);
         return tccOAuth2RestTemplate;
     }
+
 }
