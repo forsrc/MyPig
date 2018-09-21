@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 import com.forsrc.tcc.config.RibbonClinetConfig;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
@@ -37,6 +38,7 @@ import com.forsrc.tcc.config.RibbonClinetConfig;
             @RibbonClient(name = "microservice-tcc", configuration = RibbonClinetConfig.class)
         }
         )
+@EnableRedisHttpSession
 public class MyApplication {
 
     public static void main(String[] args) {

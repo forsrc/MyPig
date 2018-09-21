@@ -7,11 +7,14 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-//@Configuration
+import java.io.Serializable;
+
+@Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
 public class RedisConfig {
 
@@ -21,23 +24,21 @@ public class RedisConfig {
     private int redisPort;
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(redisHost);
-        factory.setPort(redisPort);
-        factory.setUsePool(true);
-        return factory;
+    public LettuceConnectionFactory connectionFactory() {
+        return new LettuceConnectionFactory();
     }
 
     @Bean
-    RedisTemplate<Object, Object> redisTemplate() {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<Object, Object>();
-        redisTemplate.setConnectionFactory(jedisConnectionFactory());
-        return redisTemplate;
-    }
-
-    @Bean
-    CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    CacheManager cacheManager(LettuceConnectionFactory connectionFactory) {
         return RedisCacheManager.create(connectionFactory);
+    }
+
+    @Bean
+    public RedisTemplate<String, Serializable> redisCacheTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<String, Serializable> template = new RedisTemplate<>();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setConnectionFactory(connectionFactory);
+        return template;
     }
 }

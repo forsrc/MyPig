@@ -11,9 +11,10 @@ spring:
       label: master
       server:
         git:
-          uri: https://github.com/forsrc/MyPig-config.git
+          uri: https://github.com/forsrc/MyPig-config
   boot:
     admin:
+      url:       ${ADMIN_SERVER:http://forsrc.local:13000}
       client:
         url:      ${ADMIN_SERVER:http://forsrc.local:13000}
         username: forsrc@gmail.com
@@ -43,4 +44,3 @@ eureka:
     registryFetchIntervalSeconds:  5
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
-
