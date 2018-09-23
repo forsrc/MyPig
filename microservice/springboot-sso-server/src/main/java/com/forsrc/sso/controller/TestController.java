@@ -17,12 +17,13 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping(value = "/test")
 public class TestController {
 
     @Autowired
     private Environment environment;
 
-    @RequestMapping(value = "/test")
+    @RequestMapping(value = "/")
     public ResponseEntity<String> test(String name) {
 
         return new ResponseEntity<>("hello world. " + (name == null ? "" : name), HttpStatus.OK);
@@ -33,7 +34,7 @@ public class TestController {
         return new ResponseEntity<>("Environment: " + environment.getProperty(key), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/test/hystrix/{name}")
+    @RequestMapping(value = "/hystrix/{name}")
     @HystrixCommand(fallbackMethod = "hystrixFallBack")
     public ResponseEntity<String> hystrix(@PathVariable("name") String name) {
 
@@ -46,7 +47,7 @@ public class TestController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/test/r/{username}")
+    @GetMapping("/r/{username}")
     public Mono<ServerResponse> getByUsername(@PathVariable("username") String username) {
 
         return ServerResponse //

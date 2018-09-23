@@ -163,6 +163,21 @@
 
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>../../gwt/sso/target/forsrc-mypig-gwt-sso-0.0.1-SNAPSHOT/WEB-INF/classes/static</directory>
+                <targetPath>static</targetPath>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

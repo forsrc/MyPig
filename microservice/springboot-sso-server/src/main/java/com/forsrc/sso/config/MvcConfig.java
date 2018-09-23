@@ -1,19 +1,16 @@
 package com.forsrc.sso.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
-//@EnableWebMvc
+@EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("sso/login");;
-        registry.addViewController("/index").setViewName("sso/sso");
-        registry.addViewController("/").setViewName("sso/sso");
+        registry.addViewController("/login").setViewName("/gwt/login");;
+        registry.addViewController("/home").setViewName("/gwt/test");
+        registry.addViewController("/").setViewName("/gwt/test");
         //registry.addViewController("/oauth/confirm_access").setViewName("authorize");
     }
 

@@ -39,10 +39,10 @@ spring:
   cache:
     type: redis
   redis:
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:forsrc.local}
     port: ${REDIS_PORT:6379}
   thymeleaf:
-    prefix: 'classpath:public/mypig/www/'
+    prefix: 'classpath:templates/'
     suffix: .html
     cache: false
 
@@ -112,3 +112,6 @@ eureka:
 
 tcc:
   ws: ${TCC_WS:ws://forsrc.local:10020/tcc/ws/tcc}
+
+
+#logging.level.org.springframework.*: DEBUG
