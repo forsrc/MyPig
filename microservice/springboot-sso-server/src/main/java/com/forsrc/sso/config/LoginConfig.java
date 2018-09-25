@@ -104,7 +104,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(authenticationManager)
+        auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
