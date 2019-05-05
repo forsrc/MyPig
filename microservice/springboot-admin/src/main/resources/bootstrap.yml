@@ -80,7 +80,6 @@ security:
       id:                     forsrc
       token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
 
-
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
