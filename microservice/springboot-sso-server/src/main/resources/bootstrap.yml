@@ -107,7 +107,7 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-serverl:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
 
 tcc:
