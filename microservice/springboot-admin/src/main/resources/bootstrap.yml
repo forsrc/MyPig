@@ -5,11 +5,11 @@ server:
 
 spring:
   application:
-    name: springboot-admin
+    name: mypig-admin-server
   cloud:
     config:
       enabled:     false
-      uri:         ${CONFIG_SERVER:http://forsrc.local:12000/config}
+      uri:         ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   security:
     user:
       name:        forsrc@gmail.com
@@ -17,7 +17,7 @@ spring:
  
   boot:
 #    admin:          # Admin 1.5.7
-#       url:         ${ADMIN_SERVER:http://forsrc.local:13000}${server.context-path}
+#       url:         ${ADMIN_SERVER:http://mypig-admin-server:13000}${server.context-path}
 #       routes:
 #         endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
 #       turbine:
@@ -32,11 +32,11 @@ spring:
 #           user.password: forsrc
     admin:
       client:
-        url:                ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:                ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username:           forsrc@gmail.com
         password:           forsrc
         instance:
-          service-base-url: ${ADMIN_SERVER:http://forsrc.local:13000}
+          service-base-url: ${ADMIN_SERVER:http://mypig-admin-server:13000}
           metadata:
             user.name:      forsrc@gmail.com
             user.password:  forsrc
@@ -69,22 +69,22 @@ management:
 security:
   oauth2:
     client:
-      access-token-uri:       ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              forsrc
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
+      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
       preferTokenInfo:        true
       id:                     forsrc
-      token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
+      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
 
 
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-admin-server:${server.port}}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -93,5 +93,5 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 

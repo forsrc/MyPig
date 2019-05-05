@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: springboot-config-server
+    name: mypig-config-server
   cloud:
     config:
       label: master
@@ -14,9 +14,9 @@ spring:
           uri: https://github.com/forsrc/MyPig-config
   boot:
     admin:
-      url:       ${ADMIN_SERVER:http://forsrc.local:13000}
+      url:        ${ADMIN_SERVER:http://mypig-admin-server:13000}
       client:
-        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
 
@@ -34,7 +34,7 @@ management:
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-config-server:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -43,4 +43,4 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}

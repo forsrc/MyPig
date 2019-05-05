@@ -19,11 +19,11 @@ spring:
   cache:
     type: redis
   redis:
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}
 
   datasource:
-    url:               ${DB_URL:jdbc:h2:c:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
+    url:               ${DB_URL:jdbc:h2:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
     username:          ${DB_USERNAME:sa}
     password:          ${DB_PASSWORD:sa}
     driver-class-name: ${DB_DRIVER:org.h2.Driver}

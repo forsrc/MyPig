@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  mypig-springboot-eureka-server:
+  mypig-eureka-server:
     #build:
       # context: ./microservice/springboot-eureka-server
       # dockerfile: Dockerfile
@@ -11,12 +11,13 @@ services:
       #   ARG_PORT: 11100
     image: forsrc/forsrc-mypig-microservice-springboot-eureka-server:latest
     container_name: mypig-eureka-server
+    hostname: mypig-eureka-server
     # depends_on:
     ports:
     - 11100:11100
     # environment:
 
-  mypig-springboot-admin:
+  mypig-admin-server:
     #build:
       # context: ./microservice/springboot-admin
       # dockerfile: Dockerfile
@@ -26,11 +27,12 @@ services:
       #   ARG_PORT: 13000
     image: forsrc/forsrc-mypig-microservice-springboot-admin:latest
     container_name: mypig-admin-server
+    hostname: mypig-admin-server
     ports:
     - 13000:13000
     # environment:
 
-  mypig-springboot-zipkin-server:
+  mypig-zipkin-server:
     #build:
       # context: ./microservice/springboot-zipkin-server
       # dockerfile: Dockerfile
@@ -40,11 +42,12 @@ services:
       #   ARG_PORT: 11110
     image: forsrc/forsrc-mypig-microservice-springboot-zipkin-server:latest
     container_name: mypig-zipkin-server
+    hostname: mypig-zipkin-server
     ports:
     - 11110:11110
     # environment:
 
-  mypig-springboot-config-server:
+  mypig-config-server:
     #build:
       # context: ./microservice/springboot-config-server
       # dockerfile: Dockerfile
@@ -54,11 +57,12 @@ services:
       #   ARG_PORT: 12000
     image: forsrc/forsrc-mypig-microservice-springboot-config-server:latest
     container_name: mypig-config-server
+    hostname: mypig-config-server
     ports:
     - 12000:12000
     # environment:
 
-  mypig-springboot-sso-server:
+  mypig-sso-server:
     #build:
       # context: ./microservice/springboot-sso-server
       # dockerfile: Dockerfile
@@ -68,11 +72,12 @@ services:
       #   ARG_PORT: 10000
     image: forsrc/forsrc-mypig-microservice-springboot-sso-server:latest
     container_name: mypig-sso-server
+    hostname: mypig-sso-server
     ports:
     - 10000:10000
     # environment:
 
-  mypig-springboot-api-gateway:
+  mypig-api-gateway:
     #build:
       # context: ./microservice/springboot-api-gateway
       # dockerfile: Dockerfile
@@ -82,6 +87,7 @@ services:
       #   ARG_PORT: 8088
     image: forsrc/forsrc-mypig-microservice-springboot-api-gateway:latest
     container_name: mypig-api-gateway-server
+    hostname: mypig-api-gateway-server
     ports:
     - 8088:8088
     # environment:
@@ -96,10 +102,19 @@ services:
       #   ARG_PORT: 10020
     image: forsrc/forsrc-mypig-microservice-tcc:latest
     container_name: mypig-tcc
+    hostname: mypig-tcc
     ports:
     - 10020:10020
     # environment:
+  redis:
+    image: redis:3.2
+    container_name: mypig-redis
+    hostname: mypig-redis
+    #volumes:
+    #- /tmp/redis/data:/data
+    ports:
+    - "6379:6379"
 
 networks:
-  forsrc.local:
+  forsrc.mypig:
     driver: bridge

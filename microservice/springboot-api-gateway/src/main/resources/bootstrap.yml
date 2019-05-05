@@ -5,14 +5,14 @@ server:
 
 spring:
   application:
-    name: springboot-api-gateway
+    name: mypig-api-gateway
   cloud:
     config:
-      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   boot:
     admin:
       client:
-        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
 
@@ -23,16 +23,16 @@ spring:
 security:
   oauth2:
     client:
-      access-token-uri:       ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              forsrc
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
+      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
-      token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
+      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
 
 
 management:
@@ -48,9 +48,9 @@ management:
 zuul:
   sensitive-headers: Cookie,Set-Cookie,Authorization
   routes:
-    microservice-ui:        /app/**
-    microservice-user:      /app/**
-    springboot-sso-server:  /app/**
+    mypig-ui:          /app/**
+    mypig-user:        /app/**
+    mypig-sso-server:  /app/**
 #    ui:
 #      path:        /ui/**
 #      stripPrefix: true
@@ -64,13 +64,13 @@ zuul:
 #    sso:
 #      path:        /sso/**
 #      stripPrefix: true
-#      service-id:  springboot-sso-server
-#      #url:         http://forsrc.local:10000/sso
+#      service-id:  mypig-sso-server
+#      #url:         http://mypig-sso-server:10000/sso
 
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-api-gateway:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -79,4 +79,4 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
