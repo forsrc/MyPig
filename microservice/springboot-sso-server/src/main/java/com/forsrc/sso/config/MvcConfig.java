@@ -1,22 +1,16 @@
 package com.forsrc.sso.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 @EnableWebMvc
-public class MvcConfig extends WebMvcConfigurerAdapter {
+public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("sso/login");;
-        registry.addViewController("/index").setViewName("sso/sso");
-        registry.addViewController("/").setViewName("sso/sso");
+        registry.addViewController("/login").setViewName("/gwt/login");;
+        registry.addViewController("/home").setViewName("/gwt/test");
+        registry.addViewController("/").setViewName("/gwt/test");
         //registry.addViewController("/oauth/confirm_access").setViewName("authorize");
     }
 
@@ -38,17 +32,17 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry
-                    .addMapping("/**")
-                    .allowedHeaders("*")
-                    .allowedMethods("*")
-                    .allowedOrigins("*");
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry
+//                    .addMapping("/**")
+//                    .allowedHeaders("*")
+//                    .allowedMethods("*")
+//                    .allowedOrigins("*");
+//            }
+//        };
+//    }
 }

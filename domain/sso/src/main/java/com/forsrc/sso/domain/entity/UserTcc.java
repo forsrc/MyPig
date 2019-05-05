@@ -14,9 +14,11 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "t_sso_user_tcc", indexes = { @Index(name = "index_sso_user_tcc_username", columnList = "username") })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserTcc implements java.io.Serializable {
 
     private static final long serialVersionUID = 7053075402341362549L;

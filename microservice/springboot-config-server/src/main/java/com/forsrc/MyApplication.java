@@ -9,9 +9,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = "com.forsrc")
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @EnableConfigServer
-@EnableEurekaClient
+//@EnableEurekaClient
 @EnableDiscoveryClient
 public class MyApplication {
 

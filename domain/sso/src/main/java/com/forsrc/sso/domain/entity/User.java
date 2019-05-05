@@ -15,11 +15,13 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users", indexes = {
         @Index(name = "index_users_username", columnList = "username") }, uniqueConstraints = {
                 @UniqueConstraint(columnNames = { "username" }) })
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "fieldHandler" })
 public class User implements java.io.Serializable {
 
     private static final long serialVersionUID = 7053075402341362549L;

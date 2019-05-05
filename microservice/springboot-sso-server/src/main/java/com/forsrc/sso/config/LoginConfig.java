@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -33,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
 @Configuration
-@Order(-200)
+@Order(-20)
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true, proxyTargetClass = true)
 public class LoginConfig extends WebSecurityConfigurerAdapter {
@@ -53,15 +54,14 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-
         http
-            .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-            .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
+            .and()
+                .headers()
+                .frameOptions()
+                .disable()
             .and()
                 .logout()
                 .deleteCookies("JSESSIONID")
@@ -71,16 +71,25 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
             .and()
                 .requestMatchers()
-                .antMatchers("/", "/static/**", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
+                .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
             .and()
                 .authorizeRequests()
-                .antMatchers("/test", "/**/test", "/oauth/token")
+                .antMatchers("/test", "/oauth/token")
                 .permitAll()
             .and()
                 .csrf()
                 .ignoringAntMatchers("/test", "/oauth/token")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                ;
+                .csrfTokenRepository(csrfTokenRepository())
+            .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            .and()
+                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+        ;
 
         http.authorizeRequests()
                 .antMatchers("/actuator/**")
@@ -88,16 +97,14 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .csrf()
                 .ignoringAntMatchers("/actuator/**")
-                .csrfTokenRepository(csrfTokenRepository())
-            .and()
-                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+                .csrfTokenRepository(csrfTokenRepository());
 
         // @formatter:on
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.parentAuthenticationManager(authenticationManager)
+        auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
@@ -147,17 +154,18 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    private Filter csrfHeaderFilter() {
+    @Bean
+    Filter csrfHeaderFilter() {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                     FilterChain filterChain) throws ServletException, IOException {
                 CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
                 if (csrf != null) {
-                    Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
+                    Cookie cookie = WebUtils.getCookie(request, "X-XSRF-TOKEN");
                     String token = csrf.getToken();
                     if (cookie == null || token != null && !token.equals(cookie.getValue())) {
-                        cookie = new Cookie("XSRF-TOKEN", token);
+                        cookie = new Cookie("X-XSRF-TOKEN", token);
                         cookie.setPath("/");
                         response.addCookie(cookie);
                     }
@@ -167,7 +175,8 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    private CsrfTokenRepository csrfTokenRepository() {
+    @Bean
+    CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;

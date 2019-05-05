@@ -5,14 +5,14 @@ server:
 
 spring:
   application:
-    name: springboot-zipkin-server
+    name: mypig-zipkin-server
   cloud:
     config:
-      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   boot:
     admin:
       client:
-        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
 
@@ -48,7 +48,7 @@ spring:
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-zipkin-server:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -57,7 +57,7 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
 management:
   endpoints:

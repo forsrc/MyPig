@@ -1,15 +1,9 @@
 package com.forsrc.common.utils;
 
 import java.time.Duration;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 public class CompletableFutureUtils {
 
@@ -41,7 +35,12 @@ public class CompletableFutureUtils {
         };
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static <T> CompletableFuture<T> withinTimeout(CompletableFuture<T> future, Duration duration) {
+        final CompletableFuture<T> timeout = withTimeout(duration);
+        return future.applyToEither(timeout, Function.identity());
+    }
+
+    public static void main(String[] args) {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             new Thread() {
@@ -49,19 +48,47 @@ public class CompletableFutureUtils {
 
                     CompletableFuture<Integer> completableFuture = CompletableFutureUtils
                             .withTimeout(Duration.ofMillis(3000));
-//                    try {
-//                        TimeUnit.SECONDS.sleep(1);
-//                    } catch (InterruptedException e1) {
-//                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(3);
+                    } catch (InterruptedException e1) {
+                    }
                     completableFuture.complete(index);
                     try {
                         System.out.println(completableFuture.get());
                     } catch (InterruptedException e) {
                     } catch (ExecutionException e) {
-                        System.out.println("-->" + index);
+                        System.out.println(e.getMessage() + "-->" + index);
                     }
-                };
+                }
+
+                ;
             }.start();
+
+
+        }
+
+        CompletableFuture<Integer> completableFuture = new CompletableFuture<>();
+        CompletableFuture<Void> future = withinTimeout(completableFuture, Duration.ofMillis(5000))
+                .thenAccept(c -> System.out.println("$" + c))
+                .exceptionally(e -> {
+                    System.out.println("---> Timeout: " + e.getMessage());
+                    return null;
+                });
+        new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+            }
+            System.out.println("----------------------------");
+            completableFuture.complete(999);
+        }).start();
+
+        try {
+            completableFuture.get();
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException -> " + e.getMessage());
+        } catch (ExecutionException e) {
+            System.out.println("ExecutionException -> " + e.getMessage());
         }
     }
 }

@@ -40,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 @EnableAuthorizationServer
 @EnableConfigurationProperties({ AuthorizationServerProperties.class })
-@Order(-10)
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired

@@ -1,6 +1,9 @@
+auth-server: http://forsrc.local:10000/sso
+
+
 server:
   port: 8888
-  context-path: /ui
+  servlet:    context-path: /ui
 
 spring:
   application:
@@ -12,20 +15,21 @@ spring:
     admin:
       url: http://forsrc.local:13000
 
+
 security:
   oauth2:
     client:
-      access-token-uri:       http://forsrc.local:10000/sso/oauth/token
-      user-authorization-uri: http://forsrc.local:10000/sso/oauth/authorize
+      access-token-uri:       ${auth-server}/oauth/token
+      user-authorization-uri: ${auth-server}/oauth/authorize
       client-id:              ui
       client-secret:          forsrc
       scope:                  read, write
     resource:
       filter-order:           3
-      userInfoUri:            http://forsrc.local:10000/sso/me
+      userInfoUri:            ${auth-server}/me
       preferTokenInfo:        true
       id:                     ui
-      token-info-uri:         http://forsrc.local:10000/sso/oauth/check_token
+      token-info-uri:         ${auth-server}/oauth/check_token
 
 management:
   context-path: /mgmt
@@ -36,3 +40,13 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://forsrc.local:11100/eureka
+
+
+zuul:
+  routes:
+    user:
+      path: /me/**
+      url: ${auth-server}/me
+    logout:
+      path: /logout/**
+      url: ${auth-server}/logout

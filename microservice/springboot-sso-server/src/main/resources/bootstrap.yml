@@ -5,14 +5,14 @@ server:
 
 spring:
   application:
-    name: springboot-sso-server
+    name: mypig-sso-server
   cloud:
     config:
-      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   boot:
     admin:
       client:
-        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
   datasource:
@@ -39,10 +39,10 @@ spring:
   cache:
     type: redis
   redis:
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}
   thymeleaf:
-    prefix: 'classpath:public/mypig/www/'
+    prefix: 'classpath:templates/'
     suffix: .html
     cache: false
 
@@ -50,7 +50,7 @@ spring:
     service:
       name:   ${spring.application.name}
     enabled:  true
-    base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
+    base-url: ${ZIPKIN_SERVER:http://mypig-zipkin-server:11110}
 
   sleuth:
     traceId128: true
@@ -64,8 +64,8 @@ security:
     authorization:
       token-key-access: permitAll()
     client:
-      access-token-uri:       ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              sso
       client-secret:          forsrc
       scope:                  read, write
@@ -98,7 +98,7 @@ hystrix:
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-sso-server:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -107,8 +107,11 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-serverl:11100/eureka}
 
 
 tcc:
-  ws: ${TCC_WS:ws://forsrc.local:10020/tcc/ws/tcc}
+  ws: ${TCC_WS:ws://mypig-tcc:10020/tcc/ws/tcc}
+
+
+logging.level.org.springframework.*: INFO

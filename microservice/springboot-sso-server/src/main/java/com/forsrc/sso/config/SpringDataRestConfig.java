@@ -6,7 +6,7 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 
-@Configuration
+@Configuration()
 @Import(RepositoryRestMvcConfiguration.class)
 public class SpringDataRestConfig extends RepositoryRestConfigurerAdapter {
  
