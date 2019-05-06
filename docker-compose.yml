@@ -75,7 +75,8 @@ services:
     hostname: mypig-sso-server
     ports:
     - 10000:10000
-    # environment:
+    environment:
+    - JAVA_OPTS=-Dspring.thymeleaf.prefix=file:config/templates/
 
   mypig-api-gateway:
     #build:

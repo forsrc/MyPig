@@ -5,14 +5,14 @@ server:
 
 spring:
   application:
-    name: microservice-tcc
+    name: mypig-tcc
   cloud:
     config:
-      uri: ${CONFIG_SERVER:http://forsrc.local:12000/config}
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   boot:
     admin:
       client:
-        url:      ${ADMIN_SERVER:http://forsrc.local:13000}
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
 
@@ -45,7 +45,7 @@ spring:
     service:
       name:   ${spring.application.name}
     enabled:  true
-    base-url: ${ZIPKIN_SERVER:http://forsrc.local:11110}
+    base-url: ${ZIPKIN_SERVER:http://mypig-zipkin-server:11110}
   sleuth:
     traceId128: true
     sampler:
@@ -63,16 +63,16 @@ com.atomikos:
 security:
   oauth2:
     client:
-      access-token-uri:       ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              tcc
       client-secret:          forsrc
       scope:                  read, write
     resource:
-      userInfoUri:            ${SSO_SERVER:http://forsrc.local:10000}/sso/me
+      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
       preferTokenInfo:        false
       id:                     forsrc
-      token-info-uri:         ${SSO_SERVER:http://forsrc.local:10000}/sso/oauth/check_token
+      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
 
 management:
   endpoints:
@@ -86,7 +86,7 @@ management:
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://forsrc.local:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-tcc:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -95,19 +95,19 @@ eureka:
   client:
     registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone:                 ${EUREKA_SERVER:http://forsrc.local:11100/eureka}
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
 springboot-sso-server:
   ribbon:
     eureka:
       enabled: true
-    listOfServers: ${SSO_SERVER:http://forsrc.local:10000}
+    listOfServers: ${SSO_SERVER:http://mypig-sso-server:10000}
     ServerListRefreshInterval: 15000
 microservice-tcc:
   ribbon:
     eureka:
       enabled: true
-    listOfServers: ${TCC_SERVER:forsrc.local:10020}
+    listOfServers: ${TCC_SERVER:mypig-tcc:10020}
     ServerListRefreshInterval: 15000
 
 feign:

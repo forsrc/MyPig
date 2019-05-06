@@ -71,7 +71,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
             .and()
                 .requestMatchers()
-                .antMatchers("/", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
+                .antMatchers("/", "/index.html", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
             .and()
                 .authorizeRequests()
                 .antMatchers("/test", "/oauth/token")
@@ -92,11 +92,11 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.authorizeRequests()
-                .antMatchers("/actuator/**")
+                .antMatchers("/actuator/**", "/static/**")
                 .permitAll()
             .and()
                 .csrf()
-                .ignoringAntMatchers("/actuator/**")
+                .ignoringAntMatchers("/actuator/**", "/static/**")
                 .csrfTokenRepository(csrfTokenRepository());
 
         // @formatter:on

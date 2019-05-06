@@ -1,8 +1,17 @@
 
 cd app
 
-java \
+echo ====================== `hostname` start...
+echo \
+     java \
+	 $JAVA_OPTS \
      -Djava.security.egd=file:/dev/./urandom \
      -jar app.jar \
-     -classpath config/* \
-     $JAVA_OPTS
+     $PARAM_OPTS
+echo ====================== `hostname`
+
+java \
+     $JAVA_OPTS \
+     -Djava.security.egd=file:/dev/./urandom \
+     -jar app.jar \
+     $PARAM_OPTS

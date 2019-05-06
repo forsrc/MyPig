@@ -46,11 +46,12 @@ management:
 
 
 zuul:
-  sensitive-headers: Cookie,Set-Cookie,Authorization
+#  sensitive-headers: Cookie,Set-Cookie,Authorization
+  sensitive-headers:
   routes:
-    mypig-ui:          /app/**
-    mypig-user:        /app/**
-    mypig-sso-server:  /app/**
+    mypig-ui:          /app/ui/**
+    mypig-user:        /app/user/**
+    mypig-sso-server:  /app/sso/**
 #    ui:
 #      path:        /ui/**
 #      stripPrefix: true
