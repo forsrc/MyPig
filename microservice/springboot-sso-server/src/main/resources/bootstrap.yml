@@ -109,7 +109,6 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
-
 tcc:
   ws: ${TCC_WS:ws://mypig-tcc:10020/tcc/ws/tcc}
 
