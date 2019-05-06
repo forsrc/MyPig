@@ -18,8 +18,8 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
             .addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/ui/**")
-            .addResourceLocations("classpath:/public/mypig/www/");
+        registry.addResourceHandler("/gwt/**")
+            .addResourceLocations("classpath:/static/gwt/");
     }
 
     @Override

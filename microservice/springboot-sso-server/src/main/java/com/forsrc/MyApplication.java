@@ -20,7 +20,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
-@EnableAutoConfiguration
 @EnableEurekaClient
 @EnableDiscoveryClient
 @EnableResourceServer
