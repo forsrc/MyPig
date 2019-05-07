@@ -1,0 +1,61 @@
+.my-login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.my-login-form {
+    padding: 20px;
+    margin: 20px;
+    background: white;
+    max-width: 500px;
+    box-shadow: 0 7px 7px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.my-avatar {
+    line-height: 0; /* remove line-height */
+    display: inline-block; /* circle wraps image */
+    margin: 5px;
+    border: 0px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%; /* relative value */
+    /*box-shadow: 0px 0px 5px rgba(0,0,0,0.4);*/
+    transition: linear 0.25s;
+    height: 32px;
+    width: 32px;
+}
+
+.my-avatar img {
+    border-radius: 50%;
+    /* relative value for
+    adjustable image size */
+}
+
+.my-avatar:hover {
+    transition: ease-out 0.2s;
+    border: 0px solid rgba(255, 255, 255, 0.8);
+    -webkit-transition: ease-out 0.2s;
+}
+
+a.my-avatar {
+    color: transparent;
+}
+
+.my-drawer-separator {
+    height: 1px;
+    background-color: #dcdcdc;
+    margin: 8px 0;
+}
+
+.my-warning {
+    max-width: 450px;
+    margin: 0 auto;
+    background-color: #FFF9C4;
+    padding: 16px;
+    border-radius: 2px;
+    color: #212121
+}
+
+.my-red {
+    color: red;
+}
