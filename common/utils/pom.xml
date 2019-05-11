@@ -4,16 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-common-utils</artifactId>
+    <artifactId>mypig-common-utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-common-utils</name>
+    <name>mypig-common-utils</name>
     <description>mypig-common-utils</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-common</artifactId>
+        <artifactId>mypig-common</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>

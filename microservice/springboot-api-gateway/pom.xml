@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice-springboot-api-gateway</artifactId>
+    <artifactId>mypig-api-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-microservice-springboot-api-gateway</name>
-    <description>mypig-microservice-springboot-api-gateway</description>
+    <name>mypig-api-gateway</name>
+    <description>mypig-api-gateway</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-microservice</artifactId>
+        <artifactId>mypig-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>

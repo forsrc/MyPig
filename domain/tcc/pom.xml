@@ -4,16 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-domain-tcc</artifactId>
+    <artifactId>mypig-domain-tcc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-domain-tcc</name>
+    <name>mypig-domain-tcc</name>
     <description>mypig-domain-tcc</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-domain</artifactId>
+        <artifactId>mypig-domain</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice</artifactId>
+    <artifactId>mypig-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>forsrc-mypig-microservice</name>
+    <name>mypig-microservice</name>
     <description>mypig-microservice</description>
 
     <parent>

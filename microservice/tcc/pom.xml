@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice-tcc</artifactId>
+    <artifactId>mypig-tcc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-microservice-tcc</name>
-    <description>mypig-microservice-tcc</description>
+    <name>mypig-tcc</name>
+    <description>mypig-tcc</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-microservice</artifactId>
+        <artifactId>mypig-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
@@ -26,22 +26,22 @@
     <dependencies>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-domain-tcc</artifactId>
+            <artifactId>mypig-domain-tcc</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-common-utils</artifactId>
+            <artifactId>mypig-common-utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-common-core</artifactId>
+            <artifactId>mypig-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-service-user</artifactId>
+            <artifactId>mypig-service-user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

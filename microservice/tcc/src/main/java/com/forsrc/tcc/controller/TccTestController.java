@@ -42,8 +42,8 @@ public class TccTestController {
     @RequestMapping(value = "/tcc/{size}")
     public ResponseEntity<String> test(@PathVariable("size") int size) throws Exception {
 
-        String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
-        String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
+        String userTccUrl = "http://MYPIG-SSO-SERVER/sso/api/v1/tcc/user/";
+        String tccUrl = "http://MYPIG-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
         for (int i = 0; i < size; i++) {
@@ -79,7 +79,7 @@ public class TccTestController {
     }
 
     @Async
-    private ResponseEntity<String> send(String url, Object body, HttpMethod httpMethod, int retry) {
+    protected ResponseEntity<String> send(String url, Object body, HttpMethod httpMethod, int retry) {
 
         HttpHeaders requestHeaders = new HttpHeaders();
         List<MediaType> mediaTypeList = new ArrayList<MediaType>();

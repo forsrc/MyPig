@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice-user</artifactId>
+    <artifactId>mypig-user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-microservice-user</name>
-    <description>mypig-microservice-user</description>
+    <name>mypig-user</name>
+    <description>mypig-user</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-microservice</artifactId>
+        <artifactId>mypig-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
@@ -26,17 +26,17 @@
     <dependencies>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-domain-user</artifactId>
+            <artifactId>mypig-domain-user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-common-utils</artifactId>
+            <artifactId>mypig-common-utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-service-user</artifactId>
+            <artifactId>mypig-service-user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

@@ -34,8 +34,8 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @RibbonClients(
         {
-            @RibbonClient(name = "springboot-sso-server", configuration = RibbonClinetConfig.class),
-            @RibbonClient(name = "microservice-tcc", configuration = RibbonClinetConfig.class)
+            @RibbonClient(name = "mypig-sso-server", configuration = RibbonClinetConfig.class),
+            @RibbonClient(name = "mypig-tcc", configuration = RibbonClinetConfig.class)
         }
         )
 @EnableRedisHttpSession

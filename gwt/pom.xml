@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-gwt</artifactId>
+    <artifactId>mypig-gwt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>forsrc-mypig-gwt</name>
+    <name>mypig-gwt</name>
     <description>mypig-gwt</description>
 
     <parent>

@@ -3,22 +3,22 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId> com.forsrc</groupId>
-    <artifactId>forsrc-mypig-gwt-sso</artifactId>
+    <groupId>com.forsrc</groupId>
+    <artifactId>mypig-gwt-sso</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-gwt-sso</name>
+    <name>mypig-gwt-sso</name>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-gwt</artifactId>
+        <artifactId>mypig-gwt</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
     <properties>
-        <app.id>forsrc-mypig-gwt-sso</app.id>
+        <app.id>mypig-gwt-sso</app.id>
         <maven>3.2.3</maven>
         <!-- Don't let your Mac use a crazy non-standard encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

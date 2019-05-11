@@ -49,7 +49,7 @@ public class UserInfoController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Object> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Map> responseEntity = loadBalancedRestTemplate.exchange("http://SPRINGBOOT-SSO-SERVER/sso/me", HttpMethod.GET, entity, Map.class);
+        ResponseEntity<Map> responseEntity = loadBalancedRestTemplate.exchange("http://MYPIG-SSO-SERVER/sso/me", HttpMethod.GET, entity, Map.class);
         LOGGER.info("--> userinfo: {}", responseEntity.getBody());
         return responseEntity.getBody();
     }

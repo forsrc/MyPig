@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-ui</artifactId>
+    <artifactId>mypig-ui</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-ui</name>
+    <name>mypig-ui</name>
     <description>mypig-ui</description>
 
     <parent>

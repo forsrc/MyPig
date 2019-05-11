@@ -47,7 +47,7 @@ public class RestConfig {
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
         resourceDetails.setUsername("tcc");
         resourceDetails.setPassword("tcc");
-        //resourceDetails.setAccessTokenUri("http://SPRINGBOOT-SSO-SERVER/sso/oauth/token");
+        //resourceDetails.setAccessTokenUri("http://MYPIG-SSO-SERVER/sso/oauth/token");
         resourceDetails.setAccessTokenUri(accessTokenUri);
         //resourceDetails.setId("tcc");
         resourceDetails.setClientId("forsrc");

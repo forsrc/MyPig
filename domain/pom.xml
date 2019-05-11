@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-domain</artifactId>
+    <artifactId>mypig-domain</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>forsrc-mypig-domain</name>
+    <name>mypig-domain</name>
     <description>mypig-domain</description>
 
     <parent>
