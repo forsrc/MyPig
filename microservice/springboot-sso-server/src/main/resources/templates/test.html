@@ -65,7 +65,7 @@
         <h2>
             test
         </h2>
-
+        <div id="message"></div>
     </main>
 
     <footer class=" mdl-mini-footer" style="background-color: #5c6bc0">
@@ -77,5 +77,73 @@
     </footer>
 
 </div>
+<script type="application/javascript" src="static/js/utils.js"></script>
+<script type="application/javascript">
+    (function () {
+        ajax({
+            type: "POST",
+            url: "/sso/oauth/token?grant_type=password&username=forsrc@gmail.com&password=forsrc",
+            async: true,
+            data: null,
+            timeout: 5000,
+            requestHeader: {
+                "Authorization": "Basic " + btoa("forsrc:forsrc"),
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            onSuccess: function (data, xhr) {
+                //alert(html);
+                //console.log("------------------");
+                //console.log("onSuccess: " + xhr + "-->" + data);
+                //console.log(xhr);
+                //console.log(data);
+                //console.log("------------------");
+                testApi(data.access_token);
+            },
+            onComplete: function () {
+            },
+            onError: function (xhr) {
+                //alert("onError: " + xhr);
+                //console.log("------------------");
+                //console.log("onError: " + xhr);
+                //console.log(xhr);
+                //console.log("------------------");
+            }
+        });
+    })();
+
+    function testApi(token) {
+        ajax({
+            type: "GET",
+            url: "/sso/me",
+            async: true,
+            data: null,
+            timeout: 5000,
+            requestHeader: {
+                "Authorization": "Bearer " + token,
+                "Content-type": "application/json; charset=UTF-8"
+            },
+            onSuccess: function (json, xhr) {
+                //alert(JSON.stringify(json));
+                var message =  document.getElementById("message");
+                message.innerText = JSON.stringify(json);
+
+                //console.log("------------------");
+                //console.log("onSuccess: " + xhr + "-->" + json);
+                //console.log(xhr);
+                //console.log(json);
+                //console.log("------------------");
+            },
+            onComplete: function () {
+            },
+            onError: function (xhr) {
+                //alert("onError: " + xhr);
+                //console.log("------------------");
+                //console.log("onError: " + xhr);
+                //console.log(xhr);
+                //console.log("------------------");
+            }
+        });
+    }
+</script>
 </body>
 </html>
