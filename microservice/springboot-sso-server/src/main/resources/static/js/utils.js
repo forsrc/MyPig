@@ -7,6 +7,7 @@ var ajax = function (options) {
         data: options.data || null,
         username: options.username || null,
         password: options.password || null,
+        xhrFields: options.xhrFields || null,
         onSuccess: options.onSuccess || function () {
         },
         onComplete: options.onComplete || function () {
@@ -33,6 +34,12 @@ var ajax = function (options) {
         }
     }
     var xhr = getXMLHttpRequest(options.url);
+    if (options.xhrFields) {
+        for(var key in options.xhrFields) {
+            xhr.key = options.xhrFields[key];
+        }
+    }
+
     xhr.open(options.type, options.url, options.async, options.username,
         options.password);
     setRequestHeader(options.requestHeader, xhr);
@@ -558,3 +565,13 @@ var LOGGING = (function () {
 
     }
 })();
+
+
+function getCookie(key) {
+    console.log(document.cookie);
+    if (document.cookie.indexOf(";") < 0) {
+        return document.cookie.replace(key + "=", "");
+    }
+    var arr = document.cookie.match(new RegExp("(^|)" + key + "=([^;](;|$))"));
+    return arr ? unescape(arr[2]) : null;
+}

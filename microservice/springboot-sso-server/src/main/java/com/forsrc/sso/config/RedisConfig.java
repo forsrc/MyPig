@@ -18,6 +18,7 @@ import java.io.Serializable;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
+//@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -45,8 +46,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Serializable> redisCacheTemplate(LettuceConnectionFactory connectionFactory) {
-        RedisTemplate<String, Serializable> template = new RedisTemplate<>();
+    public RedisTemplate<Serializable, Serializable> redisCacheTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<Serializable, Serializable> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         template.setConnectionFactory(connectionFactory);

@@ -62,11 +62,11 @@ zuul:
 #      stripPrefix: true
 #      service-id:  microservice-user
 #      #url:         http://forsrc.local:10010/user
-#    sso:
-#      path:        /sso/**
-#      stripPrefix: true
-#      service-id:  mypig-sso-server
-#      #url:         http://mypig-sso-server:10000/sso
+    sso:
+      path:        /sso/**
+      stripPrefix: true
+      service-id:  mypig-sso-server
+      #url:         http://mypig-sso-server:10000/sso
 
 eureka:
   instance:

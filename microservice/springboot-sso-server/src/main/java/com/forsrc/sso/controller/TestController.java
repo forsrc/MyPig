@@ -1,23 +1,22 @@
 package com.forsrc.sso.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import com.forsrc.sso.domain.entity.User;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 import reactor.core.publisher.Mono;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "/test")
+@CrossOrigin(allowCredentials = "true")
 public class TestController {
 
     @Autowired
@@ -55,5 +54,16 @@ public class TestController {
                 .contentType(MediaType.APPLICATION_JSON) //
                 .body(Mono.just(username), String.class) //
                 .or(ServerResponse.notFound().build());
+    }
+
+    @RequestMapping(value = "/1")
+    public ResponseEntity<String> test1(HttpServletRequest request, HttpSession session, Principal user) {
+        session.setAttribute("test", System.currentTimeMillis());
+        return new ResponseEntity<>("1: " + request.getRequestedSessionId() + "->" + user.getName() + "->" + session.getAttribute("test"), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/2")
+    public ResponseEntity<String> test2(HttpServletRequest request, HttpSession session, Principal user) {
+        return new ResponseEntity<>("2: " + request.getRequestedSessionId() + "->" + user.getName()+ "->" + session.getAttribute("test"), HttpStatus.OK);
     }
 }

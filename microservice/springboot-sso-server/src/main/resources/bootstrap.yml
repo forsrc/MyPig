@@ -38,6 +38,10 @@ spring:
 
   cache:
     type: redis
+  session:
+    store-type: redis
+    redis:
+      flush-mode: ON_SAVE
   redis:
     host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}

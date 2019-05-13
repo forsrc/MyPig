@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
@@ -237,12 +237,8 @@
             <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
         </dependency>
         <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>io.lettuce</groupId>
@@ -283,11 +279,11 @@
                         <configuration>
                             <tasks>
                                 <mkdir
-                                    dir="src/main/java/com/forsrc" />
-                                <mkdir dir="src/main/resources" />
+                                        dir="src/main/java/com/forsrc"/>
+                                <mkdir dir="src/main/resources"/>
                                 <mkdir
-                                    dir="src/test/java/com/forsrc" />
-                                <mkdir dir="src/test/resources" />
+                                        dir="src/test/java/com/forsrc"/>
+                                <mkdir dir="src/test/resources"/>
                             </tasks>
                         </configuration>
                     </execution>

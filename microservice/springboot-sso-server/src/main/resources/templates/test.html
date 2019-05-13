@@ -80,11 +80,19 @@
 <script type="application/javascript" src="static/js/utils.js"></script>
 <script type="application/javascript">
     (function () {
+        testApi("/sso/me", null);
         ajax({
             type: "POST",
-            url: "/sso/oauth/token?grant_type=password&username=forsrc@gmail.com&password=forsrc",
+            url: "/sso/oauth/token?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"),
             async: true,
-            data: null,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                grant_type: "password",
+                username: "forsrc@gmail.com",
+                password: "forsrc"
+            },
             timeout: 5000,
             requestHeader: {
                 "Authorization": "Basic " + btoa("forsrc:forsrc"),
@@ -97,7 +105,9 @@
                 //console.log(xhr);
                 //console.log(data);
                 //console.log("------------------");
-                testApi(data.access_token);
+                testApi("/sso/me?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
+                testApi("/sso/test/1?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
+                testApi("/sso/test/2?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
             },
             onComplete: function () {
             },
@@ -111,13 +121,16 @@
         });
     })();
 
-    function testApi(token) {
+    function testApi(url, token) {
         ajax({
             type: "GET",
-            url: "/sso/me",
+            url: url,
             async: true,
             data: null,
             timeout: 5000,
+            xhrFields: {
+                withCredentials: true
+            },
             requestHeader: {
                 "Authorization": "Bearer " + token,
                 "Content-type": "application/json; charset=UTF-8"
@@ -125,7 +138,7 @@
             onSuccess: function (json, xhr) {
                 //alert(JSON.stringify(json));
                 var message =  document.getElementById("message");
-                message.innerText = JSON.stringify(json);
+                message.innerHTML = message.innerHTML + "<p>-->" + JSON.stringify(json) +"</p>";
 
                 //console.log("------------------");
                 //console.log("onSuccess: " + xhr + "-->" + json);

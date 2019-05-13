@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@SessionAttributes("authorizationRequest")
+//@SessionAttributes("authorizationRequest")
 public class UserInfoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoController.class);
@@ -37,6 +37,12 @@ public class UserInfoController {
     @PreAuthorize("isAuthenticated()")
     @PostAuthorize ("#user != null")
     public Principal me(Principal user) {
+        LOGGER.info("--> user: {}", user);
+        return user;
+    }
+
+    @GetMapping("/who")
+    public Principal who(Principal user) {
         LOGGER.info("--> user: {}", user);
         return user;
     }
