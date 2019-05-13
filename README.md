@@ -10,10 +10,11 @@
     microservice             | port  | start order |
     ------------------------ | ----- | ----------- |
     ui                       | 8888  | 99          |
-    springboot-api-gateway   | 8088  | 5           |
-    springboot-sso-server    | 10000 | 4           |
-    springboot-eureka-server | 11100 | 3           |
-    springboot-config-server | 12000 | 2           |
-    springboot-admin         | 13000 | 1           |
-    springboot-zipkin-server | 11110 | 1           |
-    user                     | 10010 | 6           |
+    mypig-api-gateway        | 8088  | 5           |
+    mypig-sso-server         | 10000 | 4           |
+    mypig-eureka-server      | 11100 | 3           |
+    mypig-config-server      | 12000 | 2           |
+    mypig-admin-server       | 13000 | 1           |
+    mypig-zipkin-server      | 11110 | 1           |
+    mypig-user               | 10010 | 6           |
+    mypig-tcc                | 10020 | 6           |

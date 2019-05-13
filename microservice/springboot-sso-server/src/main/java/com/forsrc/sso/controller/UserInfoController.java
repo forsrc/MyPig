@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@SessionAttributes("authorizationRequest")
+//@SessionAttributes("authorizationRequest")
 public class UserInfoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoController.class);
@@ -41,6 +41,12 @@ public class UserInfoController {
         return user;
     }
 
+    @GetMapping("/who")
+    public Principal who(Principal user) {
+        LOGGER.info("--> user: {}", user);
+        return user;
+    }
+
     @GetMapping("/userinfo")
     @PreAuthorize("isAuthenticated()")
     public Map userinfo(@RequestParam("access_token") String accessToken) {
@@ -49,7 +55,7 @@ public class UserInfoController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Object> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Map> responseEntity = loadBalancedRestTemplate.exchange("http://SPRINGBOOT-SSO-SERVER/sso/me", HttpMethod.GET, entity, Map.class);
+        ResponseEntity<Map> responseEntity = loadBalancedRestTemplate.exchange("http://MYPIG-SSO-SERVER/sso/me", HttpMethod.GET, entity, Map.class);
         LOGGER.info("--> userinfo: {}", responseEntity.getBody());
         return responseEntity.getBody();
     }

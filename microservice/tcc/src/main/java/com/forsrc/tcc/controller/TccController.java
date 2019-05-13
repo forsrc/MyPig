@@ -225,7 +225,7 @@ public class TccController implements TccFeignClient {
     }
 
     @Async
-    private <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
+    protected <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
         result.setResult(supplier.get());
     }
 }

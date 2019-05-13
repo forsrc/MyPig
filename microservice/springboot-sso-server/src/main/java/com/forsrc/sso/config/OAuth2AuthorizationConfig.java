@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableAuthorizationServer
+@EnableOAuth2Client
 @EnableConfigurationProperties({ AuthorizationServerProperties.class })
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 

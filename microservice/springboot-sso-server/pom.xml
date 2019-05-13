@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice-springboot-sso-server</artifactId>
+    <artifactId>mypig-sso-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-microservice-springboot-sso-server</name>
-    <description>mypig-microservice-springboot-sso-server</description>
+    <name>mypig-sso-server</name>
+    <description>mypig-sso-server</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-microservice</artifactId>
+        <artifactId>mypig-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
@@ -26,17 +26,17 @@
     <dependencies>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-domain-sso</artifactId>
+            <artifactId>mypig-domain-sso</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-common-utils</artifactId>
+            <artifactId>mypig-common-utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.forsrc</groupId>
-            <artifactId>forsrc-mypig-common-core</artifactId>
+            <artifactId>mypig-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -151,13 +151,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-data-redis</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.session</groupId>-->
+            <!--<artifactId>spring-session-data-redis</artifactId>-->
+            <!--<version>2.1.5.RELEASE</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.lettuce</groupId>
-            <artifactId>lettuce-core</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
         </dependency>
     </dependencies>
 
@@ -171,7 +176,7 @@
                 </includes>
             </resource>
             <resource>
-                <directory>../../gwt/sso/target/forsrc-mypig-gwt-sso-0.0.1-SNAPSHOT/WEB-INF/classes/static</directory>
+                <directory>../../gwt/sso/target/mypig-gwt-sso-0.0.1-SNAPSHOT/WEB-INF/classes/static</directory>
                 <targetPath>static</targetPath>
                 <includes>
                     <include>**</include>

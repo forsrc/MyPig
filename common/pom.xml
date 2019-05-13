@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-common</artifactId>
+    <artifactId>mypig-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>forsrc-mypig-common</name>
+    <name>mypig-common</name>
     <description>mypig-common</description>
 
     <parent>

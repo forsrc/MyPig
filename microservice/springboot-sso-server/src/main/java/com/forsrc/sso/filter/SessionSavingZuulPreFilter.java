@@ -1,12 +1,9 @@
-package com.forsrc.filter;
+package com.forsrc.sso.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.session.Session;
-import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
@@ -16,8 +13,8 @@ public class SessionSavingZuulPreFilter extends ZuulFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionSavingZuulPreFilter.class);
 
-    @Autowired
-    private SessionRepository<?> repository;
+//    @Autowired
+//    private SessionRepository<?> repository;
 
     @Override
     public boolean shouldFilter() {
@@ -28,12 +25,13 @@ public class SessionSavingZuulPreFilter extends ZuulFilter {
     public Object run() {
         RequestContext context = RequestContext.getCurrentContext();
         HttpSession httpSession = context.getRequest().getSession();
-        Session session = repository.findById(httpSession.getId());
-        if (session == null) {
-            return null;
-        }
-        context.addZuulRequestHeader("Cookie", "SESSION=" + httpSession.getId());
-        LOGGER.info("--> SessionSavingZuulPreFilter session proxy: {}", session.getId());
+//        Session session = repository.findById(httpSession.getId());
+//        if (session == null) {
+//            return null;
+//        }
+
+        //context.addZuulRequestHeader("Cookie", "SESSION=" + httpSession.getId());
+//        LOGGER.info("--> SessionSavingZuulPreFilter session proxy: {}", session.getId());
         return null;
     }
 

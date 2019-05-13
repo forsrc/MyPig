@@ -173,8 +173,8 @@ public class TccTest extends MyApplicationTests {
     @Test
     public void test() throws Exception {
 
-        String userTccUrl = "http://SPRINGBOOT-SSO-SERVER/sso/api/v1/tcc/user/";
-        String tccUrl = "http://MICROSERVICE-TCC/tcc/api/v1/tcc/";
+        String userTccUrl = "http://MYPIG-SSO-SERVER/sso/api/v1/tcc/user/";
+        String tccUrl = "http://MYPIG-TCC/tcc/api/v1/tcc/";
 
         ObjectMapper objectMapper = new ObjectMapper();
         for (int i = 0; i < 10; i++) {

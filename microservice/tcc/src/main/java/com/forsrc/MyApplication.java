@@ -1,5 +1,6 @@
 package com.forsrc;
 
+import com.forsrc.tcc.config.RibbonClinetConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,9 +17,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
-import com.forsrc.tcc.config.RibbonClinetConfig;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 @EnableAutoConfiguration
@@ -34,11 +32,11 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @RibbonClients(
         {
-            @RibbonClient(name = "springboot-sso-server", configuration = RibbonClinetConfig.class),
-            @RibbonClient(name = "microservice-tcc", configuration = RibbonClinetConfig.class)
+                @RibbonClient(name = "mypig-sso-server", configuration = RibbonClinetConfig.class),
+                @RibbonClient(name = "mypig-tcc", configuration = RibbonClinetConfig.class)
         }
-        )
-@EnableRedisHttpSession
+)
+//@EnableRedisHttpSession
 public class MyApplication {
 
     public static void main(String[] args) {

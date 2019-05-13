@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
-    <artifactId>forsrc-mypig-microservice-springboot-zipkin-server</artifactId>
+    <artifactId>mypig-zipkin-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>forsrc-mypig-microservice-springboot-zipkin-server</name>
-    <description>mypig-microservice-springboot-zipkin-server</description>
+    <name>mypig-zipkin-server</name>
+    <description>mypig-zipkin-server</description>
 
     <parent>
         <groupId>com.forsrc</groupId>
-        <artifactId>forsrc-mypig-microservice</artifactId>
+        <artifactId>mypig-microservice</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>

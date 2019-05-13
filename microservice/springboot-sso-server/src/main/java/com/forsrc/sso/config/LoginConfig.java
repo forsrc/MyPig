@@ -1,15 +1,5 @@
 package com.forsrc.sso.config;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -32,6 +21,15 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration
 @Order(-20)
@@ -64,7 +62,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .disable()
             .and()
                 .logout()
-                .deleteCookies("JSESSIONID")
+                .deleteCookies("JSESSIONID", "SESSION", "SESSIONID")
                 .invalidateHttpSession(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout")
@@ -86,9 +84,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
             .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-            .and()
-                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         ;
 
         http.authorizeRequests()
@@ -97,7 +93,8 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .csrf()
                 .ignoringAntMatchers("/actuator/**", "/static/**")
-                .csrfTokenRepository(csrfTokenRepository());
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
 
         // @formatter:on
     }
@@ -110,7 +107,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 .usersByUsernameQuery("select username,password,enabled from users where username = ?")
                 .authoritiesByUsernameQuery("select username,authority from authorities where username = ?")
-                ;
+        ;
     }
 
     @Autowired
@@ -138,7 +135,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response,
-                    org.springframework.security.core.AuthenticationException authException)
+                                 org.springframework.security.core.AuthenticationException authException)
                     throws IOException, ServletException {
                 String requestedBy = request.getHeader("X-Requested-By");
                 if (requestedBy == null || requestedBy.isEmpty()) {
@@ -159,13 +156,13 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                    FilterChain filterChain) throws ServletException, IOException {
+                                            FilterChain filterChain) throws ServletException, IOException {
                 CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
                 if (csrf != null) {
-                    Cookie cookie = WebUtils.getCookie(request, "X-XSRF-TOKEN");
+                    Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
                     String token = csrf.getToken();
                     if (cookie == null || token != null && !token.equals(cookie.getValue())) {
-                        cookie = new Cookie("X-XSRF-TOKEN", token);
+                        cookie = new Cookie("XSRF-TOKEN", token);
                         cookie.setPath("/");
                         response.addCookie(cookie);
                     }
@@ -178,7 +175,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
+        repository.setHeaderName("XSRF-TOKEN");
         return repository;
     }
 }

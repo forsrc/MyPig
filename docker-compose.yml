@@ -9,13 +9,14 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-eureka-server-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 11100
-    image: forsrc/forsrc-mypig-microservice-springboot-eureka-server:latest
+    image: forsrc/mypig-eureka-server:latest
     container_name: mypig-eureka-server
     hostname: mypig-eureka-server
     # depends_on:
     ports:
     - 11100:11100
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m
 
   mypig-admin-server:
     #build:
@@ -25,12 +26,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-admin-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 13000
-    image: forsrc/forsrc-mypig-microservice-springboot-admin:latest
+    image: forsrc/mypig-admin-server:latest
     container_name: mypig-admin-server
     hostname: mypig-admin-server
     ports:
     - 13000:13000
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m
 
   mypig-zipkin-server:
     #build:
@@ -40,12 +42,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-zipkin-server-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 11110
-    image: forsrc/forsrc-mypig-microservice-springboot-zipkin-server:latest
+    image: forsrc/mypig-zipkin-server:latest
     container_name: mypig-zipkin-server
     hostname: mypig-zipkin-server
     ports:
     - 11110:11110
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m
 
   mypig-config-server:
     #build:
@@ -55,12 +58,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-config-server-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 12000
-    image: forsrc/forsrc-mypig-microservice-springboot-config-server:latest
+    image: forsrc/mypig-config-server:latest
     container_name: mypig-config-server
     hostname: mypig-config-server
     ports:
     - 12000:12000
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m
 
   mypig-sso-server:
     #build:
@@ -70,13 +74,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-sso-server-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 10000
-    image: forsrc/forsrc-mypig-microservice-springboot-sso-server:latest
+    image: forsrc/mypig-sso-server:latest
     container_name: mypig-sso-server
     hostname: mypig-sso-server
     ports:
     - 10000:10000
     environment:
-    - JAVA_OPTS=-Dspring.thymeleaf.prefix=file:config/templates/
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
 
   mypig-api-gateway:
     #build:
@@ -86,12 +90,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-api-gateway-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 8088
-    image: forsrc/forsrc-mypig-microservice-springboot-api-gateway:latest
-    container_name: mypig-api-gateway-server
-    hostname: mypig-api-gateway-server
+    image: forsrc/mypig-api-gateway:latest
+    container_name: mypig-api-gateway
+    hostname: mypig-api-gateway
     ports:
     - 8088:8088
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m
 
   mypig-tcc:
     #build:
@@ -101,12 +106,13 @@ services:
       #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-tcc-0.0.1-SNAPSHOT.jar
       #   ARG_RES_FILE: ${PWD}/src/main/resources
       #   ARG_PORT: 10020
-    image: forsrc/forsrc-mypig-microservice-tcc:latest
+    image: forsrc/mypig-tcc:latest
     container_name: mypig-tcc
     hostname: mypig-tcc
     ports:
     - 10020:10020
-    # environment:
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx512m
   redis:
     image: redis:3.2
     container_name: mypig-redis

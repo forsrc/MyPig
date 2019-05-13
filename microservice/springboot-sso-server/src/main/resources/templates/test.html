@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>sso ui</title>
+    <!--<base href="/">-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="static/mdl/material.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+    <script type="application/javascript" src="static/mdl/material.min.js"></script>
+</head>
+<body>
+
+<div class="mdl-js-layout mdl-layout mdl-layout--fixed-header">
+
+    <header class="mdl-layout__header mdl-layout__header--waterfall">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">
+                <img class="my-avatar" src="static/images/logo.jpg"/>
+            </span>
+            <!-- Add spacer, to align navigation to the right in desktop -->
+            <div class="mdl-layout-spacer"></div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
+                <label class="mdl-button mdl-js-button mdl-button--icon" for="search-field">
+                    <i class="material-icons">search</i>
+                </label>
+                <div class="mdl-textfield__expandable-holder">
+                    <input class="mdl-textfield__input" type="text" id="search-field"/>
+                </div>
+            </div>
+            <!-- Navigation -->
+            <div class="mypig-navigation-container">
+                <nav class="mypig-navigation mdl-navigation">
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="">MyPig</a>
+                </nav>
+            </div>
+            <span class="mdl-layout-title">
+                <img class="my-avatar" src="static/images/logo.jpg" alt="MyPig"/>
+            </span>
+            <button class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect"
+                    id="more-button">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
+                <li class="mdl-menu__item">Login</li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">
+            <img class="my-avatar" src="static/images/logo.jpg" alt="MyPig"/>
+        </span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">MyPig</a>
+            <div class="my-drawer-separator"></div>
+        </nav>
+    </div>
+
+    <main class="mdl-layout__content mdl-typography--text-center">
+        <h2>
+            test
+        </h2>
+        <div id="message"></div>
+    </main>
+
+    <footer class=" mdl-mini-footer" style="background-color: #5c6bc0">
+        <div class="mdl-mini-footer--left-section">
+            <ul class="mdl-mini-footer--link-list">
+                <li><a href="#">forsrc@gmail.com</a></li>
+            </ul>
+        </div>
+    </footer>
+
+</div>
+<script type="application/javascript" src="static/js/utils.js"></script>
+<script type="application/javascript">
+    (function () {
+        testApi("/sso/me", null);
+        ajax({
+            type: "POST",
+            url: "/sso/oauth/token?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"),
+            async: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {
+                grant_type: "password",
+                username: "forsrc@gmail.com",
+                password: "forsrc"
+            },
+            timeout: 5000,
+            requestHeader: {
+                "Authorization": "Basic " + btoa("forsrc:forsrc"),
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            onSuccess: function (data, xhr) {
+                //alert(html);
+                //console.log("------------------");
+                //console.log("onSuccess: " + xhr + "-->" + data);
+                //console.log(xhr);
+                //console.log(data);
+                //console.log("------------------");
+                testApi("/sso/me?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
+                testApi("/sso/test/1?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
+                testApi("/sso/test/2?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"), data.access_token);
+            },
+            onComplete: function () {
+            },
+            onError: function (xhr) {
+                //alert("onError: " + xhr);
+                //console.log("------------------");
+                //console.log("onError: " + xhr);
+                //console.log(xhr);
+                //console.log("------------------");
+            }
+        });
+    })();
+
+    function testApi(url, token) {
+        ajax({
+            type: "GET",
+            url: url,
+            async: true,
+            data: null,
+            timeout: 5000,
+            xhrFields: {
+                withCredentials: true
+            },
+            requestHeader: {
+                "Authorization": "Bearer " + token,
+                "Content-type": "application/json; charset=UTF-8"
+            },
+            onSuccess: function (json, xhr) {
+                //alert(JSON.stringify(json));
+                var message =  document.getElementById("message");
+                message.innerHTML = message.innerHTML + "<p>-->" + JSON.stringify(json) +"</p>";
+
+                //console.log("------------------");
+                //console.log("onSuccess: " + xhr + "-->" + json);
+                //console.log(xhr);
+                //console.log(json);
+                //console.log("------------------");
+            },
+            onComplete: function () {
+            },
+            onError: function (xhr) {
+                //alert("onError: " + xhr);
+                //console.log("------------------");
+                //console.log("onError: " + xhr);
+                //console.log(xhr);
+                //console.log("------------------");
+            }
+        });
+    }
+</script>
+</body>
+</html>

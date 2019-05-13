@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.forsrc.common.core.tcc.exception.TccException;
 
-//@FeignClient(name = "MICROSERVICE-XXX", path = "/")
+//@FeignClient(name = "MYPIG-XXX", path = "/")
 public interface TccBaseFeignClient<T> {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

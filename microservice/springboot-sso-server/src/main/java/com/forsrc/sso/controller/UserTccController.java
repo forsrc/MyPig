@@ -136,12 +136,12 @@ public class UserTccController implements UserTccFeignClient {
     }
 
     @Async("asyncTccExecutor")
-    private <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
+    protected <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
         result.setResult(supplier.get());
     }
 
     @Async("asyncExecutor")
-    private <T> void handleCreate(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
+    protected <T> void handleCreate(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
         result.setResult(supplier.get());
     }
 
