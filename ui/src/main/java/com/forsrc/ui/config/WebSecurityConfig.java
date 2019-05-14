@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.context.request.RequestContextListener;
@@ -29,6 +30,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf()
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
             ;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // Filters will not get executed for the resources
+        web.ignoring()
+                .antMatchers(
+                        "/",
+                        "/static/**",
+                        "/public/**",
+                        "/h2-console/**",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**", "/api-docs", "/api-docs/**", "/v2/api-docs/**"
+                        , "/*.html", "/**/*.html","/**/*.scss","/**/*.css","/**/*.js","/**/*.png","/**/*.jpg", "/**/*.gif", "/**/*.svg", "/**/*.ico", "/**/*.ttf","/**/*.woff","/**/*.otf");
     }
 
 }

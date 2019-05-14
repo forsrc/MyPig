@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.forsrc</groupId>
@@ -90,16 +90,67 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <mkdir dir="src/main/java/com/forsrc" />
-                                <mkdir dir="src/main/resources" />
-                                <mkdir dir="src/test/java/com/forsrc" />
-                                <mkdir dir="src/test/resources" />
+                                <mkdir dir="src/main/java/com/forsrc"/>
+                                <mkdir dir="src/main/resources"/>
+                                <mkdir dir="src/test/java/com/forsrc"/>
+                                <mkdir dir="src/test/resources"/>
                             </tasks>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <nodeVersion>v8.11.3</nodeVersion>
+                    <workingDirectory>src/main/ui</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run-script build</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-test</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run-script e2e</arguments>
+                        </configuration>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/ui/dist/mypig-ui</directory>
+                <targetPath>public</targetPath>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

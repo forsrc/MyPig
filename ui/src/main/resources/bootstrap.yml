@@ -1,45 +1,64 @@
-auth-server: http://forsrc.local:10000/sso
+auth-server: http://mypig-sso-server:10000/sso
 
 
 server:
   port: 8888
-  servlet:    context-path: /ui
+#  servlet:
+#    context-path: /ui
 
 spring:
   application:
-    name: microservice-ui
+    name: mypig-ui
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/static/mypig-ui/
   cloud:
     config:
-      uri: http://forsrc.local:12000/config
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
   boot:
     admin:
-      url: http://forsrc.local:13000
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
 
 
 security:
   oauth2:
     client:
-      access-token-uri:       ${auth-server}/oauth/token
-      user-authorization-uri: ${auth-server}/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              ui
       client-secret:          forsrc
-      scope:                  read, write
+      scope:                  ui, read, write
     resource:
-      filter-order:           3
-      userInfoUri:            ${auth-server}/me
-      preferTokenInfo:        true
+      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
+      preferTokenInfo:        false
       id:                     ui
-      token-info-uri:         ${auth-server}/oauth/check_token
+      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
+
 
 management:
-  context-path: /mgmt
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
 
 eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-tcc:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
   client:
+    registryFetchIntervalSeconds:  5
     serviceUrl:
-      defaultZone: http://forsrc.local:11100/eureka
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
 
 zuul:
@@ -50,3 +69,6 @@ zuul:
     logout:
       path: /logout/**
       url: ${auth-server}/logout
+    login:
+      path: /login/**
+      url: ${auth-server}/login
