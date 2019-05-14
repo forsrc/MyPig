@@ -9,8 +9,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
-//@Configuration
-//@EnableWebMvc
+@Configuration
+@EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -22,7 +22,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**")
             .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/mypig/**")
-            .addResourceLocations("classpath:/public/mypig/www/");
+            .addResourceLocations("classpath:public/mypig/www/");
     }
 
     @Override

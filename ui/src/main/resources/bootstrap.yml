@@ -66,9 +66,14 @@ zuul:
     user:
       path: /me/**
       url: ${auth-server}/me
+      sensitiveHeaders: Access-Control-Allow-Origin
     logout:
       path: /logout/**
       url: ${auth-server}/logout
     login:
       path: /login/**
       url: ${auth-server}/login
+    oauth_token:
+      path: /oauth/**
+      url: ${auth-server}/oauth
+      sensitiveHeaders: Access-Control-Allow-Origin

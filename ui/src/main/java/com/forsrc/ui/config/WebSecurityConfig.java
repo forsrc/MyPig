@@ -22,13 +22,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/**")
             .authorizeRequests()
-            .antMatchers("/", "/login")
+            .antMatchers("/", "/login", "/oauth/token")
             .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .csrf()
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            .disable()
+            //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//            .and()
+//            .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
             ;
     }
 
@@ -38,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers(
                         "/",
+                        "/oauth/token",
                         "/static/**",
                         "/public/**",
                         "/h2-console/**",

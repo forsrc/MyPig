@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @Configuration
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class MyOncePerRequestFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MyOncePerRequestFilter.class);
     @Override
