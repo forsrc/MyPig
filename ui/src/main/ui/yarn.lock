@@ -81,6 +81,17 @@
     "@angular-devkit/core" "7.3.9"
     rxjs "6.3.3"
 
+"@angular-devkit/core@7.2.4":
+  version "7.2.4"
+  resolved "https://registry.npm.taobao.org/@angular-devkit/core/download/@angular-devkit/core-7.2.4.tgz#4464d536f4838e5c61ab4bc1ff6b7f221fd43056"
+  integrity sha1-RGTVNvSDjlxhq0vB/2t/Ih/UMFY=
+  dependencies:
+    ajv "6.6.2"
+    chokidar "2.0.4"
+    fast-json-stable-stringify "2.0.0"
+    rxjs "6.3.3"
+    source-map "0.7.3"
+
 "@angular-devkit/core@7.3.9":
   version "7.3.9"
   resolved "https://registry.npm.taobao.org/@angular-devkit/core/download/@angular-devkit/core-7.3.9.tgz#bef2aaa0be7219c546fb99ea0ba9dd3a6dcd288a"
@@ -92,6 +103,14 @@
     rxjs "6.3.3"
     source-map "0.7.3"
 
+"@angular-devkit/schematics@7.2.4":
+  version "7.2.4"
+  resolved "https://registry.npm.taobao.org/@angular-devkit/schematics/download/@angular-devkit/schematics-7.2.4.tgz#d92b2b8b9114135806d593ea6a2b376c777354dc"
+  integrity sha1-2Ssri5EUE1gG1ZPqais3bHdzVNw=
+  dependencies:
+    "@angular-devkit/core" "7.2.4"
+    rxjs "6.3.3"
+
 "@angular-devkit/schematics@7.3.9":
   version "7.3.9"
   resolved "https://registry.npm.taobao.org/@angular-devkit/schematics/download/@angular-devkit/schematics-7.3.9.tgz#4fe7bc878b116b157a3adf00583c28c951215877"
@@ -100,7 +119,7 @@
     "@angular-devkit/core" "7.3.9"
     rxjs "6.3.3"
 
-"@angular/animations@^7.2.12":
+"@angular/animations@^7.2.15":
   version "7.2.15"
   resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-7.2.15.tgz#980c1f523a79d4b7cb44508f57fba06f2e0872fa"
   integrity sha1-mAwfUjp51LfLRFCPV/ugby4Icvo=
@@ -213,10 +232,28 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular/pwa@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.npm.taobao.org/@angular/pwa/download/@angular/pwa-0.12.4.tgz#37dece5ef3e8df419bf97a3cd478802314976d4d"
+  integrity sha1-N97OXvPo30Gb+Xo81HiAIxSXbU0=
+  dependencies:
+    "@angular-devkit/core" "7.2.4"
+    "@angular-devkit/schematics" "7.2.4"
+    "@schematics/angular" "7.2.4"
+    parse5-html-rewriting-stream "5.1.0"
+    rxjs "6.3.3"
+
 "@angular/router@~7.2.0":
   version "7.2.15"
   resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-7.2.15.tgz#b2acbd07c17158801006cdd7e93113d6ec1f116e"
   integrity sha1-sqy9B8FxWIAQBs3X6TET1uwfEW4=
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/service-worker@^7.2.15":
+  version "7.2.15"
+  resolved "https://registry.npm.taobao.org/@angular/service-worker/download/@angular/service-worker-7.2.15.tgz#bf2270ccae9edcf934405366c903ed77a684ab0e"
+  integrity sha1-vyJwzK6e3Pk0QFNmyQPtd6aEqw4=
   dependencies:
     tslib "^1.9.0"
 
@@ -319,6 +356,15 @@
     tree-kill "1.2.1"
     webpack-sources "1.3.0"
 
+"@schematics/angular@7.2.4":
+  version "7.2.4"
+  resolved "https://registry.npm.taobao.org/@schematics/angular/download/@schematics/angular-7.2.4.tgz#4c3c942e2fd0c32e177602a20f8fa16a88552fca"
+  integrity sha1-TDyULi/Qwy4XdgKiD4+haohVL8o=
+  dependencies:
+    "@angular-devkit/core" "7.2.4"
+    "@angular-devkit/schematics" "7.2.4"
+    typescript "3.2.2"
+
 "@schematics/angular@7.3.9":
   version "7.3.9"
   resolved "https://registry.npm.taobao.org/@schematics/angular/download/@schematics/angular-7.3.9.tgz#f57baf1cd9588d4f1035974d06fd8f3d54df021a"
@@ -363,6 +409,18 @@
   integrity sha1-L1eo2YdabJ7zKKFL0HC6FKBVrDk=
   dependencies:
     "@types/jasmine" "*"
+
+"@types/lodash-es@^4.17.3":
+  version "4.17.3"
+  resolved "https://registry.npm.taobao.org/@types/lodash-es/download/@types/lodash-es-4.17.3.tgz#87eb0b3673b076b8ee655f1890260a136af09a2d"
+  integrity sha1-h+sLNnOwdrjuZV8YkCYKE2rwmi0=
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.129"
+  resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.129.tgz#9aaca391db126802482655c48dd79a814488202f"
+  integrity sha1-mqyjkdsSaAJIJlXEjdeagUSIIC8=
 
 "@types/node@*":
   version "12.0.0"
@@ -620,6 +678,16 @@ ajv-keywords@^3.1.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/ajv-keywords/download/ajv-keywords-3.4.0.tgz#4b831e7b531415a7cc518cd404e73f6193c6349d"
   integrity sha1-S4Mee1MUFafMUYzUBOc/YZPGNJ0=
+
+ajv@6.6.2:
+  version "6.6.2"
+  resolved "https://registry.npm.taobao.org/ajv/download/ajv-6.6.2.tgz#caceccf474bf3fc3ce3b147443711a24063cc30d"
+  integrity sha1-ys7M9HS/P8POOxR0Q3EaJAY8ww0=
+  dependencies:
+    fast-deep-equal "^2.0.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
 
 ajv@6.9.1:
   version "6.9.1"
@@ -4038,6 +4106,11 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
+lodash-es@latest:
+  version "4.17.11"
+  resolved "https://registry.npm.taobao.org/lodash-es/download/lodash-es-4.17.11.tgz#145ab4a7ac5c5e52a3531fb4f310255a152b4be0"
+  integrity sha1-FFq0p6xcXlKjUx+08xAlWhUrS+A=
+
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.npm.taobao.org/lodash.clonedeep/download/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
@@ -4504,6 +4577,13 @@ ng2-charts@^2.2.2:
   dependencies:
     "@types/chart.js" "^2.7.48"
     lodash "^4.17.11"
+    tslib "^1.9.0"
+
+ngx-toastr@^10.0.4:
+  version "10.0.4"
+  resolved "https://registry.npm.taobao.org/ngx-toastr/download/ngx-toastr-10.0.4.tgz#cbc61b8d67d748194ea7a28542b01e39bf1fc6c2"
+  integrity sha1-y8YbjWfXSBlOp6KFQrAeOb8fxsI=
+  dependencies:
     tslib "^1.9.0"
 
 nice-try@^1.0.4:
@@ -5014,12 +5094,27 @@ parse-json@^4.0.0:
     error-ex "^1.3.1"
     json-parse-better-errors "^1.0.1"
 
+parse5-html-rewriting-stream@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npm.taobao.org/parse5-html-rewriting-stream/download/parse5-html-rewriting-stream-5.1.0.tgz#63f92c958764aea8cbe3aa68f2e5895c32068ab8"
+  integrity sha1-Y/kslYdkrqjL46po8uWJXDIGirg=
+  dependencies:
+    parse5 "^5.1.0"
+    parse5-sax-parser "^5.1.0"
+
+parse5-sax-parser@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npm.taobao.org/parse5-sax-parser/download/parse5-sax-parser-5.1.0.tgz#ec234d23223a8054a74ff173aa3dc2da74c5bbd9"
+  integrity sha1-7CNNIyI6gFSnT/Fzqj3C2nTFu9k=
+  dependencies:
+    parse5 "^5.1.0"
+
 parse5@4.0.0:
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/parse5/download/parse5-4.0.0.tgz#6d78656e3da8d78b4ec0b906f7c08ef1dfe3f608"
   integrity sha1-bXhlbj2o14tOwLkG98CO8d/j9gg=
 
-parse5@^5.0.0:
+parse5@^5.0.0, parse5@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/parse5/download/parse5-5.1.0.tgz#c59341c9723f414c452975564c7c00a68d58acd2"
   integrity sha1-xZNByXI/QUxFKXVWTHwApo1YrNI=
@@ -6829,6 +6924,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npm.taobao.org/typedarray/download/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.2.2.tgz#fe8101c46aa123f8353523ebdcf5730c2ae493e5"
+  integrity sha1-/oEBxGqhI/g1NSPr3PVzDCrkk+U=
 
 typescript@3.2.4, typescript@~3.2.2:
   version "3.2.4"

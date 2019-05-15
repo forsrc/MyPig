@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {OAuth2Service} from '../service/oauth.service'
+import {ToastrService} from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-login',
@@ -11,7 +13,7 @@ export class LoginComponent implements OnInit {
   email = 'forsrc@gmail.com';
   password = 'forsrc';
 
-  constructor(private router: Router, private oAuth2Service: OAuth2Service) {
+  constructor(private router: Router, private oAuth2Service: OAuth2Service, public toastrService: ToastrService) {
   }
 
   ngOnInit() {
@@ -23,6 +25,8 @@ export class LoginComponent implements OnInit {
       data => {
         console.log(data);
         this.oAuth2Service.accessToken = data.access_token;
+        this.toastrService.toastrConfig.positionClass = 'toast-bottom-right';
+        this.toastrService.success( data.access_token, "access token");
         this.router.navigate(['home']);
       },
       error => {

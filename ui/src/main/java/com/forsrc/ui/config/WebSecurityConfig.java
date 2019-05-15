@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers(
                         "/",
-                        "/oauth/token",
+                        "/oauth/**",
                         "/static/**",
                         "/public/**",
                         "/h2-console/**",

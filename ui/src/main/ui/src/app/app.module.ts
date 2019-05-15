@@ -25,8 +25,10 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {OAuth2Service} from './service/oauth.service';
 import {NavBarModule} from './navbar/navbar.module';
 import {FooterModule} from './footer/footer.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {environment} from '../environments/environment';
+import {ToastrModule} from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
@@ -50,10 +52,11 @@ import { environment } from '../environments/environment';
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,
+    ToastrModule.forRoot(),
 
     NavBarModule,
     FooterModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
   ],
   providers: [OAuth2Service],
   bootstrap: [AppComponent]
