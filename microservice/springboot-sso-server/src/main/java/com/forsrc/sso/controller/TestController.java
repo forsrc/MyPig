@@ -59,11 +59,11 @@ public class TestController {
     @RequestMapping(value = "/1")
     public ResponseEntity<String> test1(HttpServletRequest request, HttpSession session, Principal user) {
         session.setAttribute("test", System.currentTimeMillis());
-        return new ResponseEntity<>("1: " + request.getRequestedSessionId() + "->" + user.getName() + "->" + session.getAttribute("test"), HttpStatus.OK);
+        return new ResponseEntity<>("1: " + request.getRequestedSessionId() + "->" + (user == null ? null : user.getName()) + "->" + session.getAttribute("test"), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/2")
     public ResponseEntity<String> test2(HttpServletRequest request, HttpSession session, Principal user) {
-        return new ResponseEntity<>("2: " + request.getRequestedSessionId() + "->" + user.getName()+ "->" + session.getAttribute("test"), HttpStatus.OK);
+        return new ResponseEntity<>("2: " + request.getRequestedSessionId() + "->" + (user == null ? null : user.getName()) + "->" + session.getAttribute("test"), HttpStatus.OK);
     }
 }

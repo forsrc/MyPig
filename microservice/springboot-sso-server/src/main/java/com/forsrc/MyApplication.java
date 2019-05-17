@@ -19,14 +19,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @ComponentScan(basePackages = "com.forsrc")
 @EnableEurekaClient
 @EnableDiscoveryClient
-@EnableResourceServer
 @EnableWebSecurity
 //@EnableCaching(mode = AdviceMode.PROXY)
 @EnableFeignClients
 @EnableCircuitBreaker
 @EnableHystrix
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-//@EnableRedisHttpSession
 public class MyApplication {
 
     @Bean

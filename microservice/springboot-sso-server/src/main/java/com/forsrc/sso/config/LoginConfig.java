@@ -1,6 +1,7 @@
 package com.forsrc.sso.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -82,9 +83,6 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         ;
 
         http.authorizeRequests()
@@ -95,6 +93,11 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .ignoringAntMatchers("/actuator/**", "/static/**")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
+       http.sessionManagement()
+               .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+               .maximumSessions(1)
+               .maxSessionsPreventsLogin(false)
+               .expiredUrl("/login?expired");
 
         // @formatter:on
     }
@@ -163,7 +166,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                     String token = csrf.getToken();
                     if (cookie == null || token != null && !token.equals(cookie.getValue())) {
                         cookie = new Cookie("XSRF-TOKEN", token);
-                        cookie.setPath("/");
+                        cookie.setPath("/sso");
                         response.addCookie(cookie);
                     }
                 }

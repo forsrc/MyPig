@@ -1,5 +1,6 @@
 package com.forsrc.sso.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -18,7 +20,6 @@ import java.io.Serializable;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
-//@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -27,7 +28,8 @@ public class RedisConfig {
     private int redisPort;
 
     @Bean
-    public LettuceConnectionFactory connectionFactory() {
+    @Qualifier("redisConnectionFactory")
+    public RedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         // redisStandaloneConfiguration.setDatabase(database);
         redisStandaloneConfiguration.setHostName(redisHost);
@@ -41,7 +43,7 @@ public class RedisConfig {
     }
 
     @Bean
-    CacheManager cacheManager(LettuceConnectionFactory connectionFactory) {
+    CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         return RedisCacheManager.create(connectionFactory);
     }
 
