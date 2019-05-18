@@ -1,12 +1,12 @@
 package com.forsrc.sso.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -14,12 +14,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.io.Serializable;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
+//@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -27,9 +27,9 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
 
+
     @Bean
-    @Qualifier("redisConnectionFactory")
-    public RedisConnectionFactory connectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         // redisStandaloneConfiguration.setDatabase(database);
         redisStandaloneConfiguration.setHostName(redisHost);
@@ -42,17 +42,25 @@ public class RedisConfig {
         return factory;
     }
 
+
     @Bean
-    CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        return RedisCacheManager.create(connectionFactory);
+    CacheManager cacheManager() {
+        return RedisCacheManager.create(redisConnectionFactory());
     }
 
     @Bean
-    public RedisTemplate<Serializable, Serializable> redisCacheTemplate(LettuceConnectionFactory connectionFactory) {
-        RedisTemplate<Serializable, Serializable> template = new RedisTemplate<>();
-        template.setKeySerializer(new StringRedisSerializer());
+    public RedisTemplate<Object, Object> redisCacheTemplate() {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setConnectionFactory(connectionFactory);
+        template.setConnectionFactory(redisConnectionFactory());
         return template;
+    }
+
+    @Bean
+    @Primary
+    public FindByIndexNameSessionRepository getSessionRepository() {
+        RedisTemplate<Object, Object> redisTemplate = redisCacheTemplate();
+        return new RedisOperationsSessionRepository(redisTemplate);
     }
 }

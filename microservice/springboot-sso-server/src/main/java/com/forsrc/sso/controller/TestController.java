@@ -6,18 +6,27 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/test")
-@CrossOrigin(allowCredentials = "true")
 public class TestController {
+
+    @Autowired
+    private FindByIndexNameSessionRepository<? extends Session> sessions;
 
     @Autowired
     private Environment environment;
@@ -59,11 +68,30 @@ public class TestController {
     @RequestMapping(value = "/1")
     public ResponseEntity<String> test1(HttpServletRequest request, HttpSession session, Principal user) {
         session.setAttribute("test", System.currentTimeMillis());
+
         return new ResponseEntity<>("1: " + request.getRequestedSessionId() + "->" + (user == null ? null : user.getName()) + "->" + session.getAttribute("test"), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/2")
     public ResponseEntity<String> test2(HttpServletRequest request, HttpSession session, Principal user) {
+
         return new ResponseEntity<>("2: " + request.getRequestedSessionId() + "->" + (user == null ? null : user.getName()) + "->" + session.getAttribute("test"), HttpStatus.OK);
     }
+
+    public Session getUserSession(String username) {
+
+        Session userSession = null;
+        Collection<? extends Session> usersSessions = sessions.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, username).values();
+
+        if (CollectionUtils.isEmpty(usersSessions)) {
+            return userSession;
+        }
+        if (usersSessions.size() > 1) {
+            throw new IllegalStateException(
+                    String.format("expected 1 session, but found %d", usersSessions.size()));
+        }
+        userSession = usersSessions.iterator().next();
+        return userSession;
+    }
+
 }

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Configuration
-//@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
 public class HttpSessionConfig {
 
 //    @Bean

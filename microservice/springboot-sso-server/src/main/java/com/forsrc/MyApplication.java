@@ -13,13 +13,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 @EnableEurekaClient
 @EnableDiscoveryClient
-@EnableWebSecurity
 //@EnableCaching(mode = AdviceMode.PROXY)
 @EnableFeignClients
 @EnableCircuitBreaker

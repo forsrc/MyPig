@@ -88,8 +88,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
         security.passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
-                .tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
-                //.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()")
+                //.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
+                .tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()")
                 ;
         // @formatter:on
     }

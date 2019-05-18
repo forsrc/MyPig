@@ -1,7 +1,6 @@
 package com.forsrc.sso.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -49,18 +50,33 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         return new HttpSessionEventPublisher();
     }
 
+//    @Autowired
+//    FindByIndexNameSessionRepository findByIndexNameSessionRepository;
+//
+//    @Bean
+//    SpringSessionBackedSessionRegistry sessionRegistry() {
+//        return new SpringSessionBackedSessionRegistry(findByIndexNameSessionRepository);
+//    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        SessionRegistry sessionRegistry = new SessionRegistryImpl();
+        return sessionRegistry;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
+            .authorizeRequests()
+                .antMatchers("/oauth/**", "/actuator/**", "/static/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+            .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
-            .and()
-                .headers()
-                .frameOptions()
-                .disable()
             .and()
                 .logout()
                 .deleteCookies("JSESSIONID", "SESSION", "SESSIONID")
@@ -69,38 +85,22 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             .and()
-                .requestMatchers()
-                .antMatchers("/", "/index.html", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
-            .and()
-                .authorizeRequests()
-                .antMatchers("/test", "/oauth/token")
-                .permitAll()
-            .and()
-                .csrf()
-                .ignoringAntMatchers("/test", "/oauth/token")
-                .csrfTokenRepository(csrfTokenRepository())
-            .and()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-        ;
-
-        http.authorizeRequests()
-                .antMatchers("/actuator/**", "/static/**")
-                .permitAll()
-            .and()
-                .csrf()
-                .ignoringAntMatchers("/actuator/**", "/static/**")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-       http.sessionManagement()
+               .sessionManagement()
                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                .maximumSessions(1)
                .maxSessionsPreventsLogin(false)
-               .expiredUrl("/login?expired");
+                .sessionRegistry(sessionRegistry())
+               .expiredUrl("/login?expired")
+            .and()
+            .and()
+                .csrf()
+                .ignoringAntMatchers("/actuator/**", "/static/**")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        ;
 
         // @formatter:on
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
