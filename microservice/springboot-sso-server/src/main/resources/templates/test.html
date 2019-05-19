@@ -80,7 +80,10 @@
 <script type="application/javascript" src="static/js/utils.js"></script>
 <script type="application/javascript">
     (function () {
-        testApi("/sso/me", null);
+        testApi("/sso/who", null);
+        testApi("/sso/test/1", null);
+        testApi("/sso/test/2", null);
+        return;
         ajax({
             type: "POST",
             url: "/sso/oauth/token?X-XSRF-TOKEN=" + getCookie("X-XSRF-TOKEN"),

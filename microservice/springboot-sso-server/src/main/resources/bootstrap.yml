@@ -76,7 +76,7 @@ security:
     resource:
       userInfoUri:            /me
       preferTokenInfo:        false
-      id:                     forsrc
+      id:                     sso
       token-info-uri:         /oauth/check_token
 
 management:
@@ -117,4 +117,6 @@ tcc:
   ws: ${TCC_WS:ws://mypig-tcc:10020/tcc/ws/tcc}
 
 
-logging.level.org.springframework.*: INFO
+logging:
+  level:
+    org.springframework.*: INFO

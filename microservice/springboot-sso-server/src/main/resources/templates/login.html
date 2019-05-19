@@ -69,7 +69,13 @@
                     <h5>Login</h5>
                     <div th:if="${param.error}">
                         <p>
-                            <div class="my-warning my-red"><b>Note: </b>Login failed.</div>
+                            <div class="my-warning my-red">
+                                <b>Note: </b>
+                                Login failed.
+                                <p>
+                                    <span th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></span>
+                                </p>
+                            </div>
                         </p>
                     </div>
                     <div th:if="${param.logout}">

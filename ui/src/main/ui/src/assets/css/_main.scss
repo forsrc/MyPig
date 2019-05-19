@@ -1,0 +1,76 @@
+@import 'utils';
+@import '~ngx-toastr/toastr';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.code {
+  margin-bottom: 12px;
+}
+
+.code > div:not(.empty-state) h4 {
+  font-size: 1.2em;
+  margin-top: 0px !important;
+}
+
+.code div p.range-field {
+  margin-bottom: 0px;
+}
+
+.code div p {
+  margin-bottom: 20px;
+}
+
+.code {
+  padding: 20px;
+  margin-bottom: 12px;
+  background: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #039be5;
+}
+
+.bubble {
+  max-width: 90% !important;
+}
+
+.avatar {
+  line-height: 0; /* remove line-height */
+  display: inline-block; /* circle wraps image */
+  margin: 5px;
+  border: 0px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%; /* relative value */
+  /*box-shadow: 0px 0px 5px rgba(0,0,0,0.4);*/
+  transition: linear 0.25s;
+  height: 32px;
+  width: 32px;
+}
+
+.avatar img {
+  border-radius: 50%;
+  /* relative value for
+  adjustable image size */
+}
+
+.avatar:hover {
+  transition: ease-out 0.2s;
+  border: 0px solid rgba(255, 255, 255, 0.8);
+  -webkit-transition: ease-out 0.2s;
+}
+
+a.avatar {
+  color: transparent;
+}
+
+/* IE fix: removes blue border */

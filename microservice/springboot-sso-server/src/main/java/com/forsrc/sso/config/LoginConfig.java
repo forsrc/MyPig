@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -48,18 +50,36 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         return new HttpSessionEventPublisher();
     }
 
+//    @Autowired
+//    FindByIndexNameSessionRepository findByIndexNameSessionRepository;
+//
+//    @Bean
+//    SpringSessionBackedSessionRegistry sessionRegistry() {
+//        return new SpringSessionBackedSessionRegistry(findByIndexNameSessionRepository);
+//    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        SessionRegistry sessionRegistry = new SessionRegistryImpl();
+        return sessionRegistry;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
+            .requestMatchers()
+                .antMatchers("/", "/login", "/logout", "/test/**", "/who/**", "/oauth/authorize", "/oauth/confirm_access")
+            .and()
+                .authorizeRequests()
+                .antMatchers("/oauth/token", "/actuator/**", "/static/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+            .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
-            .and()
-                .headers()
-                .frameOptions()
-                .disable()
             .and()
                 .logout()
                 .deleteCookies("JSESSIONID", "SESSION", "SESSIONID")
@@ -68,36 +88,22 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             .and()
-                .requestMatchers()
-                .antMatchers("/", "/index.html", "/login", "/logout", "/oauth/authorize", "/oauth/confirm_access", "/test")
+               .sessionManagement()
+               .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+               .maximumSessions(1)
+               .maxSessionsPreventsLogin(false)
+                .sessionRegistry(sessionRegistry())
+               .expiredUrl("/login?expired")
             .and()
-                .authorizeRequests()
-                .antMatchers("/test", "/oauth/token")
-                .permitAll()
-            .and()
-                .csrf()
-                .ignoringAntMatchers("/test", "/oauth/token")
-                .csrfTokenRepository(csrfTokenRepository())
-            .and()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-        ;
-
-        http.authorizeRequests()
-                .antMatchers("/actuator/**", "/static/**")
-                .permitAll()
             .and()
                 .csrf()
                 .ignoringAntMatchers("/actuator/**", "/static/**")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        ;
 
         // @formatter:on
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -163,7 +169,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                     String token = csrf.getToken();
                     if (cookie == null || token != null && !token.equals(cookie.getValue())) {
                         cookie = new Cookie("XSRF-TOKEN", token);
-                        cookie.setPath("/");
+                        cookie.setPath("/sso");
                         response.addCookie(cookie);
                     }
                 }

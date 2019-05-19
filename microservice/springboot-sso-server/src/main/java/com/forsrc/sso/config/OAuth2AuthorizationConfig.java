@@ -1,10 +1,7 @@
 package com.forsrc.sso.config;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -38,10 +35,13 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 @EnableAuthorizationServer
-@EnableOAuth2Client
-@EnableConfigurationProperties({ AuthorizationServerProperties.class })
+@AutoConfigureAfter(LoginConfig.class)
+@EnableConfigurationProperties({AuthorizationServerProperties.class})
 public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -88,9 +88,12 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
-        security.passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
-                .tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
+        security.realm("oauth2-resources")
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                //.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
+                .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
+                .allowFormAuthenticationForClients();
                 ;
         // @formatter:on
     }
@@ -192,15 +195,16 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 }
                 return super.createAccessToken(authentication);
             }
-           
+
         }
 
         @Override
-        @Transactional(noRollbackFor = { InvalidTokenException.class, InvalidGrantException.class })
+        @Transactional(noRollbackFor = {InvalidTokenException.class, InvalidGrantException.class})
         public synchronized OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
                 throws AuthenticationException {
             return super.refreshAccessToken(refreshTokenValue, tokenRequest);
         }
+
         @Override
         public void setTokenStore(TokenStore tokenStore) {
             super.setTokenStore(tokenStore);
