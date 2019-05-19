@@ -14,6 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 @EnableEurekaClient
