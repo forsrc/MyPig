@@ -68,8 +68,11 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .authorizeRequests()
-                .antMatchers("/oauth/**", "/actuator/**", "/static/**")
+            .requestMatchers()
+                .antMatchers("/", "/login", "/logout", "/test/**", "/who/**", "/oauth/authorize", "/oauth/confirm_access")
+            .and()
+                .authorizeRequests()
+                .antMatchers("/oauth/token", "/actuator/**", "/static/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

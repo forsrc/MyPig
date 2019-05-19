@@ -15,11 +15,13 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.data.redis.RedisFlushMode;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
-//@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
+@EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
 public class RedisConfig {
 
     @Value("${spring.redis.host}")

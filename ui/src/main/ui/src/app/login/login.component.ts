@@ -21,19 +21,10 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     localStorage.setItem('isLoggedin', 'true');
-    this.oAuth2Service.getOauthToken(this.email, this.password).subscribe(
-      data => {
-        console.log(data);
-        this.oAuth2Service.accessToken = data.access_token;
-        this.toastrService.toastrConfig.positionClass = 'toast-bottom-right';
-        this.toastrService.success( data.access_token, "access token");
-        this.router.navigate(['home']);
-      },
-      error => {
-        console.error(error)
-      }
-    )
-
-
+    this.oAuth2Service.getOauthToken(this.email, this.password, (data) => {
+      console.log(data);
+      this.oAuth2Service.accessToken = data.access_token;
+      this.router.navigate(['home']);
+    });
   }
 }

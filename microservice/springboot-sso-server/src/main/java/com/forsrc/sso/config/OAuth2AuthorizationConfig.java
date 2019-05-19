@@ -87,9 +87,12 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
-        security.passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+        security.realm("oauth2-resources")
+                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
                 //.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
-                .tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()")
+                .tokenKeyAccess("permitAll()")
+                .checkTokenAccess("isAuthenticated()")
+                .allowFormAuthenticationForClients();
                 ;
         // @formatter:on
     }

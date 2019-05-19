@@ -26,7 +26,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId("forsrc")
+        resources.resourceId("sso")
                  .tokenStore(tokenStore)
                  .tokenServices(tokenServices)
         ;
@@ -48,9 +48,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         ;
 
 
-        http.authorizeRequests()
-                .antMatchers("/actuator/**")
-                .permitAll()
-        ;
+//        http.authorizeRequests()
+//                .antMatchers("/actuator/**")
+//                .permitAll()
+//        ;
     }
 }
