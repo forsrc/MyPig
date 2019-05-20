@@ -1,7 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-
 
 import {
   MatButtonModule,
@@ -13,6 +11,7 @@ import {
   MatSelectModule,
   MatSidenavModule,
   MatTableModule,
+  MatProgressBarModule,
   MatToolbarModule,
 } from '@angular/material';
 

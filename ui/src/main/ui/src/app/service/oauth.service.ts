@@ -73,6 +73,7 @@ export class OAuth2Service {
 
   public saveToken(token) {
     let expireDate = new Date().getTime() + (1000 * token.expires_in);
+    this.expiresAt = expireDate;
     Cookie.set("access_token", token.access_token, expireDate);
   }
 
