@@ -8,13 +8,16 @@ import {
   MatButtonModule,
   MatCheckboxModule,
   MatInputModule,
-  MatTableModule,
   MatPaginatorModule,
+  MatSelectModule,
   MatSortModule,
+  MatTableModule,
 } from '@angular/material';
 
 import {UserRoutingModule} from './user-routing.module';
 import {UserComponent} from './user.component';
+import {UserService} from "../service/user.service";
+import {UrlService} from "../service/url.service";
 
 
 @NgModule({
@@ -26,11 +29,14 @@ import {UserComponent} from './user.component';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatCheckboxModule,
+    MatSelectModule,
     CommonModule,
     FormsModule,
     FlexLayoutModule,
     UserRoutingModule,
   ],
+  providers:[UrlService, UserService],
   declarations: [UserComponent]
 })
 export class UserModule {

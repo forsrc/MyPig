@@ -123,7 +123,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes("authorization_code", "client_credentials", 
                         "refresh_token","password", "implicit")
                 //.authorities("ROLE_USER", "ROLE_ADMIN")
-                .resourceIds("forsrc")
+                .resourceIds("forsrc,sso,ui,tcc,user")
                 .secret("forsrc")
                 .scopes("forsrc", "read", "write")
                 //
