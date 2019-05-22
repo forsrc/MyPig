@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {Router} from '@angular/router';
 import {SelectionModel} from '@angular/cdk/collections';
@@ -11,7 +11,7 @@ import {UserService} from "../service/user.service";
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent implements OnInit, AfterViewChecked {
+export class UserComponent implements OnInit {
 
   displayedColumns: string[] = ['index', 'select', 'username', 'password', 'enabled', 'version', 'create', 'update'];
   dataSource: MatTableDataSource<User>;
@@ -23,7 +23,7 @@ export class UserComponent implements OnInit, AfterViewChecked {
 
   constructor(private router: Router, private userService: UserService) {
     this.dataSource = new MatTableDataSource();
-
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit() {
@@ -31,11 +31,10 @@ export class UserComponent implements OnInit, AfterViewChecked {
     this.dataSource.sort = this.sort;
     this.userService.getUsers((data) => {
       this.dataSource = new MatTableDataSource(data.content);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator.firstPage();
     })
-  }
-
-  ngAfterViewChecked(): void {
-
   }
 
   applyFilter(filterValue: string) {
