@@ -23,7 +23,6 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/test")
-@CrossOrigin(allowCredentials = "true")
 public class TestController {
 
     @Autowired
