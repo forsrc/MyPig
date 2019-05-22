@@ -24,14 +24,14 @@ export class UserService {
 
   getUsers(callback:any) {
 
-    this.httpClient.get(this.urlService.url.user, {headers : this.urlService.url.headers}).subscribe(
+    this.httpClient.get(this.urlService.url().user, {headers : this.urlService.url().headers}).subscribe(
       data => {
         if (callback) {
           callback(data);
         }
       },
       error => {
-        this.toastrService.error(error || 'Server error', "user faild");
+        this.toastrService.error(error || 'Server error', "user failed");
       }
     );
   }

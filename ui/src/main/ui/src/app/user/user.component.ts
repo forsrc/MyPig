@@ -22,7 +22,7 @@ export class UserComponent implements OnInit, AfterViewChecked {
 
 
   constructor(private router: Router, private userService: UserService) {
-    this.dataSource = new MatTableDataSource([]);
+    this.dataSource = new MatTableDataSource();
 
   }
 
