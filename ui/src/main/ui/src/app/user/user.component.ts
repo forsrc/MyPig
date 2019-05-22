@@ -13,7 +13,7 @@ import {UserService} from "../service/user.service";
 })
 export class UserComponent implements OnInit, AfterViewChecked {
 
-  displayedColumns: string[] = ['username', 'password', 'enabled', 'version', 'create', 'update'];
+  displayedColumns: string[] = ['index', 'select', 'username', 'password', 'enabled', 'version', 'create', 'update'];
   dataSource: MatTableDataSource<User>;
   selection = new SelectionModel<User>(true, []);
 
