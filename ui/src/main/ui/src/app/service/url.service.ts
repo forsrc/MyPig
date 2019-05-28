@@ -8,7 +8,8 @@ export class UrlService {
 
   url() {
     return {
-      user: `${this.host}/sso/api/v1/user/?access_token=${this.getAccessToken()}`,
+      users: `${this.host}/sso/api/v1/user/?access_token=${this.getAccessToken()}`,
+      user: (username) => `${this.host}/sso/api/v1/user/${username}?access_token=${this.getAccessToken()}`,
       oauthToken: `${this.host}/sso/oauth/token`,
       headers: new HttpHeaders({
         'Content-type': 'application/json; charset=utf-8',

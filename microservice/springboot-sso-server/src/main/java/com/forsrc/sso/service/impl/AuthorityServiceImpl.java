@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +21,12 @@ public class AuthorityServiceImpl implements AuthorityService {
 
     @Autowired
     private AuthorityDao authorityDao;
-
-    private static final String TIMEOUT_REFRESH = "#${select.cache.timeout:1800}#${select.cache.refresh:600}";
-
-    private static final String CACHE_VALUE = "spring/cache/sso/Authority";
+    
+    private static final String CACHE_NAME = "spring/cache/sso/Authority";
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#username")
+    @Cacheable(value = CACHE_NAME, key = "#username")
     public List<Authority> getByUsername(String username) {
         Authority entity = new Authority();
         entity.setUsername(username);
@@ -36,7 +35,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
-    @CacheEvict(value = CACHE_VALUE, key = "#username")
+    @CacheEvict(value = CACHE_NAME, key = "#username")
     public void delete(String username) {
         List<Authority> list = getByUsername(username);
         for (Authority authority : list) {
@@ -51,7 +50,7 @@ public class AuthorityServiceImpl implements AuthorityService {
      * @param list
      * @return
      */
-    @CachePut(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#list.get(0).username")
+    @CachePut(value = CACHE_NAME, key = "#list.get(0).username")
     public List<Authority> update(List<Authority> list) {
        return authorityDao.saveAll(list);
     }
@@ -63,7 +62,7 @@ public class AuthorityServiceImpl implements AuthorityService {
      * @param list
      * @return
      */
-    @CachePut(value = CACHE_VALUE + TIMEOUT_REFRESH, key = "#list.get(0).username")
+    @CachePut(value = CACHE_NAME, key = "#list.get(0).username")
     public List<Authority> save(List<Authority> list) {
         return authorityDao.saveAll(list);
     }

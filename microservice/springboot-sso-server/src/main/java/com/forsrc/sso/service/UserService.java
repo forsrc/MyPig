@@ -10,7 +10,6 @@ import com.forsrc.sso.domain.entity.User;
 @Transactional(rollbackFor = { Exception.class })
 public interface UserService {
 
-    @Transactional(readOnly = true)
     public User getByUsername(String username);
 
     public User save(User user);

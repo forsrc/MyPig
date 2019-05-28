@@ -1,42 +1,43 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {CdkTableModule} from '@angular/cdk/table';
+
 
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {
   MatButtonModule,
   MatCheckboxModule,
+  MatIconModule,
   MatInputModule,
-  MatPaginatorModule,
+  MatSidenavModule,
+  MatToolbarModule,
+  MatTreeModule,
+  MatRadioModule,
   MatSelectModule,
-  MatSortModule,
-  MatTableModule,
 } from '@angular/material';
 
 import {UserRoutingModule} from './user-routing.module';
 import {UserComponent} from './user.component';
-import {UserService} from "../service/user.service";
-import {UrlService} from "../service/url.service";
-
+import {UrlService} from "../../service/url.service";
+import {UserService} from "../../service/user.service";
 
 @NgModule({
   imports: [
-    CdkTableModule,
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatCheckboxModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatTreeModule,
+    MatRadioModule,
     MatSelectModule,
     CommonModule,
     FormsModule,
     FlexLayoutModule,
-    UserRoutingModule,
+    UserRoutingModule
   ],
-  providers:[UrlService, UserService],
+  providers: [Location, UrlService, UserService],
   declarations: [UserComponent]
 })
 export class UserModule {

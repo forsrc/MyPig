@@ -8,10 +8,10 @@ import {UserService} from "../service/user.service";
 
 @Component({
   selector: 'app-home',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.scss']
 })
-export class UserComponent implements OnInit {
+export class UsersComponent implements OnInit {
 
   displayedColumns: string[] = ['index', 'select', 'username', 'password', 'enabled', 'version', 'create', 'update'];
   dataSource: MatTableDataSource<User>;

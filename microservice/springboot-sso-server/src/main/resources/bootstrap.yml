@@ -30,14 +30,23 @@ spring:
     show-sql:            true
     hibernate:
       ddl-auto:          create
+      enable_lazy_load_no_trans: true
     properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.show-sql:                  true
+    open-in-view: true
   aop:
     proxy-target-class: true
 
   cache:
     type: redis
+    cacheTtls:
+    - cacheName: spring/cache/sso/User
+      ttl: 10
+    - cacheName: spring/cache/sso/User/pages
+      ttl: 10
+    - cacheName: spring/cache/sso/Authority
+      ttl: 10
   session:
     store-type: redis
     redis:

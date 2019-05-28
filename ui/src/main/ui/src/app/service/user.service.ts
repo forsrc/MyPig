@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Cookie} from 'ng2-cookies';
 import {ToastrService} from 'ngx-toastr';
 import {OAuth2Service} from "./oauth.service";
 import {UrlService} from "./url.service";
+import {Observable} from "rxjs";
+import {catchError, tap} from 'rxjs/operators';
 
 (window as any).global = window;
 
@@ -22,9 +24,9 @@ export class UserService {
     this.accessToken = Cookie.get("access_token");
   }
 
-  getUsers(callback:any) {
+  getUsers(callback: any) {
 
-    this.httpClient.get(this.urlService.url().user, {headers : this.urlService.url().headers}).subscribe(
+    this.httpClient.get(this.urlService.url().users, {headers: this.urlService.url().headers}).subscribe(
       data => {
         if (callback) {
           callback(data);
@@ -36,4 +38,15 @@ export class UserService {
     );
   }
 
+  getUser(username: string): Observable<any> {
+
+    return this.httpClient.get(this.urlService.url().user(username), {headers: this.urlService.url().headers})
+      .pipe(
+        tap(_ => console.log(`getUser ${JSON.stringify(_)}`)),
+        catchError((err: any, caught: Observable<any>) => {
+          console.info(<any>`getUser: username=${username}, ${JSON.stringify(err)}`);
+          return null;
+        })
+      );
+  }
 }

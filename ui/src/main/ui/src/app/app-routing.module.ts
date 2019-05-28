@@ -4,12 +4,12 @@ import {RouterModule, Routes} from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    // component: UserComponent,
+    // component: UsersComponent,
     loadChildren: './home/home.module#HomeModule'
   },
   {
     path: 'home',
-    // component: UserComponent,
+    // component: UsersComponent,
     loadChildren: './home/home.module#HomeModule'
   },
   {
@@ -20,7 +20,12 @@ const routes: Routes = [
   {
     path: 'users',
     // component: LoginComponent,
-    loadChildren: './user/user.module#UserModule'
+    loadChildren: './user/users.module#UsersModule'
+  },
+  {
+    path: 'users/:username',
+    // component: LoginComponent,
+    loadChildren: './user/form/user.module#UserModule'
   }
 ];
 
