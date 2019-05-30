@@ -14,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableEurekaClient
 @EnableDiscoveryClient
 @EnableZuulProxy
-
 public class MyApplication {
 
     public static void main(String[] args) {

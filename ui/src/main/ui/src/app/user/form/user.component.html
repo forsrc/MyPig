@@ -49,54 +49,65 @@
         <h4>{{this.user.username}}</h4>
       </mat-toolbar>
 
-
-      <form class="user-form" #myForm="ngForm" (ngSubmit)="onLogin()">
-        <div class="user-form-div">
-          <mat-form-field class="w-100">
-            <input matInput placeholder="Email" [(ngModel)]="this.user.username" name="username"
-                   value="{{this.user.username}}" readonly="{{!isUpdate}}">
-          </mat-form-field>
-          <mat-form-field class="w-100">
-            <input matInput type="password" placeholder="Password" [(ngModel)]="this.user.password" name="password"
-                   value="{{this.user.password}}" readonly="{{!isUpdate}}">
-          </mat-form-field>
-
-          <mat-form-field class="w-100">
-            <mat-label>Enable</mat-label>
-            <mat-select matNativeControl [(ngModel)]="this.user.enabled" name="enable">
-              <mat-option *ngFor="let opt of [{name :'false', value: 0}, {name :'true', value: 1}]" [value]="opt.value">
-                {{opt.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="w-100" *ngIf="isUpdate">
-            <input matInput type="text" placeholder="Create on" [(ngModel)]="this.user.create" name="create"
-                   value="{{this.user.create}}" readonly="true">
-          </mat-form-field>
-          <mat-form-field class="w-100" *ngIf="isUpdate">
-            <input matInput type="text" placeholder="Update on" [(ngModel)]="this.user.update" name="update"
-                   value="{{this.user.update | date: 'yyyy-MM-dd HH:dd:ss'}}" readonly="true">
-          </mat-form-field>
-          <mat-form-field class="w-100" *ngIf="isUpdate">
-            <input matInput type="text" placeholder="Version" [(ngModel)]="this.user.version" name="version"
-                   value="{{this.user.version}}" readonly="true">
-          </mat-form-field>
-
-          <button type="button" mat-raised-button color="primary" class="w-100" (click)="save()"
-                  *ngIf="!isUpdate">
-            Save
-          </button>
-          <button type="button" mat-raised-button color="primary" class="w-100" (click)="update()"
-                  *ngIf="isUpdate">
-            Update
-          </button>
-          <button type="button" mat-raised-button color="primary" class="w-100" (click)="this.location.back()">
-            Go back
-          </button>
+      <div class="my-card">
+        <div class="my-card-header">
+          <h2>
+            User
+            <small>{{this.user.username}}</small>
+          </h2>
         </div>
-      </form>
+        <div class="my-card-body my-card-padding">
+          <form class="user-form " #myForm="ngForm" (ngSubmit)="onLogin()">
+            <div class="user-form-div">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Email" [(ngModel)]="this.user.username" name="username"
+                       value="{{this.user.username}}" readonly="{{!isUpdate}}">
+              </mat-form-field>
+              <mat-form-field class="w-100">
+                <input matInput type="password" placeholder="Password" [(ngModel)]="this.user.password" name="password"
+                       value="{{this.user.password}}" readonly="{{!isUpdate}}">
+              </mat-form-field>
 
+              <mat-form-field class="w-100">
+                <mat-label>Enable</mat-label>
+                <mat-select matNativeControl [(ngModel)]="this.user.enabled" name="enable">
+                  <mat-option *ngFor="let opt of [{name :'false', value: 0}, {name :'true', value: 1}]"
+                              [value]="opt.value">
+                    {{opt.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Create on" [(ngModel)]="this.user.create" name="create"
+                       value="{{this.user.create}}" readonly="true">
+              </mat-form-field>
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Update on" [(ngModel)]="this.user.update" name="update"
+                       value="{{this.user.update | date: 'yyyy-MM-dd HH:dd:ss'}}" readonly="true">
+              </mat-form-field>
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Version" [(ngModel)]="this.user.version" name="version"
+                       value="{{this.user.version}}" readonly="true">
+              </mat-form-field>
+
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="save()"
+                      *ngIf="!isUpdate">
+                Save
+              </button>
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="update()"
+                      *ngIf="isUpdate">
+                Update
+              </button>
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="this.location.back()">
+                Go back
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="my-card-footer">
+        </div>
+      </div>
     </mat-drawer-content>
   </mat-drawer-container>
 

@@ -8,7 +8,7 @@
 
     <ng-container matColumnDef="index">
       <th mat-header-cell *matHeaderCellDef> No.</th>
-      <td mat-cell *matCellDef="let row; let index = index"> {{index + 1}}</td>
+      <td mat-cell *matCellDef="let row; let index = index" data-title="No."> {{index + 1}}</td>
     </ng-container>
 
     <ng-container matColumnDef="select">
@@ -19,7 +19,7 @@
                       [aria-label]="checkboxLabel()">
         </mat-checkbox>
       </th>
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" data-title="Check">
         <mat-checkbox (click)="$event.stopPropagation()"
                       (change)="$event ? selection.toggle(row) : null"
                       [checked]="selection.isSelected(row)"
@@ -30,32 +30,32 @@
 
     <ng-container matColumnDef="username">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Username</th>
-      <td mat-cell *matCellDef="let row"> {{row.username}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Username"> {{row.username}}</td>
     </ng-container>
 
     <ng-container matColumnDef="password">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Password</th>
-      <td mat-cell *matCellDef="let row"> {{row.password}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Password"> {{row.password}}</td>
     </ng-container>
 
     <ng-container matColumnDef="enabled">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Enabled</th>
-      <td mat-cell *matCellDef="let row"> {{row.enabled}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Enabled"> {{row.enabled}}</td>
     </ng-container>
 
     <ng-container matColumnDef="version">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Version</th>
-      <td mat-cell *matCellDef="let row"> {{row.version}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Version"> {{row.version}}</td>
     </ng-container>
 
     <ng-container matColumnDef="create">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Create</th>
-      <td mat-cell *matCellDef="let row"> {{row.create}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Create"> {{row.create}}</td>
     </ng-container>
 
     <ng-container matColumnDef="update">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Update</th>
-      <td mat-cell *matCellDef="let row"> {{row.update}}</td>
+      <td mat-cell *matCellDef="let row" data-title="Update"> {{row.update}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -63,5 +63,12 @@
         [ngClass]="{'highlight': this.selection.isSelected(row)}" (click)="selection.toggle(row);">
     </tr>
   </table>
+
   <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]"></mat-paginator>
+
+
+  <div class="table-responsive-vertical">
+    <table class="table table-hover table-bordered">
+    </table>
+  </div>
 </div>

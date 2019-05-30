@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -21,9 +22,11 @@ import java.util.*;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class MyOncePerRequestFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MyOncePerRequestFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        LOGGER.info("ip: {}", getIpInfo(request));
         String token = request.getParameter("access_token");
         if (token != null) {
             LOGGER.info("--> access_token: {}", token);
@@ -73,5 +76,48 @@ public class MyOncePerRequestFilter extends OncePerRequestFilter {
             return Collections.enumeration(values);
         }
 
+    }
+
+
+    private String getIpInfo(HttpServletRequest request) {
+        StringBuffer ipInfo = new StringBuffer();
+        String ip = request.getHeader("x-forwarded-for");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+//                if( ip.indexOf(",")!=-1 ){
+//                    ip = ip.split(",")[0];
+//                }
+            ipInfo.append("x-forwarded-for=").append(ip).append(";");
+        }
+
+        ip = request.getHeader("Proxy-Client-IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("Proxy-Client-IP=").append(ip).append(";");
+        }
+
+        ip = request.getHeader("WL-Proxy-Client-IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("WL-Proxy-Client-IP=").append(ip).append(";");
+        }
+
+        ip = request.getHeader("HTTP_CLIENT_IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("HTTP_CLIENT_IP:").append(ip).append(";");
+        }
+
+        ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("HTTP_X_FORWARDED_FOR=").append(ip).append(";");
+        }
+
+        ip = request.getHeader("X-Real-IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("X-Real-IP:").append(ip).append(";");
+        }
+
+        ip = request.getRemoteAddr();
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            ipInfo.append("getRemoteAddr=").append(ip).append(";");
+        }
+        return ipInfo.toString();
     }
 }

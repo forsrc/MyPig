@@ -1,7 +1,17 @@
 server:
   port: 8088
+  http:
+    port: 8077
+    http2https: true
   servlet:
     context-path: /api
+  # keytool -genkey -alias forsrc -keypass forsrc -keyalg RSA -keysize 2048 -validity 3650 -keystore forsrc.keystore -storepass forsrc
+  # keytool -importkeystore -srckeystore forsrc.keystore -destkeystore forsrc.keystore -deststoretype pkcs12
+  ssl:
+    key-store-type:     PKCS12
+    key-store:          classpath:forsrc.keystore
+    key-store-password: forsrc
+    key-alias:          forsrc
 
 spring:
   application:
@@ -18,7 +28,13 @@ spring:
 
   aop:
     proxy-target-class: true
-
+  session:
+    store-type: redis
+    redis:
+      flush-mode: ON_SAVE
+  redis:
+    host: ${REDIS_HOST:mypig-redis}
+    port: ${REDIS_PORT:6379}
 
 security:
   oauth2:
@@ -47,11 +63,14 @@ management:
 
 zuul:
 #  sensitive-headers: Cookie,Set-Cookie,Authorization
-  sensitive-headers:
+  sensitive-headers: Access-Control-Allow-Origin
   routes:
-    mypig-ui:          /app/ui/**
-    mypig-user:        /app/user/**
-    mypig-sso-server:  /app/sso/**
+    mypig-ui:          /app/**
+    mypig-user:        /app/**
+    mypig-sso-server:  /app/**
+  OAuth2TokenRelayFilter:
+    pre:
+      disable: true
 #    ui:
 #      path:        /ui/**
 #      stripPrefix: true
@@ -66,6 +85,7 @@ zuul:
       path:        /sso/**
       stripPrefix: true
       service-id:  mypig-sso-server
+      sensitiveHeaders: Access-Control-Allow-Origin
       #url:         http://mypig-sso-server:10000/sso
 
 eureka:
@@ -81,3 +101,4 @@ eureka:
     registryFetchIntervalSeconds:  5
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+
