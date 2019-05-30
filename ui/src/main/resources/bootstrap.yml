@@ -30,6 +30,7 @@ spring:
     host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}
 
+
 security:
   oauth2:
     client:
@@ -84,7 +85,6 @@ zuul:
     oauth_token:
       path: /oauth/**
       url: ${auth-server}/oauth
-      sensitiveHeaders: Access-Control-Allow-Origin
     sso:
       path: /sso/api/**
       url: ${auth-server}/api

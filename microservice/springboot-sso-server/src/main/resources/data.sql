@@ -12,6 +12,7 @@ INSERT INTO oauth_client_details (client_id, resource_ids, client_secret, scope,
 
 
 
+
 -- users
 INSERT INTO users (username, password, enabled) SELECT * FROM (SELECT 'forsrc@gmail.com' username, '$2a$10$Wzme7qZtAsJZspQpNx3ee.qTu/IqRHiTb0jORWUOXCxptAkG3kf8e' password, 1 enabled) AS T WHERE NOT EXISTS (SELECT username FROM users WHERE username = 'forsrc@gmail.com');
 INSERT INTO users (username, password, enabled) SELECT * FROM (SELECT 'user'             username, '$2a$10$SNKOBpTBuCbWukZ3Rc5DpuIHRP585Ss02fULAIX/m1NmFpWeJ8ic2' password, 1 enabled) AS T WHERE NOT EXISTS (SELECT username FROM users WHERE username = 'user');
