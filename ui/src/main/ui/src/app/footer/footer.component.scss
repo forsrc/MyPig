@@ -1,8 +1,8 @@
 
 .my-footer {
-  padding: 12px;
+  //padding: 12px;
   font-size: 12px;
-  margin-top: 40px;
+  //margin-top: 40px;
   background: #3f51b5;
 }
 
@@ -61,11 +61,11 @@
 
 
 footer {
-  padding: calculateRem(8px) calculateRem(16px);
+  padding: calculateRem(8px) calculateRem(16px)!important;
   color: white;
   background: #3f51b5;
   margin-top: 2rem;
-  position: sticky;
+  position: sticky!important;
   top: 100%;
 }
 

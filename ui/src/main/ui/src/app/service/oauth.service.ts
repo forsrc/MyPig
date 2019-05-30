@@ -3,6 +3,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Cookie} from 'ng2-cookies';
 import {ToastrService} from 'ngx-toastr';
+import {UrlService} from "./url.service";
 
 (window as any).global = window;
 
@@ -16,7 +17,8 @@ export class OAuth2Service {
   constructor(public router: Router,
               public httpClient: HttpClient,
               public activatedRoute: ActivatedRoute,
-              public toastrService: ToastrService
+              public toastrService: ToastrService,
+              public urlService: UrlService,
   ) {
   }
 
@@ -49,31 +51,36 @@ export class OAuth2Service {
   public getOauthToken(username: string, password: string, callback: any) {
     let isServer = this.getParams()["server"];
     console.log(this.getParams(), isServer);
-    const headers = new HttpHeaders()
-      .set("Authorization", "Basic " + btoa("forsrc:forsrc"))
-      .set("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-    ;
-    //const url = 'http://mypig-sso-server:10000/sso/oauth/token';
-    const url = 'http://mypig-ui:8888/oauth/token';
     const body = `grant_type=password&username=${username}&password=${password}`;
-    this.httpClient.post(url, body, {headers}).subscribe(
+    this.httpClient.post(this.urlService.url().oauthToken, body, {headers: this.urlService.url().oauthTokenHeaders})
+      .subscribe(
       (data) => {
-        let token = data;
+        let token:any = data;
         this.toastrService.toastrConfig.positionClass = 'toast-bottom-right';
-        this.toastrService.success(token['access_token'], "access token");
+        this.toastrService.success(token.expires_in, "access token");
         this.saveToken(token);
         callback(data);
       },
-      err => {
+      (err: any) => {
         console.error(err);
-        this.toastrService.error(err.toString() || "Server error", "login faild");
+        if (typeof err == "object") {
+          if (err.error["error_description"]) {
+            this.toastrService.error(err.error["error_description"], "Login failed");
+            return;
+          }
+          this.toastrService.error(JSON.stringify(err), "Login failed");
+          return;
+        }
+        this.toastrService.error(err || "Server error", "Login failed");
       }
     );
   }
 
-  public saveToken(token) {
-    let expireDate = new Date().getTime() + (1000 * token.expires_in);
+  public saveToken(token: any) {
+    let expireDate: Date = new Date(new Date().getTime() + (1000 * token.expires_in));
+    this.expiresAt = expireDate.getTime();
     Cookie.set("access_token", token.access_token, expireDate);
+    console.info(Cookie.getAll());
   }
 
   public retrieveToken(code: string, callback: any) {

@@ -1,0 +1,114 @@
+<div class="user-page">
+
+  <mat-drawer-container class="my-drawer-container" [hasBackdrop]="'false'">
+
+    <mat-drawer class="my-mat-drawer" #drawer [mode]="'push'" (click)="drawer.toggle()">
+
+
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="my-tree">
+        <!-- This is the tree node template for leaf nodes -->
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+          <li class="mat-tree-node">
+            <!-- use a disabled button to provide padding for tree leaf -->
+            <button mat-icon-button disabled></button>
+            {{node.name}}
+          </li>
+        </mat-tree-node>
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+          <li>
+            <div class="mat-tree-node">
+              <button mat-icon-button matTreeNodeToggle
+                      [attr.aria-label]="'toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              {{node.name}}
+            </div>
+            <ul [class.my-tree-invisible]="!treeControl.isExpanded(node)">
+              <ng-container matTreeNodeOutlet></ng-container>
+            </ul>
+          </li>
+        </mat-nested-tree-node>
+      </mat-tree>
+
+
+    </mat-drawer>
+
+    <mat-drawer-content class="my-mat-drawer-content">
+
+      <mat-toolbar class="my-mat-toolbar">
+        <mat-icon class="mat-icon material-icons mat-icon-no-color" role="img" aria-hidden="true"
+                  (click)="drawer.toggle()">menu
+        </mat-icon>
+        USER
+        <mat-icon class="mat-icon-rtl-mirror mat-icon material-icons mat-icon-no-color" role="img" aria-hidden="true">
+          chevron_right
+        </mat-icon>
+        <h4>{{this.user.username}}</h4>
+      </mat-toolbar>
+
+      <div class="my-card">
+        <div class="my-card-header">
+          <h2>
+            User
+            <small>{{this.user.username}}</small>
+          </h2>
+        </div>
+        <div class="my-card-body my-card-padding">
+          <form class="user-form " #myForm="ngForm" (ngSubmit)="onLogin()">
+            <div class="user-form-div">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Email" [(ngModel)]="this.user.username" name="username"
+                       value="{{this.user.username}}" readonly="{{!isUpdate}}">
+              </mat-form-field>
+              <mat-form-field class="w-100">
+                <input matInput type="password" placeholder="Password" [(ngModel)]="this.user.password" name="password"
+                       value="{{this.user.password}}" readonly="{{!isUpdate}}">
+              </mat-form-field>
+
+              <mat-form-field class="w-100">
+                <mat-label>Enable</mat-label>
+                <mat-select matNativeControl [(ngModel)]="this.user.enabled" name="enable">
+                  <mat-option *ngFor="let opt of [{name :'false', value: 0}, {name :'true', value: 1}]"
+                              [value]="opt.value">
+                    {{opt.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Create on" [(ngModel)]="this.user.create" name="create"
+                       value="{{this.user.create}}" readonly="true">
+              </mat-form-field>
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Update on" [(ngModel)]="this.user.update" name="update"
+                       value="{{this.user.update | date: 'yyyy-MM-dd HH:dd:ss'}}" readonly="true">
+              </mat-form-field>
+              <mat-form-field class="w-100" *ngIf="isUpdate">
+                <input matInput type="text" placeholder="Version" [(ngModel)]="this.user.version" name="version"
+                       value="{{this.user.version}}" readonly="true">
+              </mat-form-field>
+
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="save()"
+                      *ngIf="!isUpdate">
+                Save
+              </button>
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="update()"
+                      *ngIf="isUpdate">
+                Update
+              </button>
+              <button type="button" mat-raised-button color="primary" class="w-100" (click)="this.location.back()">
+                Go back
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="my-card-footer">
+        </div>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+
+</div>

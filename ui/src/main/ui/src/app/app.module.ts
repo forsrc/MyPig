@@ -1,7 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-
 
 import {
   MatButtonModule,
@@ -10,6 +8,7 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatProgressBarModule,
   MatSelectModule,
   MatSidenavModule,
   MatTableModule,
@@ -28,6 +27,7 @@ import {FooterModule} from './footer/footer.module';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import {ToastrModule} from 'ngx-toastr';
+import {UrlService} from "./service/url.service";
 
 
 @NgModule({
@@ -58,7 +58,7 @@ import {ToastrModule} from 'ngx-toastr';
     FooterModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
   ],
-  providers: [OAuth2Service],
+  providers: [UrlService, OAuth2Service],
   bootstrap: [AppComponent]
 })
 export class AppModule {

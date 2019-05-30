@@ -20,6 +20,15 @@ spring:
         url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
         username: forsrc@gmail.com
         password: forsrc
+  cache:
+    type: redis
+  session:
+    store-type: redis
+    redis:
+      flush-mode: ON_SAVE
+  redis:
+    host: ${REDIS_HOST:mypig-redis}
+    port: ${REDIS_PORT:6379}
 
 
 security:
@@ -76,4 +85,7 @@ zuul:
     oauth_token:
       path: /oauth/**
       url: ${auth-server}/oauth
+    sso:
+      path: /sso/api/**
+      url: ${auth-server}/api
       sensitiveHeaders: Access-Control-Allow-Origin
