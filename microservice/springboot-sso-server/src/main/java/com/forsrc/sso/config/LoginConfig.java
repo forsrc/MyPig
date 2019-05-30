@@ -21,6 +21,8 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
@@ -50,19 +52,19 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         return new HttpSessionEventPublisher();
     }
 
-//    @Autowired
-//    FindByIndexNameSessionRepository findByIndexNameSessionRepository;
-//
-//    @Bean
-//    SpringSessionBackedSessionRegistry sessionRegistry() {
-//        return new SpringSessionBackedSessionRegistry(findByIndexNameSessionRepository);
-//    }
+    @Autowired
+    FindByIndexNameSessionRepository findByIndexNameSessionRepository;
 
     @Bean
-    public SessionRegistry sessionRegistry() {
-        SessionRegistry sessionRegistry = new SessionRegistryImpl();
-        return sessionRegistry;
+    SpringSessionBackedSessionRegistry sessionRegistry() {
+        return new SpringSessionBackedSessionRegistry(findByIndexNameSessionRepository);
     }
+
+//    @Bean
+//    public SessionRegistry sessionRegistry() {
+//        SessionRegistry sessionRegistry = new SessionRegistryImpl();
+//        return sessionRegistry;
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
