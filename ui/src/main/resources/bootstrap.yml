@@ -1,10 +1,21 @@
-auth-server: http://mypig-sso-server:10000/sso
-
-
 server:
   port: 8888
 #  servlet:
 #    context-path: /ui
+  http:
+    port: 9999
+    http2https: false
+  # keytool -genkeypair -keyalg RSA -keysize 2048 -alias mypig-ui -dname "CN=mypig-ui,OU=forsrc,O=forsrc,C=CN" -ext "san=DNS:mypig-ui" -validity 3650 -keystore mypig-ui.jks -storepass forsrc -keypass forsrc -deststoretype pkcs12
+  # keytool -alias mypig-ui -exportcert -keystore mypig-ui.jks -file mypig-ui.cer -storepass forsrc
+  # keytool -import -alias mypig-ui -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-ui.cer -trustcacerts -storepass changeit
+  # keytool -delete -alias mypig-ui -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-ui.cer -storepass changeit
+  ssl:
+    key-store-type:     JKS
+    key-store:          classpath:ssl/mypig-ui.jks
+    key-store-password: forsrc
+    key-alias:          mypig-ui
+    key-store-provider: SUN
+    enabled:            true
 
 spring:
   application:
@@ -32,17 +43,18 @@ spring:
 
 security:
   oauth2:
+    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
     client:
-      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
       client-id:              ui
       client-secret:          forsrc
       scope:                  ui, read, write
     resource:
-      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
+      userInfoUri:            ${security.oauth2.host}/sso/me
       preferTokenInfo:        false
       id:                     ui
-      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
 
 
 management:
@@ -56,6 +68,10 @@ management:
 
 eureka:
   instance:
+    nonSecurePortEnabled:          false
+    securePortEnabled:             true
+    securePort:                    ${server.port}
+    secureVirtualHostName:         ${spring.application.name}
     leaseRenewalIntervalInSeconds: 10
     home-page-url:                 ${HOST_NAME:http://mypig-tcc:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
@@ -68,24 +84,30 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
+auth-server: https://mypig-sso-server:10000/sso
+api-gateway: https://mypig-api-gateway:8088/api/app
 
 zuul:
+  OAuth2TokenRelayFilter.pre.disable: true
+  sensitive-headers: Access-Control-Allow-Origin
+  sslHostnameValidationEnabled: true
   routes:
+    mypig-api-gateway:
+      stripPrefix: true
+      path: /mypig/**
+      url:  ${api-gateway}
     user:
       path: /me/**
-      url: ${auth-server}/me
-      sensitiveHeaders: Access-Control-Allow-Origin
+      url:  ${auth-server}/me
     logout:
       path: /logout/**
-      url: ${auth-server}/logout
+      url:  ${auth-server}/logout
     login:
       path: /login/**
-      url: ${auth-server}/login
+      url:  ${auth-server}/login
     oauth_token:
       path: /oauth/**
-      url: ${auth-server}/oauth
-      sensitiveHeaders: Access-Control-Allow-Origin
+      url:  ${auth-server}/oauth
     sso:
-      path: /sso/api/**
-      url: ${auth-server}/api
-      sensitiveHeaders: Access-Control-Allow-Origin
+      path: /sso/**
+      url: ${auth-server}

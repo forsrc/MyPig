@@ -62,17 +62,18 @@ com.atomikos:
 
 security:
   oauth2:
+    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
     client:
-      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
       client-id:              tcc
       client-secret:          forsrc
-      scope:                  read, write
+      scope:                  tcc, read, write
     resource:
-      userInfoUri:            ${SSO_SERVER:http://mypig-sso-server:10000}/sso/me
+      userInfoUri:            ${security.oauth2.host}/sso/me
       preferTokenInfo:        false
-      id:                     forsrc
-      token-info-uri:         ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/check_token
+      id:                     tcc
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
 
 management:
   endpoints:
@@ -101,7 +102,7 @@ springboot-sso-server:
   ribbon:
     eureka:
       enabled: true
-    listOfServers: ${SSO_SERVER:http://mypig-sso-server:10000}
+    listOfServers: ${SSO_SERVER:https://mypig-sso-server:10000}
     ServerListRefreshInterval: 15000
 microservice-tcc:
   ribbon:

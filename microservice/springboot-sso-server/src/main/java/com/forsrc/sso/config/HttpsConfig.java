@@ -1,11 +1,7 @@
-package com.forsrc.config;
+package com.forsrc.sso.config;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,13 +10,9 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.net.ssl.*;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-
-import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.HTTPS_SCHEME;
-import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.HTTP_SCHEME;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 @Configuration
 public class HttpsConfig {
@@ -29,15 +21,15 @@ public class HttpsConfig {
     @Value("${server.http.port}")
     private Integer httpPort;
 
-//    static {
-//        HostnameVerifier hv = new HostnameVerifier() {
-//            public boolean verify(String urlHostName, SSLSession session) {
-//                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
-//                return true;
-//            }
-//        };
-//        HttpsURLConnection.setDefaultHostnameVerifier(hv);
-//    }
+    static {
+        HostnameVerifier hv = new HostnameVerifier() {
+            public boolean verify(String urlHostName, SSLSession session) {
+                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
+                return true;
+            }
+        };
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
+    }
 
     @Bean
     @ConditionalOnProperty(name = "server.http.http2https", havingValue = "true", matchIfMissing = false)
@@ -109,16 +101,7 @@ public class HttpsConfig {
 //        @Override
 //        public void checkClientTrusted(X509Certificate[] certs, String authType) {
 //        }
-//
-//
-//        public boolean isServerTrusted(
-//                java.security.cert.X509Certificate[] certs) {
-//            return true;
-//        }
-//
-//        public boolean isClientTrusted(
-//                java.security.cert.X509Certificate[] certs) {
-//            return true;
-//        }
 //    }
+
+
 }

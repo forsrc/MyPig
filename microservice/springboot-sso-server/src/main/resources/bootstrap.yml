@@ -1,5 +1,19 @@
 server:
   port: 10000
+  http:
+    port: 11111
+    http2https: false
+  max-http-header-size: 4048576
+  # keytool -genkeypair -keyalg RSA -keysize 2048 -alias mypig-sso-server -dname "CN=mypig-sso-server,OU=forsrc,O=forsrc,C=CN" -ext "san=DNS:mypig-sso-server" -validity 3650 -keystore mypig-sso-server.jks -storepass forsrc -keypass forsrc -deststoretype pkcs12
+  # keytool -alias mypig-sso-server -exportcert -keystore mypig-sso-server.jks -file mypig-sso-server.cer -storepass forsrc
+  # keytool -import -alias mypig-sso-server -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-sso-server.cer -trustcacerts -storepass changeit
+  # keytool -delete -alias mypig-sso-server -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-sso-server.cer -storepass changeit
+  ssl:
+    key-store-provider:   SUN
+    key-store-type:       JKS #PKCS12
+    key-store:            classpath:ssl/mypig-sso-server.jks
+    key-store-password:   forsrc
+    key-alias:            mypig-sso-server
   servlet:
     context-path: /sso
 
@@ -72,16 +86,17 @@ spring:
 
 security:
   oauth2:
+    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
     #sso:
       #filter-order: 3
     authorization:
-      token-key-access: permitAll()
+      token-key-access:       permitAll()
     client:
-      access-token-uri:       ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:http://mypig-sso-server:10000}/sso/oauth/authorize
+      access-token-uri:       ${SSO_SERVER:https://mypig-sso-server:10000}/sso/oauth/token
+      user-authorization-uri: ${SSO_SERVER:https://mypig-sso-server:10000}/sso/oauth/authorize
       client-id:              sso
       client-secret:          forsrc
-      scope:                  read, write
+      scope:                  sso, read, write
     resource:
       userInfoUri:            /me
       preferTokenInfo:        false
@@ -101,17 +116,23 @@ feign:
   hystrix:
     enabled: true
 ribbon:
-  ReadTimeout:    10000
+  ReadTimeout:     10000
   ConnectTimeout:  2000
+  IsSecure:        true
 hystrix:
   command:
     default:
       execution.isolation.thread.timeoutInMilliseconds: 10000
 
+
 eureka:
   instance:
+    nonSecurePortEnabled:          false
+    securePortEnabled:             true
+    securePort:                    ${server.port}
+    secureVirtualHostName:         ${spring.application.name}
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://mypig-sso-server:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:https://mypig-sso-server:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:

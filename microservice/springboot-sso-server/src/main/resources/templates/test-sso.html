@@ -160,10 +160,10 @@
 
 <script type="application/javascript">
     (function () {
-        //testApi("http://mypig-sso-server:10000/sso/me", null);
+        //testApi("https://mypig-sso-server:10000/sso/me", null);
         ajax({
             type: "POST",
-            url: "http://mypig-sso-server:10000/sso/oauth/token",
+            url: "https://mypig-sso-server:10000/sso/oauth/token",
             async: true,
             xhrFields: {
                 withCredentials: true
@@ -185,9 +185,9 @@
                 //console.log(xhr);
                 //console.log(data);
                 //console.log("------------------");
-                testApi("http://mypig-sso-server:10000/sso/me", data.access_token);
-                //testApi("http://mypig-sso-server:10000/sso/test/1", data.access_token);
-                //testApi("http://mypig-sso-server:10000/sso/test/2", data.access_token);
+                testApi("https://mypig-sso-server:10000/sso/me", data.access_token);
+                //testApi("https://mypig-sso-server:10000/sso/test/1", data.access_token);
+                //testApi("https://mypig-sso-server:10000/sso/test/2", data.access_token);
             },
             onComplete: function () {
             },
