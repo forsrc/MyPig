@@ -63,7 +63,6 @@ spring:
     host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}
 
-
 security:
   oauth2:
     host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
