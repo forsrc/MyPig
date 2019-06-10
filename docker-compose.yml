@@ -144,9 +144,9 @@ services:
     container_name: mypig-nginx
     hostname: mypig-sso-server-nginx
     volumes:
-    - "./docker/ningx/conf/nginx.conf:/etc/nginx/nginx.conf"
-    - "./docker/ningx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
-    - "./docker/ningx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
+    - "./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+    - "./docker/nginx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
+    - "./docker/nginx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
     ports:
     - "443:443"
 networks:
