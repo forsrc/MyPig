@@ -13,7 +13,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/app/sso/**", "/actuator/**", "/**/test/**", "/sso/**")
+                .antMatchers("/app/sso/**", "/actuator/**", "/**/test/**", "/sso/**", "/https/sso/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

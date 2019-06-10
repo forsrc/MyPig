@@ -24,6 +24,28 @@ spring:
   cloud:
     config:
       uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+      routes:
+        - id: sso_route
+          uri: lb://mypig-sso-server:10000/sso
+          order: 6000
+          predicates:
+          - Path=/sso/**
+          filters:
+          #- StripPrefix=1
+          - RemoveRequestHeader=Origin
+          - name: Hystrix
+            args:
+              name: fallbackcmd
+              fallbackUri: forward:/error?fallback=sso
+
+
   boot:
     admin:
       client:
@@ -41,9 +63,10 @@ spring:
     host: ${REDIS_HOST:mypig-redis}
     port: ${REDIS_PORT:6379}
 
+
 security:
   oauth2:
-    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
     client:
       access-token-uri:       ${security.oauth2.host}/sso/oauth/token
       user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
@@ -73,21 +96,23 @@ zuul:
   sensitive-headers: Access-Control-Allow-Origin
   sslHostnameValidationEnabled: true
   routes:
-    mypig-ui:
-      path:             /app/ui/**
+    static:
+      path:             /static/**
+      url:              /static
+    mypig-ui:           /app/**
+    mypig-user:         /app/**
+    mypig-sso-server:   /app/**
+    sso:
+      path:             /sso/**
+      url:              http://mypig-sso-server:10000/sso
       stripPrefix:      true
-      service-id:       mypig-ui
-      url:              https://mypig-ui:8888
-    mypig-user:
-      path:             /app/user/**
+    https_sso:
+      path:             /https/sso/**
+      url:              https://mypig-api-gateway:8088/api/sso
       stripPrefix:      true
-      service-id:       mypig-user
-      url:              http://mypig-user:10010/user
-    mypig-sso-server:
-      path:             /app/sso/**
-      stripPrefix:      true
-      service-id:       mypig-sso-server
-      url:              https://mypig-sso-server:10000/sso
+  add-host-header:      true
+  trace-request-body:   true
+
 #    ui:
 #      path:        /ui/**
 #      stripPrefix: true
@@ -98,11 +123,6 @@ zuul:
 #      stripPrefix: true
 #      service-id:  microservice-user
 #      #url:         http://forsrc.local:10010/user
-    sso:
-      path:             /sso/**
-      stripPrefix:      true
-      service-id:       mypig-sso-server
-      url:              https://mypig-sso-server:10000/sso
 
 #ribbon:
 #  IsSecure: true

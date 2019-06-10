@@ -8,12 +8,13 @@ server:
   # keytool -alias mypig-sso-server -exportcert -keystore mypig-sso-server.jks -file mypig-sso-server.cer -storepass forsrc
   # keytool -import -alias mypig-sso-server -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-sso-server.cer -trustcacerts -storepass changeit
   # keytool -delete -alias mypig-sso-server -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-sso-server.cer -storepass changeit
-  ssl:
-    key-store-provider:   SUN
-    key-store-type:       JKS #PKCS12
-    key-store:            classpath:ssl/mypig-sso-server.jks
-    key-store-password:   forsrc
-    key-alias:            mypig-sso-server
+#  ssl:
+#    key-store-provider:   SUN
+#    key-store-type:       JKS #PKCS12
+#    key-store:            classpath:ssl/mypig-sso-server.jks
+#    key-store-password:   forsrc
+#    key-alias:            mypig-sso-server
+#    enabled:              true
   servlet:
     context-path: /sso
 
@@ -86,22 +87,22 @@ spring:
 
 security:
   oauth2:
-    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
     #sso:
       #filter-order: 3
     authorization:
       token-key-access:       permitAll()
     client:
-      access-token-uri:       ${SSO_SERVER:https://mypig-sso-server:10000}/sso/oauth/token
-      user-authorization-uri: ${SSO_SERVER:https://mypig-sso-server:10000}/sso/oauth/authorize
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
       client-id:              sso
       client-secret:          forsrc
       scope:                  sso, read, write
     resource:
-      userInfoUri:            /me
+      userInfoUri:            ${security.oauth2.host}/sso/me
       preferTokenInfo:        false
       id:                     sso
-      token-info-uri:         /oauth/check_token
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
 
 management:
   endpoints:
@@ -118,7 +119,7 @@ feign:
 ribbon:
   ReadTimeout:     10000
   ConnectTimeout:  2000
-  IsSecure:        true
+#  IsSecure:        true
 hystrix:
   command:
     default:
@@ -127,12 +128,12 @@ hystrix:
 
 eureka:
   instance:
-    nonSecurePortEnabled:          false
-    securePortEnabled:             true
-    securePort:                    ${server.port}
-    secureVirtualHostName:         ${spring.application.name}
+#    nonSecurePortEnabled:          false
+#    securePortEnabled:             true
+#    securePort:                    ${server.port}
+#    secureVirtualHostName:         ${spring.application.name}
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:https://mypig-sso-server:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-sso-server:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:

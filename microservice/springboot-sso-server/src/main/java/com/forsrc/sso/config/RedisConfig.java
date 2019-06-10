@@ -20,6 +20,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.data.redis.RedisFlushMode;
@@ -27,15 +28,12 @@ import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 @EnableCaching(mode = AdviceMode.PROXY)
 @EnableRedisHttpSession(redisFlushMode = RedisFlushMode.ON_SAVE)
-@ConfigurationProperties("spring.cache")
+@ConfigurationProperties(value = "spring.cache")
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -95,8 +93,8 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<Object, Object> redisCacheTemplate() {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
-        template.setKeySerializer(new GenericJackson2JsonRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setKeySerializer(new JdkSerializationRedisSerializer());
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
         template.setConnectionFactory(redisConnectionFactory());
         return template;
     }
@@ -109,6 +107,9 @@ public class RedisConfig {
     }
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
+        if (cacheTtls == null) {
+            return Collections.emptyMap();
+        }
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
         for (CacheTtl cacheTtl : cacheTtls) {
             redisCacheConfigurationMap.put(cacheTtl.getCacheName(), redisCacheConfigurationTtl(cacheTtl.getTtl()));

@@ -19,6 +19,7 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,10 +66,13 @@ public class UserTccServiceImpl implements UserTccService {
     @Autowired
     private OAuth2RestTemplate tccOAuth2RestTemplate;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public UserTcc tccTry(UserTcc userTcc) {
         userTcc.setId(SnowflakeIDGenerator.get().getId());
-        userTcc.setPassword(PasswordEncoderConfig.PASSWORD_ENCODER.encode(userTcc.getPassword()));
+        userTcc.setPassword(passwordEncoder.encode(userTcc.getPassword()));
         userTcc.setStatus(Status.TRY.getStatus());
         userTcc = userTccDao.save(userTcc);
         return userTcc;

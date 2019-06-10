@@ -21,7 +21,7 @@ spring:
 
 security:
   oauth2:
-    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
     client:
       access-token-uri:       ${security.oauth2.host}/sso/oauth/token
       user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize

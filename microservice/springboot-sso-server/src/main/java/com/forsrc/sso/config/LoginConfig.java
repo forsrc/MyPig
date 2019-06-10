@@ -12,8 +12,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -46,6 +45,9 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
@@ -90,12 +92,12 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             .and()
-               .sessionManagement()
-               .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-               .maximumSessions(1)
-               .maxSessionsPreventsLogin(false)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
                 .sessionRegistry(sessionRegistry())
-               .expiredUrl("/login?expired")
+                .expiredUrl("/login?expired")
             .and()
             .and()
                 .csrf()
@@ -112,7 +114,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .usersByUsernameQuery("select username,password,enabled from users where username = ?")
                 .authoritiesByUsernameQuery("select username,authority from authorities where username = ?")
         ;
@@ -123,7 +125,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         // /oauth/token
         auth
                 .userDetailsService(userDetailsService())
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER);
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override

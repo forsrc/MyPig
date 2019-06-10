@@ -21,16 +21,6 @@ public class HttpsConfig {
     @Value("${server.http.port}")
     private Integer httpPort;
 
-    static {
-        HostnameVerifier hv = new HostnameVerifier() {
-            public boolean verify(String urlHostName, SSLSession session) {
-                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
-                return true;
-            }
-        };
-        HttpsURLConnection.setDefaultHostnameVerifier(hv);
-    }
-
     @Bean
     @ConditionalOnProperty(name = "server.http.http2https", havingValue = "true", matchIfMissing = false)
     public TomcatServletWebServerFactory servletContainer() {
@@ -57,6 +47,13 @@ public class HttpsConfig {
         connector.setSecure(false);
         connector.setPort(httpPort);
         connector.setRedirectPort(port);
+        HostnameVerifier hv = new HostnameVerifier() {
+            public boolean verify(String urlHostName, SSLSession session) {
+                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
+                return true;
+            }
+        };
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
         return connector;
     }
 

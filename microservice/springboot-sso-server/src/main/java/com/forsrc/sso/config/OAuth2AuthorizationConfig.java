@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -53,6 +54,9 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Bean
     public JdbcTokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
@@ -89,7 +93,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
         security.realm("oauth2-resources")
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 //.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
@@ -114,11 +118,11 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
             throws Exception {
         // @formatter:off
         clients.jdbc(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 ;
  
         clients.jdbc(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .withClient("forsrc")
                 .authorizedGrantTypes("authorization_code", "client_credentials", 
                         "refresh_token","password", "implicit")
@@ -141,6 +145,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     protected static class AuthenticationManagerConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
         @Autowired
+        private BCryptPasswordEncoder passwordEncoder;
+        @Autowired
         private DataSource dataSource;
 
         @Override
@@ -148,27 +154,27 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
             // @formatter:off
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .withUser("forsrc@gmail.com")
-                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("forsrc"))
+                .password(passwordEncoder.encode("forsrc"))
                 .roles("ADMIN", "USER");
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .withUser("user")
-                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("password"))
+                .password(passwordEncoder.encode("password"))
                 .roles("USER");
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .withUser("tcc")
-                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("tcc"))
+                .password(passwordEncoder.encode("tcc"))
                 .roles("TCC");
             auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .passwordEncoder(PasswordEncoderConfig.PASSWORD_ENCODER)
+                .passwordEncoder(passwordEncoder)
                 .withUser("test")
-                .password(PasswordEncoderConfig.PASSWORD_ENCODER.encode("test"))
+                .password(passwordEncoder.encode("test"))
                 .roles("TEST");
             // @formatter:on
         }

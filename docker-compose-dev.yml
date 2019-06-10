@@ -2,13 +2,6 @@ version: '3'
 services:
 
   mypig-eureka-server:
-    #build:
-      # context: ./microservice/springboot-eureka-server
-      # dockerfile: Dockerfile
-      # args:
-      #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-eureka-server-0.0.1-SNAPSHOT.jar
-      #   ARG_RES_FILE: ${PWD}/src/main/resources
-      #   ARG_PORT: 11100
     image: forsrc/mypig-eureka-server:latest
     container_name: mypig-eureka-server
     hostname: mypig-eureka-server
@@ -18,20 +11,12 @@ services:
     # environment:
 
   mypig-admin-server:
-    #build:
-      # context: ./microservice/springboot-admin
-      # dockerfile: Dockerfile
-      # args:
-      #   ARG_JAR_FILE: ${PWD}/target/forsrc-mypig-microservice-springboot-admin-0.0.1-SNAPSHOT.jar
-      #   ARG_RES_FILE: ${PWD}/src/main/resources
-      #   ARG_PORT: 13000
     image: forsrc/mypig-admin-server:latest
     container_name: mypig-admin-server
     hostname: mypig-admin-server
     ports:
     - 13000:13000
     # environment:
-
 
   redis:
     image: redis:3.2
@@ -41,6 +26,17 @@ services:
     #- /tmp/redis/data:/data
     ports:
     - "6379:6379"
+
+  nginx:
+    image: nginx
+    container_name: mypig-nginx
+    hostname: mypig-sso-server-nginx
+    volumes:
+    - "./docker/ningx/conf/nginx.conf:/etc/nginx/nginx.conf"
+    - "./docker/ningx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
+    - "./docker/ningx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
+    ports:
+    - "443:443"
 
 networks:
   forsrc.mypig:

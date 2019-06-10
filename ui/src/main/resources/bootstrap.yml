@@ -43,18 +43,19 @@ spring:
 
 security:
   oauth2:
-    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
+#    host:                     ${SSO_SERVER:https://mypig-sso-server-nginx/sso}
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000/sso}
     client:
-      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
-      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
+      access-token-uri:       ${security.oauth2.host}/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/oauth/authorize
       client-id:              ui
       client-secret:          forsrc
       scope:                  ui, read, write
     resource:
-      userInfoUri:            ${security.oauth2.host}/sso/me
+      userInfoUri:            ${security.oauth2.host}/me
       preferTokenInfo:        false
       id:                     ui
-      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
+      token-info-uri:         ${security.oauth2.host}/oauth/check_token
 
 
 management:
@@ -84,7 +85,7 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
-auth-server: https://mypig-sso-server:10000/sso
+auth-server: https://mypig-sso-server-nginx/sso
 api-gateway: https://mypig-api-gateway:8088/api/app
 
 zuul:
@@ -102,12 +103,6 @@ zuul:
     logout:
       path: /logout/**
       url:  ${auth-server}/logout
-    login:
-      path: /login/**
-      url:  ${auth-server}/login
-    oauth_token:
-      path: /oauth/**
-      url:  ${auth-server}/oauth
     sso:
       path: /sso/**
       url: ${auth-server}
