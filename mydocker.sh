@@ -1,4 +1,4 @@
-mvn install -DskipTests
+#mvn install -DskipTests
 
 cd microservice/springboot-eureka-server
 mvn dockerfile:build -DskipTests

@@ -2,7 +2,7 @@ server:
   port: 8088
   http:
     port: 8077
-    http2https: true
+    http2https: false
   max-http-header-size: 4048576
   servlet:
     context-path: /api
@@ -11,12 +11,12 @@ server:
   # keytool -import -alias mypig-api-gateway -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-api-gateway.cer -trustcacerts -storepass changeit
   # keytool -delete -alias mypig-api-gateway -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-api-gateway.cer -storepass changeit
 
-  ssl:
-    key-store-provider:   SUN
-    key-store-type:       JKS #PKCS12
-    key-store:            classpath:ssl/mypig-api-gateway.jks
-    key-store-password:   forsrc
-    key-alias:            mypig-api-gateway
+#  ssl:
+#    key-store-provider:   SUN
+#    key-store-type:       JKS #PKCS12
+#    key-store:            classpath:ssl/mypig-api-gateway.jks
+#    key-store-password:   forsrc
+#    key-alias:            mypig-api-gateway
 
 spring:
   application:
@@ -92,9 +92,13 @@ management:
 
 zuul:
 #  sensitive-headers: Cookie,Set-Cookie,Authorization
-  OAuth2TokenRelayFilter.pre.disable: true
+#  OAuth2TokenRelayFilter.pre.disable: false
   sensitive-headers: Access-Control-Allow-Origin
   sslHostnameValidationEnabled: true
+  trace-request-body:   true
+  add-host-header: false
+  add-proxy-headers: true
+  ignore-security-headers: false
   routes:
     static:
       path:             /static/**
@@ -106,12 +110,10 @@ zuul:
       path:             /sso/**
       url:              http://mypig-sso-server:10000/sso
       stripPrefix:      true
-    https_sso:
-      path:             /https/sso/**
-      url:              https://mypig-api-gateway:8088/api/sso
-      stripPrefix:      true
-  add-host-header:      true
-  trace-request-body:   true
+      custom-sensitive-headers: true
+
+
+
 
 #    ui:
 #      path:        /ui/**
@@ -129,12 +131,12 @@ zuul:
 
 eureka:
   instance:
-    nonSecurePortEnabled:          false
-    securePortEnabled:             true
-    securePort:                    ${server.port}
-    secureVirtualHostName:         ${spring.application.name}
+#    nonSecurePortEnabled:          false
+#    securePortEnabled:             true
+#    securePort:                    ${server.port}
+#    secureVirtualHostName:         ${spring.application.name}
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:https://mypig-api-gateway:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-api-gateway:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
