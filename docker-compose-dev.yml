@@ -1,0 +1,61 @@
+version: '3'
+services:
+
+  mypig-eureka-server:
+    image: forsrc/mypig-eureka-server:latest
+    container_name: mypig-eureka-server
+    hostname: mypig-eureka-server
+    # depends_on:
+    ports:
+    - 11100:11100
+    # environment:
+
+#  mypig-admin-server:
+#    image: forsrc/mypig-admin-server:latest
+#    container_name: mypig-admin-server
+#    hostname: mypig-admin-server
+#    ports:
+#    - 13000:13000
+#    # environment:
+
+  mypig-sso-server:
+    image: forsrc/mypig-sso-server:latest
+    container_name: mypig-sso-server
+    hostname: mypig-sso-server
+    ports:
+    - 10000:10000
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+
+  mypig-tcc:
+    image: forsrc/mypig-tcc:latest
+    container_name: mypig-tcc
+    hostname: mypig-tcc
+    ports:
+    - 10020:10020
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+
+  redis:
+    image: redis:3.2
+    container_name: mypig-redis
+    hostname: mypig-redis
+    #volumes:
+    #- /tmp/redis/data:/data
+    ports:
+    - "6379:6379"
+
+#  nginx:
+#    image: nginx
+#    container_name: mypig-nginx
+#    hostname: mypig-sso-server-nginx
+#    volumes:
+#    - "./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+#    - "./docker/nginx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
+#    - "./docker/nginx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
+#    ports:
+#    - "443:443"
+
+networks:
+  forsrc.mypig:
+    driver: bridge

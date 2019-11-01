@@ -1,0 +1,7 @@
+#server:
+  #port: 13000
+  #context-path: /admin
+
+#spring:
+  #application:
+    #name: springboot-admin

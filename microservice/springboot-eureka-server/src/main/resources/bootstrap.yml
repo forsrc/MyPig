@@ -1,0 +1,59 @@
+server:
+  port: 11100
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: mypig-eureka-server
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+
+  boot:
+    admin:
+      url:        ${ADMIN_SERVER:http://mypig-admin-server:13000}
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-eureka-server:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    registerWithEureka:            true
+    fetchRegistry:                 false
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+    initialInstanceInfoReplicationIntervalSeconds: 20
+
+
+
+#turbine:
+##  aggregator:
+##    clusterConfig:
+##    - SPRINGBOOT-EUREKA-SERVER
+#  clusterNameExpression: metadata['cluster'] #new String("default")
+#  appConfig: SPRINGBOOT-EUREKA-SERVER
+#  combineHostPort: true
+#  instanceUrlSuffix: ${server.context-path}/hystrix.stream
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+

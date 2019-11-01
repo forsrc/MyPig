@@ -1,0 +1,65 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+       xmlns:g="urn:import:com.google.gwt.user.client.ui"
+       xmlns:m="urn:import:gwt.material.design.client.ui"
+       xmlns:m.html="urn:import:gwt.material.design.client.ui.html"
+       xmlns:ma="urn:import:gwt.material.design.addins.client">
+
+    <ui:with field="res" type="com.forsrc.gwt.client.resources.AppResources"/>
+    <ui:with field='i18n' type='com.forsrc.gwt.client.resources.i18n.Messages'/>
+    <ui:with field='nameTokens' type='com.forsrc.gwt.client.place.NameTokens'/>
+
+    <g:HTMLPanel>
+        <m:MaterialPanel>
+            <m:MaterialHeader ui:field="header">
+                <m:MaterialNavBar ui:field="navBar" activates="sidenavCard" backgroundColor="BLUE" shadow="1">
+                    <m:MaterialNavSection float="RIGHT">
+                        <m:MaterialLink text="Login" href="#{nameTokens.getLogin}"/>
+                        <m:MaterialLink text="Demo" href="#{nameTokens.getDemo}"/>
+                    </m:MaterialNavSection>
+                    <m:MaterialLink ui:field="btnSearch" iconType="SEARCH" iconColor="WHITE" float="RIGHT"/>
+                </m:MaterialNavBar>
+                <m:MaterialNavBar ui:field="navBarSearch" width="100%" visible="false">
+                    <m:MaterialSearch ui:field="txtSearch" placeholder="Component" backgroundColor="WHITE" iconColor="BLACK" active="true" grid="l3" shadow="1"/>
+                </m:MaterialNavBar>
+            </m:MaterialHeader>
+
+            <m:MaterialSideNavCard m:id="sidenavCard" ui:field="sideNav" width="300">
+                <ma:sideprofile.MaterialSideProfile url="https://gwtmaterialdesign.github.io/gwt-material-demo/images/batman.png">
+                    <m:MaterialImage url="https://gwtmaterialdesign.github.io/gwt-material-demo/images/batman.png" />
+                    <m:MaterialLabel text="GWT Material" textColor="WHITE"/>
+                    <m:MaterialLink text="forsrc@gmail.com" activates="dropProfile" iconType="ARROW_DROP_DOWN" iconPosition="RIGHT" textColor="WHITE"/>
+                </ma:sideprofile.MaterialSideProfile>
+                <m:MaterialLink iconType="ACCOUNT_CIRCLE" text="Login" href="#{nameTokens.getLogin}"/>
+                <m:MaterialLink iconType="CHAT" text="Demo" href="#{nameTokens.getDemo}"/>
+                <m:MaterialLink iconType="INBOX" text="Inbox">
+                    <m:MaterialBadge text="1 new" />
+                </m:MaterialLink>
+                <m:MaterialLink iconType="DRAFTS" text="Drafts"/>
+                <m:MaterialLink iconType="MAIL" text="All Mail"/>
+                <m:MaterialLink iconType="DELETE" text="Trash"/>
+                <m:MaterialLink iconType="INFO_OUTLINE" text="Spam"/>
+            </m:MaterialSideNavCard>
+
+
+             <m:MaterialContainer>
+                <g:HTMLPanel>
+                    <g:SimplePanel ui:field="mainContentPanel"/>
+                </g:HTMLPanel>
+
+                <m:MaterialFAB>
+                    <m:MaterialButton iconType="ADD" type="FLOATING" size="LARGE"/>
+                    <m:MaterialFABList>
+                        <m:MaterialButton iconType="ACCESS_TIME" backgroundColor="PURPLE" tooltip="Access Time" tooltipPosition="LEFT" type="FLOATING"/>
+                        <m:MaterialButton iconType="ACCESSIBLE" backgroundColor="ORANGE" tooltip="Accessible" tooltipPosition="LEFT" type="FLOATING"/>
+                        <m:MaterialButton iconType="AC_UNIT" backgroundColor="RED" tooltip="AC Unit" tooltipPosition="LEFT" type="FLOATING"/>
+                        <m:MaterialButton iconType="ZOOM_IN" backgroundColor="BLUE" tooltip="Zoom In" tooltipPosition="LEFT" type="FLOATING"/>
+                    </m:MaterialFABList>
+                </m:MaterialFAB>
+
+            </m:MaterialContainer>
+
+
+        </m:MaterialPanel>
+    </g:HTMLPanel>
+</ui:UiBinder>
+

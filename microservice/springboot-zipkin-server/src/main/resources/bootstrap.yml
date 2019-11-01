@@ -1,0 +1,71 @@
+server:
+  port: 11110
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: mypig-zipkin-server
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+  boot:
+    admin:
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+  data:
+    rest:
+      base-path:  /rest
+  
+  datasource:
+    url:                 ${DB_URL:jdbc:h2:/tmp/db/h2/zipkin.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
+    username:            ${DB_USERNAME:sa}
+    password:            ${DB_PASSWORD:sa}
+    driver-class-name:   ${DB_DRIVER:org.h2.Driver}
+    initialization-mode: embedded
+    continue-on-error:   false
+    schema:              classpath:zipkin.sql
+
+
+#  sleuth:
+#   # not use sleuth stream to trace zipkin server itself
+#    enabled: false
+#    #refer to org.springframework.cloud.sleuth.instrument.hystrix.SleuthHystrixAutoConfiguration.java
+#    hystrix:
+#      strategy:
+#        enabled: false
+
+
+#zipkin:
+#  base-url: http://forsrc.local:${server.port}
+#  storage:
+#    StorageComponent: springboot-zipkin-server
+#    #type: mem
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-zipkin-server:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+

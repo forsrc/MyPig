@@ -1,0 +1,7 @@
+#server:
+  #port: 11100
+  #context-path: /
+
+#spring:
+  #application:
+    #name: springboot-eureka-server

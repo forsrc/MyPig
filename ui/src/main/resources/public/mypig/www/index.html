@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<!-- <link rel="stylesheet" type="text/css" href="css/index.css"> -->
+<link href="css/ionic.min.css" rel="stylesheet">
+<!-- <link href="css/ionic.app.css" rel="stylesheet"> -->
+<link href="css/angular-material.min.css" rel="stylesheet">
+<link href="css/angular-material-icons.css" rel="stylesheet">
+<!-- <link href="css/login.css" rel="stylesheet"> -->
+
+<title>MyPig</title>
+</head>
+<body ngapp="app">
+    <ion-nav-view>
+        <div data-ng-view></div>
+    </ion-nav-view>
+
+    <div id="deviceready" class="blink" style="display: none;">
+        <p class="event listening">Connecting to Device</p>
+        <p class="event received">Device is Ready</p>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="lib/requirejs/require.js" data-main="app/config.js"></script>
+</body>
+</html>

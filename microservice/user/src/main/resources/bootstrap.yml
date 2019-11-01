@@ -1,0 +1,61 @@
+server:
+  port: 10010
+  servlet:
+    context-path: /user
+
+spring:
+  application:
+    name: mypig-user
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+  boot:
+    admin:
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+  zipkin:
+   base-url: ${ZIPKIN_SERVER:http://mypig-zipkin-server:11110}
+
+security:
+  oauth2:
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
+    client:
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
+      client-id:              user
+      client-secret:          forsrc
+      scope:                  user, read, write
+    resource:
+      userInfoUri:            ${security.oauth2.host}/sso/me
+      preferTokenInfo:        false
+      id:                     user
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-user:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+

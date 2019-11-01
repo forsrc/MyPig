@@ -1,0 +1,141 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forsrc.tcc.dao.mapper.TccMapper">
+
+    <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.Tcc">
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="expire" column="expire" />
+        <result property="create" column="create" />
+        <result property="update" column="update" />
+        <result property="version" column="version" />
+        <result property="status" column="status" />
+        <collection property="tccLinks"
+            javaType="ArrayList"
+            ofType="com.forsrc.tcc.domain.entity.TccLink"
+            column="links_tcc_id">
+
+            <result property="tccId" column="links_tcc_id"/>
+            <result property="id" column="links_id"/>
+            <result property="uri" column="links_uri" />
+            <result property="resourceId" column="links_resource_id" />
+            <result property="expire" column="links_expire" />
+            <result property="create" column="links_create" />
+            <result property="update" column="links_update" />
+            <result property="version" column="links_version" />
+            <result property="status" column="links_status" />
+        </collection>
+    </resultMap>
+
+    <select id="getTryStatusList" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            TCC.*,
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
+        FROM
+            t_tcc TCC
+        INNER JOIN
+            t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
+        WHERE
+            TCC.status = 0
+        -- AND
+            -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        ORDER BY create ASC
+        LIMIT 100
+    </select>
+
+    <select id="getTryStatusListByMicroservice" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            TCC.*,
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
+        FROM
+            t_tcc TCC
+        INNER JOIN
+            t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
+        WHERE
+            microservice = #{microservice}
+        AND
+            TCC.status = 0
+        -- AND
+            -- NOW() >= TIMESTAMPADD(MINUTE, 1, TCC.create)
+        ORDER BY create ASC
+        LIMIT 100
+    </select>
+
+    <select id="getByTccLinkResourceId" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            TCC.*,
+            TCC_LINK.tcc_id      AS links_tcc_id,
+            TCC_LINK.id          AS links_id,
+            TCC_LINK.uri         AS links_uri,
+            TCC_LINK.resource_id AS links_resource_id,
+            TCC_LINK.expire      AS links_expire,
+            TCC_LINK.create      AS links_create,
+            TCC_LINK.update      AS links_update,
+            TCC_LINK.version     AS links_version,
+            TCC_LINK.status      AS links_status
+        FROM
+            t_tcc TCC
+        INNER JOIN
+            t_tcc_link TCC_LINK
+        ON
+            TCC.id = TCC_LINK.tcc_id
+        WHERE
+            TCC_LINK.resource_id = #{resourceId}
+        ORDER BY create DESC
+        LIMIT 1
+    </select>
+
+    <update id="updateStatus" parameterType="com.forsrc.tcc.domain.entity.Tcc">
+        UPDATE
+            t_tcc
+        SET
+            status = #{tcc.status, jdbcType=INTEGER},
+            version = version + 1,
+            update = CURRENT_TIMESTAMP
+        WHERE
+            id = #{tcc.id, javaType=java.util.UUID, typeHandler=com.forsrc.common.core.mybatis.handler.UUIDTypeHandler}
+        AND
+            version = #{tcc.version, jdbcType=INTEGER}
+    </update>
+
+    <update id="setTccMicroservice">
+        <![CDATA[
+        UPDATE
+            t_tcc
+        SET
+            microservice = #{microservice},
+            version = version + 1,
+            update = CURRENT_TIMESTAMP
+        WHERE
+            status = 0
+        AND
+            microservice = ''
+        LIMIT 100
+        ]]>
+    </update>
+
+</mapper>

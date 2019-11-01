@@ -1,0 +1,149 @@
+server:
+  port: 8088
+  http:
+    port: 8077
+    http2https: false
+  max-http-header-size: 4048576
+  servlet:
+    context-path: /api
+  # keytool -genkeypair -keyalg RSA -keysize 2048 -alias mypig-api-gateway -dname "CN=mypig-api-gateway,OU=forsrc,O=forsrc,C=CN" -ext "san=DNS:mypig-api-gateway" -validity 3650 -keystore mypig-api-gateway.jks -storepass forsrc -keypass forsrc -deststoretype pkcs12
+  # keytool -alias mypig-api-gateway -exportcert -keystore mypig-api-gateway.jks -file mypig-api-gateway.cer -storepass forsrc
+  # keytool -import -alias mypig-api-gateway -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-api-gateway.cer -trustcacerts -storepass changeit
+  # keytool -delete -alias mypig-api-gateway -keystore %JAVA_HOME%\jre\lib\security\cacerts -file mypig-api-gateway.cer -storepass changeit
+
+#  ssl:
+#    key-store-provider:   SUN
+#    key-store-type:       JKS #PKCS12
+#    key-store:            classpath:ssl/mypig-api-gateway.jks
+#    key-store-password:   forsrc
+#    key-alias:            mypig-api-gateway
+
+spring:
+  application:
+    name: mypig-api-gateway
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+      routes:
+        - id: sso_route
+          uri: lb://mypig-sso-server:10000/sso
+          order: 6000
+          predicates:
+          - Path=/sso/**
+          filters:
+          #- StripPrefix=1
+          - RemoveRequestHeader=Origin
+          - name: Hystrix
+            args:
+              name: fallbackcmd
+              fallbackUri: forward:/error?fallback=sso
+
+
+  boot:
+    admin:
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+  aop:
+    proxy-target-class: true
+  session:
+    store-type: redis
+    redis:
+      flush-mode: ON_SAVE
+  redis:
+    host: ${REDIS_HOST:mypig-redis}
+    port: ${REDIS_PORT:6379}
+
+
+security:
+  oauth2:
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
+    client:
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
+      client-id:              forsrc
+      client-secret:          forsrc
+      scope:                  read, write
+    resource:
+      userInfoUri:            ${security.oauth2.host}/sso/me
+      preferTokenInfo:        false
+      id:                     forsrc
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+
+zuul:
+#  sensitive-headers: Cookie,Set-Cookie,Authorization
+#  OAuth2TokenRelayFilter.pre.disable: false
+  sensitive-headers: Access-Control-Allow-Origin
+  sslHostnameValidationEnabled: true
+  trace-request-body:   true
+  add-host-header: false
+  add-proxy-headers: true
+  ignore-security-headers: false
+  routes:
+    static:
+      path:             /static/**
+      url:              /static
+    mypig-ui:           /app/**
+    mypig-user:         /app/**
+    mypig-sso-server:   /app/**
+    sso:
+      path:             /sso/**
+      url:              http://mypig-sso-server:10000/sso
+      stripPrefix:      true
+      custom-sensitive-headers: true
+
+
+
+
+#    ui:
+#      path:        /ui/**
+#      stripPrefix: true
+#      service-id:  microservice-ui
+#      url:         http://forsrc.local:8888/ui
+#    user:
+#      path:        /user/**
+#      stripPrefix: true
+#      service-id:  microservice-user
+#      #url:         http://forsrc.local:10010/user
+
+#ribbon:
+#  IsSecure: true
+
+eureka:
+  instance:
+#    nonSecurePortEnabled:          false
+#    securePortEnabled:             true
+#    securePort:                    ${server.port}
+#    secureVirtualHostName:         ${spring.application.name}
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-api-gateway:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+

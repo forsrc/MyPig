@@ -1,0 +1,7 @@
+.my-box-shadow {
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+app-navbar {
+  color: white;
+}

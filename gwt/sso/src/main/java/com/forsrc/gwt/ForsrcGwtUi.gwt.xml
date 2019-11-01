@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
+        "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+<module rename-to='ForsrcGwtUi'>
+	<!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name='com.google.gwt.inject.Inject'/>
+
+    <!--GWTP-->
+    <!-- <inherits name='com.gwtplatform.dispatch.Dispatch'/> -->
+    <inherits name="com.gwtplatform.dispatch.rest.DispatchRest"/>
+    <inherits name='com.gwtplatform.mvp.MvpWithEntryPoint'/>
+
+    <!--GWT Material-->
+    <inherits name="gwt.material.design.GwtMaterialWithJQueryDebug"/>
+    <inherits name="gwt.material.design.themes.ThemeBlue"/>
+    <inherits name="gwt.material.design.themes.ThemeAmberResources"/>
+    <inherits name="gwt.material.design.themes.ThemeBlueResources"/>
+    <inherits name="gwt.material.design.themes.ThemeBrownResources"/>
+    <inherits name="gwt.material.design.themes.ThemeGreenResources"/>
+    <inherits name="gwt.material.design.themes.ThemeGreyResources"/>
+    <inherits name="gwt.material.design.themes.ThemeOrangeResources"/>
+    <inherits name="gwt.material.design.themes.ThemePinkResources"/>
+    <inherits name="gwt.material.design.themes.ThemePurpleResources"/>
+    <inherits name="gwt.material.design.themes.ThemeRedResources"/>
+    <inherits name="gwt.material.design.themes.ThemeYellowResources"/>
+    <inherits name="gwt.material.design.addins.GwtMaterialAddinsDebug"/>
+    <inherits name="gwt.material.design.GwtMaterialTableDebug"/>
+
+    <inherits name="com.googlecode.gwt.charts.Charts"/>
+
+    <inherits name="com.googlecode.gwt.crypto.Crypto"/>
+    <inherits name="com.google.api.gwt.oauth2.OAuth2"/>
+    <inherits name="org.fusesource.restygwt.RestyGWT"/>
+
+    <inherits name="com.google.gwt.logging.Logging"/>
+    <!-- Specify the paths for translatable code-->
+    <source path='client'/>
+    <source path='shared'/>
+
+    <extend-configuration-property name="gin.ginjector.modules"
+                                   value="com.forsrc.gwt.client.gin.ClientModule"/>
+
+    <!-- allow Super Dev Mode -->
+    <add-linker name="xsiframe"/>
+
+    <set-configuration-property name="gwtp.bootstrapper" value="com.forsrc.gwt.client.bootstrap.BootstrapperImpl"/>
+    <set-configuration-property name="CssResource.enableGss" value="true"/>
+
+    <inherits name="com.google.gwt.i18n.I18N" />
+    <extend-property name="locale" values="en_US" />
+    <extend-property name="locale" values="zh_CN" />
+    <set-property-fallback name="locale" value="en_US" />
+    <set-property name="locale" value="zh_CN" />
+
+    <inherits name="com.google.gwt.resources.Resources" />
+
+
+</module>

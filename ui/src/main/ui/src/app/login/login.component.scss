@@ -1,0 +1,51 @@
+@import '~src/assets/css/variables';
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //height: 90%;
+  position: relative;
+  .content {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .app-name {
+      margin-top: 0px;
+      padding-bottom: 10px;
+      font-size: 32px;
+    }
+    .login-form {
+      margin-top: 20%;
+      padding: 40px;
+      background: $white;
+      max-width: 500px;
+     //box-shadow: 0 0 20px #ddd;
+      box-shadow: 0 7px 7px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+      input:-webkit-autofill {
+        box-shadow: 0 0 0 30px $white inset;
+        -webkit-box-shadow: 0 0 0 30px $white inset;
+      }
+    }
+  }
+  //&:after {
+  //  content: '';
+  //  background: $white;
+  //  position: absolute;
+  //  top: 0;
+  //  left: 0;
+  //  bottom: 50%;
+  //  right: 0;
+  //}
+  //&:before {
+  //  content: '';
+  //  background: $primary-color;
+  //  position: absolute;
+  //  top: 50%;
+  //  left: 0;
+  //  bottom: 0;
+  //  right: 0;
+  //}
+}
+

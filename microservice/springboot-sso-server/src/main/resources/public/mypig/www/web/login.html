@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="msapplication-tap-highlight" content="no"/>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
+        <link rel="stylesheet" type="text/css" href="../css/material.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/style.css" />
+
+        <title>MyPig</title>
+    </head>
+    <body>
+
+        <div class="mdl-js-layout mdl-layout mdl-layout--fixed-header">
+            <header class="mypig-header mdl-layout__header mdl-layout__header--waterfall">
+                <div class="mdl-layout__header-row">
+                    <span class="mypig-title mdl-layout-title">
+                        <img class="mypig-logo-image-" />
+                    </span>
+                    <!-- Add spacer, to align navigation to the right in desktop -->
+                    <div class="mypig-header-spacer mdl-layout-spacer"></div>
+                    <div class="mypig-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
+                        <label class="mdl-button mdl-js-button mdl-button--icon" for="search-field">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <div class="mdl-textfield__expandable-holder">
+                            <input class="mdl-textfield__input" type="text" id="search-field"/>
+                        </div>
+                    </div>
+                    <!-- Navigation -->
+                    <div class="mypig-navigation-container">
+                        <nav class="mypig-navigation mdl-navigation">
+                            <a class="mdl-navigation__link mdl-typography--text-uppercase" href="">MyPig</a>
+                        </nav>
+                    </div>
+                    <span class="mypig-mobile-title mdl-layout-title">
+                        <!-- <img class="mypig-logo-image-" alt="MyPig"/> -->
+                    </span>
+                    <button class="mypig-more-button mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                    <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
+                        <li class="mdl-menu__item">1</li>
+                        <li class="mdl-menu__item">2</li>
+                        <li class="mdl-menu__item" disabled="true">3</li>
+                        <li class="mdl-menu__item">4</li>
+                    </ul>
+                </div>
+            </header>
+
+            <div class="mypig-drawer mdl-layout__drawer">
+                <span class="mdl-layout-title">
+                    <img class="mypig-logo-image-" src=""/>
+                </span>
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="">My</a>
+                    <div class="mypig-drawer-separator"></div>
+                </nav>
+            </div>
+
+            <main class="mypig-content mdl-layout__content">
+                <div class="mypig-be-together-section mdl-typography--text-center">
+
+
+                    <div>
+                        <h5>Login</h5>
+                        <div style="display: none;" class="mdl-components__warning"><b>Note: </b>Login failed ...</div>
+                        <div style="display: none;" class="mdl-components__warning"><b>Note: </b>Logout succeeded.</div>
+                        <login method="post" th:action="@{/login}">
+                            <div>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="username" name="username" value="forsrc@gmail.com" />
+                                    <label class="mdl-textfield__label" for="username">Username</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="password" id="password" name="password" value="forsrc" />
+                                    <label class="mdl-textfield__label" for="password">Password</label>
+                                </div>
+                            </div>
+                            <div>
+                                <button id="login" class="mdl-button mdl-js-button mdl-button--primary">
+                                    Login
+                                </button>
+                            </div>
+                        </login>
+                    </div>
+                </div>
+
+            </main>
+
+            <div id="deviceready">
+                <p class="event listening"></p>
+                <p class="event received"></p>
+            </div>
+            <footer class=" mdl-mini-footer">
+                <div class="mdl-mini-footer--left-section">
+                    <ul class="mdl-mini-footer--link-list">
+                        <li><a href="#">forsrc@gmail.com</a></li>
+                    </ul>
+                </div>
+            </footer>
+        </div>
+
+
+        <script type="text/javascript" src="../cordova.js"></script>
+        <script type="text/javascript" src="../js/material.min.js"></script>
+        <script type="text/javascript" src="../js/login.js"></script>
+    </body>
+</html>

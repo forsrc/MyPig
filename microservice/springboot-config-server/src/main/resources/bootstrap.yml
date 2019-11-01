@@ -1,0 +1,46 @@
+server:
+  port: 12000
+  servlet:
+    context-path: /config
+
+spring:
+  application:
+    name: mypig-config-server
+  cloud:
+    config:
+      label: master
+      server:
+        git:
+          uri: https://github.com/forsrc/MyPig-config
+  boot:
+    admin:
+      url:        ${ADMIN_SERVER:http://mypig-admin-server:13000}
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-config-server:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}

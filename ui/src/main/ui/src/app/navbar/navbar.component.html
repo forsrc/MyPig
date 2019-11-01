@@ -1,0 +1,52 @@
+<!-- TODO: figure out if the <nav> should go inside of a <header> element. -->
+<nav class="my-navbar-header">
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>input</mat-icon>
+      <a mat-button href="#/login">Login</a>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>face</mat-icon>
+      <a mat-button href="#/users">User</a>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>undo</mat-icon>
+      <a mat-button href="#" (click)="logout()">Logout</a>
+    </button>
+  </mat-menu>
+  <a mat-button routerLink="/" aria-label="Angular Material">
+    <img class="my-angular-logo avatar"
+         src="../../assets/images/logo.jpg"
+         alt="angular">
+    <span>Material</span>
+  </a>
+  <a mat-button class="my-navbar-hide-small" href="#/login">
+    <mat-icon class="icon">input</mat-icon>
+    <span class="label">LOGIN</span>
+  </a>
+  <a mat-button class="my-navbar-hide-small" href="#/home" >
+    <mat-icon class="icon">home</mat-icon>
+    <span class="label">HOME</span>
+  </a>
+  <div class="my-flex-spacer"></div>
+
+  <a mat-button class="my-navbar-hide-small" href="https://github.com/forsrc/MyAngularMaterial"
+     aria-label="GitHub Repository">
+    <img class="my-angular-logo avatar"
+         src="../../assets/images/logo.jpg"
+         alt="angular">
+    GitHub
+  </a>
+  <a mat-icon-button class="my-navbar-show-small"
+     href="https://github.com/forsrc/MyAngularMaterial" aria-label="GitHub Repository">
+    <img class="my-angular-logo avatar"
+         src="../../assets/images/logo.jpg"
+         alt="angular">
+  </a>
+</nav>
+<nav class="my-navbar my-navbar-show-small">
+  <!--<a mat-button class="my-navbar-link" href="/home">sections</a>-->
+</nav>

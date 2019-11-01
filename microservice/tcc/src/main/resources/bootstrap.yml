@@ -1,0 +1,127 @@
+server:
+  port: 10020
+  servlet:
+    context-path: /tcc
+
+spring:
+  application:
+    name: mypig-tcc
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER:http://mypig-config-server:12000/config}
+  boot:
+    admin:
+      client:
+        url:      ${ADMIN_SERVER:http://mypig-admin-server:13000}
+        username: forsrc@gmail.com
+        password: forsrc
+
+  cache:
+    type: redis
+  redis:
+    host: ${REDIS_HOST:mypig-redis}
+    port: ${REDIS_PORT:6379}
+
+  datasource:
+    url:               ${DB_URL:jdbc:h2:/tmp/db/h2/tcc.h2;AUTO_SERVER=TRUE;MODE=MYSQL;}
+    username:          ${DB_USERNAME:sa}
+    password:          ${DB_PASSWORD:sa}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+#    schema:
+#    - classpath:schema.sql
+    data:
+    - classpath:schema.sql
+    - classpath:data.sql
+  jpa:
+    database-platform: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
+    show-sql: true
+    hibernate:
+      ddl-auto:        create
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+
+  zipkin:
+    service:
+      name:   ${spring.application.name}
+    enabled:  true
+    base-url: ${ZIPKIN_SERVER:http://mypig-zipkin-server:11110}
+  sleuth:
+    traceId128: true
+    sampler:
+      probability: 1.0
+
+
+  artemis:
+    embedded:
+      queues: jms/queues/tcc
+
+com.atomikos:
+  icatch.service: com.atomikos.icatch.standalone.UserTransactionServiceFactory
+
+
+security:
+  oauth2:
+    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
+    client:
+      access-token-uri:       ${security.oauth2.host}/sso/oauth/token
+      user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
+      client-id:              tcc
+      client-secret:          forsrc
+      scope:                  tcc, read, write
+    resource:
+      userInfoUri:            ${security.oauth2.host}/sso/me
+      preferTokenInfo:        false
+      id:                     tcc
+      token-info-uri:         ${security.oauth2.host}/sso/oauth/check_token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    home-page-url:                 ${HOST_NAME:http://mypig-tcc:${server.port}}${server.servlet.context-path}/actuator
+    health-check-url:              ${eureka.instance.home-page-url}/health
+    status-page-url:               ${eureka.instance.home-page-url}/info
+    metadata-map:
+      user.name:                   forsrc@gmail.com
+      user.password:               forsrc
+  client:
+    registryFetchIntervalSeconds:  5
+    serviceUrl:
+      defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
+
+springboot-sso-server:
+  ribbon:
+    eureka:
+      enabled: true
+    listOfServers: ${SSO_SERVER:http://mypig-sso-server:10000}
+    ServerListRefreshInterval: 15000
+microservice-tcc:
+  ribbon:
+    eureka:
+      enabled: true
+    listOfServers: ${TCC_SERVER:mypig-tcc:10020}
+    ServerListRefreshInterval: 15000
+
+feign:
+  hystrix:
+    enabled: false
+ribbon:
+  ReadTimeout:    10000
+  ConnectTimeout:  2000
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 10000
+
+logging:
+  level:
+    org.springframework.jms.listener.DefaultMessageListenerContainer: WARN

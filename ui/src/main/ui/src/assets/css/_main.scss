@@ -1,0 +1,140 @@
+@import 'utils';
+@import '~ngx-toastr/toastr';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.code {
+  margin-bottom: 12px;
+}
+
+.code > div:not(.empty-state) h4 {
+  font-size: 1.2em;
+  margin-top: 0px !important;
+}
+
+.code div p.range-field {
+  margin-bottom: 0px;
+}
+
+.code div p {
+  margin-bottom: 20px;
+}
+
+.code {
+  padding: 20px;
+  margin-bottom: 12px;
+  background: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #039be5;
+}
+
+.bubble {
+  max-width: 90% !important;
+}
+
+.avatar {
+  line-height: 0; /* remove line-height */
+  display: inline-block; /* circle wraps image */
+  margin: 5px;
+  border: 0px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%; /* relative value */
+  /*box-shadow: 0px 0px 5px rgba(0,0,0,0.4);*/
+  transition: linear 0.25s;
+  height: 32px;
+  width: 32px;
+}
+
+.avatar img {
+  border-radius: 50%;
+  /* relative value for
+  adjustable image size */
+}
+
+.avatar:hover {
+  transition: ease-out 0.2s;
+  border: 0px solid rgba(255, 255, 255, 0.8);
+  -webkit-transition: ease-out 0.2s;
+}
+
+a.avatar {
+  color: transparent;
+}
+
+.my-card {
+  text-align: left;
+  margin: 10px;
+  position: relative;
+  background: #fff;
+  //box-shadow: 0 2px 10px rgba(0,0,0,.2);
+  border: 1px solid rgba(0,0,0,.03);
+  box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);
+  .my-card-header {
+    position: relative;
+    &:not(.ch-alt) {
+      padding: 23px 25px;
+    }
+    &:not(.ch-alt):not([class*="bgm-"]) + .my-card-padding:not(.ch-alt) {
+      padding-top: 0;
+    }
+    &.ch-alt {
+      padding: 20px 23px;
+    }
+    &.ch-alt:not([class*="bgm-"]) {
+      background-color: #f7f7f7;
+    }
+    h2 {
+      margin: 0;
+      line-height: 100%;
+      font-size: 17px;
+      font-weight: 400;
+
+      small {
+        display: block;
+        margin-top: 5px;
+        color: #AEAEAE;
+        line-height: 160%;
+      }
+    }
+
+    &[class*="bgm-"] h2,
+    &[class*="bgm-"] h2 small,
+    &[class*="bgm-"] i {
+      color: #fff;
+    }
+    .btn-float {
+      right: 25px;
+      bottom: -23px;
+      z-index: 1;
+    }
+    .actions {
+      position: absolute;
+      right: 10px;
+      z-index: 2;
+      top: 15px;
+    }
+  }
+  .my-card-body.my-card-padding {
+    padding: 22px 22px;
+  }
+  .my-card-footer {
+    position: relative;
+    &:not(.ch-alt) {
+      padding: 23px 25px;
+    }
+  }
+
+}
+

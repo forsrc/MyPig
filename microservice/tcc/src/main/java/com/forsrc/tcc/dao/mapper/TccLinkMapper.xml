@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forsrc.tcc.dao.mapper.TccLinkMapper">
+
+    <resultMap id="resultMap" type="com.forsrc.tcc.domain.entity.TccLink">
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="tccId" column="tcc_id"/>
+        <result property="uri" column="uri" />
+        <result property="resourceId" column="resource_id" />
+        <result property="expire" column="expire" />
+        <result property="create" column="create" />
+        <result property="update" column="update" />
+        <result property="status" column="status" />
+
+    </resultMap>
+
+    <select id="getByResourceId" resultType="com.forsrc.tcc.domain.entity.Tcc"
+        resultMap="resultMap">
+        SELECT
+            id,
+            tcc_id,
+            uri,
+            resource_id,
+            expire,
+            create,
+            update,
+            status
+        FROM
+            t_tcc_link TCC_LINK
+        WHERE
+            TCC_LINK.resource_id = #{resourceId}
+        ORDER BY create DESC
+        LIMIT 1
+    </select>
+</mapper>
