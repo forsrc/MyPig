@@ -26,13 +26,15 @@ public class MyOncePerRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        LOGGER.info("ip: {}", getIpInfo(request));
+        LOGGER.info("ip: {} --> {}", getIpInfo(request), request.getRequestURI());
         String token = request.getParameter("access_token");
         if (token != null) {
             LOGGER.info("--> access_token: {}", token);
             token = URLDecoder.decode(token, "UTF-8");
             HeaderMapRequestWrapper requestWrapper = new HeaderMapRequestWrapper(request);
             requestWrapper.addHeader("Authorization", "Bearer " + token);
+        } else {
+            LOGGER.info("--> Authorization: {}", request.getHeader("Authorization"));
         }
         filterChain.doFilter(request, response);
     }

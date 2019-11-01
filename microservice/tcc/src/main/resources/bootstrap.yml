@@ -113,7 +113,7 @@ microservice-tcc:
 
 feign:
   hystrix:
-    enabled: true
+    enabled: false
 ribbon:
   ReadTimeout:    10000
   ConnectTimeout:  2000

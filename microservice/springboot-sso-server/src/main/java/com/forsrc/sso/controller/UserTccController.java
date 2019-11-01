@@ -39,9 +39,10 @@ public class UserTccController implements UserTccFeignClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTccController.class);
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PostMapping("/sync/")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PostMapping("/")
     @HystrixCommand()
+    @Override
     public ResponseEntity<UserTcc> tccTry(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> tccTry: {}", tcc);
         Assert.notNull(tcc, "UserTcc is null");
@@ -63,8 +64,8 @@ public class UserTccController implements UserTccFeignClient {
                 .body(userTcc);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PostMapping("/")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PostMapping("/async")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<UserTcc>> result = new DeferredResult<>();
@@ -73,9 +74,10 @@ public class UserTccController implements UserTccFeignClient {
         return result;
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PutMapping(path = "/sync/confirm/{id}")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PutMapping(path = "/confirm/{id}")
     @HystrixCommand()
+    @Override
     public ResponseEntity<Void> confirm(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
         LOGGER.info("--> /tcc/user/confirm/{}", id);
         UserTcc userTcc = null;
@@ -94,8 +96,8 @@ public class UserTccController implements UserTccFeignClient {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PutMapping(path = "/confirm/{id}")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PutMapping(path = "/async/confirm/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
@@ -105,9 +107,10 @@ public class UserTccController implements UserTccFeignClient {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @DeleteMapping(path = "/sync/cancel/{id}")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @DeleteMapping(path = "/cancel/{id}")
     @HystrixCommand()
+    @Override
     public ResponseEntity<Void> cancel(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException{
         LOGGER.info("--> /tcc/user/cancel/{}", id);
         UserTcc userTcc = null;
@@ -125,8 +128,8 @@ public class UserTccController implements UserTccFeignClient {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @DeleteMapping(path = "/cancel/{id}")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @DeleteMapping(path = "/async/cancel/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
         final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();

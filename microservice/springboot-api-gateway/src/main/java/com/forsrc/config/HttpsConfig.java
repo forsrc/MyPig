@@ -22,7 +22,7 @@ import java.security.cert.X509Certificate;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.HTTPS_SCHEME;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.HTTP_SCHEME;
 
-@Configuration
+//@Configuration
 public class HttpsConfig {
     @Value("${server.port}")
     private Integer port;

@@ -18,14 +18,23 @@ services:
 #    - 13000:13000
 #    # environment:
 
-#  mypig-sso-server:
-#    image: forsrc/mypig-sso-server:latest
-#    container_name: mypig-sso-server
-#    hostname: mypig-sso-server
-#    ports:
-#    - 10000:10000
-#    environment:
-#    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+  mypig-sso-server:
+    image: forsrc/mypig-sso-server:latest
+    container_name: mypig-sso-server
+    hostname: mypig-sso-server
+    ports:
+    - 10000:10000
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+
+  mypig-tcc:
+    image: forsrc/mypig-tcc:latest
+    container_name: mypig-tcc
+    hostname: mypig-tcc
+    ports:
+    - 10020:10020
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
 
   redis:
     image: redis:3.2

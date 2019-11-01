@@ -24,10 +24,10 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    @CachePut(key = "#user.username")
+    @CachePut(value = CACHE_NAME, key = "#user.username")
     @Caching(evict = {
             @CacheEvict(value = CACHE_NAME + "/pages/"),
-            @CacheEvict(value = CACHE_NAME, key = "#username")
+            @CacheEvict(value = CACHE_NAME, key = "#user.username")
     })
     public User save(User user) {
         return userDao.save(user);
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = CACHE_NAME)
     @Caching(evict = {
             @CacheEvict(value = CACHE_NAME + "/pages/"),
-            @CacheEvict(value = CACHE_NAME, key = "#username")
+            @CacheEvict(value = CACHE_NAME, key = "#user.username")
     })
     public User update(User user) {
         return userDao.save(user);

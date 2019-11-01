@@ -50,7 +50,7 @@ public class TccController implements TccFeignClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TccController.class);
 
-    @GetMapping(path = "/sync/{id}")
+    @GetMapping(path = "/{id}")
     @HystrixCommand(fallbackMethod = "fallback")
     public ResponseEntity<Tcc> get(
             @PathVariable("id") Long id,
@@ -61,7 +61,7 @@ public class TccController implements TccFeignClient {
         return ResponseEntity.ok().body(tcc);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/async/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Tcc>> getDeferredResult(
             @RequestHeader("Authorization") String accessToken,
@@ -72,7 +72,7 @@ public class TccController implements TccFeignClient {
     }
 
     @Override
-    @PostMapping(path = "/sync/")
+    @PostMapping(path = "/")
     @HystrixCommand(fallbackMethod = "tccTryFallBack")
     public ResponseEntity<Tcc> tccTry(
             @RequestBody Tcc tcc,
@@ -89,7 +89,7 @@ public class TccController implements TccFeignClient {
         return ResponseEntity.ok().body(tcc);
     }
 
-    @PostMapping(path = "/")
+    @PostMapping(path = "/async")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Tcc>> tccTryDeferredResult(
             @RequestHeader("Authorization") String accessToken,
@@ -123,7 +123,7 @@ public class TccController implements TccFeignClient {
     }
 
     @Override
-    @PutMapping(path = "/sync/confirm/{id}")
+    @PutMapping(path = "/confirm/{id}")
     @HystrixCommand()
     public ResponseEntity<Void> confirm(
             @PathVariable("id") Long id,
@@ -146,7 +146,7 @@ public class TccController implements TccFeignClient {
         }
     }
 
-    @PutMapping(path = "/confirm/{id}")
+    @PutMapping(path = "/async/confirm/{id}")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(
             @PathVariable("id") Long id,
@@ -172,7 +172,7 @@ public class TccController implements TccFeignClient {
     }
 
     @Override
-    @PutMapping(path = "/sync/cancel")
+    @PutMapping(path = "/cancel")
     @HystrixCommand()
     public ResponseEntity<Void> cancel(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException{
@@ -192,7 +192,7 @@ public class TccController implements TccFeignClient {
         }
     }
 
-    @PutMapping(path = "/cancel")
+    @PutMapping(path = "/async/cancel")
     @HystrixCommand()
     public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String accessToken) throws TccException{

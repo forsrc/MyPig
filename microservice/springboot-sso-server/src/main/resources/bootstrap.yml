@@ -99,6 +99,7 @@ security:
       client-secret:          forsrc
       scope:                  sso, read, write
     resource:
+      #filter-order:           3
       userInfoUri:            ${security.oauth2.host}/sso/me
       preferTokenInfo:        false
       id:                     sso
@@ -115,7 +116,7 @@ management:
 
 feign:
   hystrix:
-    enabled: true
+    enabled: false
 ribbon:
   ReadTimeout:     10000
   ConnectTimeout:  2000

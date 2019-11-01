@@ -1,5 +1,7 @@
 package com.forsrc.sso.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
@@ -9,11 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -35,6 +39,8 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.forsrc.sso.filter.MyOncePerRequestFilter;
 
 import javax.sql.DataSource;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +65,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public JdbcTokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
+        return new MyJdbcTokenStore(dataSource);
     }
 
     @Bean
@@ -92,7 +98,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // @formatter:off
-        security.realm("oauth2-resources")
+        security
                 .passwordEncoder(passwordEncoder)
                 //.tokenKeyAccess(authorizationServerProperties.getTokenKeyAccess())
                 .tokenKeyAccess("permitAll()")
@@ -116,10 +122,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
-        // @formatter:off
-        clients.jdbc(dataSource)
-                .passwordEncoder(passwordEncoder)
-                ;
+        // @formatter:offs
  
         clients.jdbc(dataSource)
                 .passwordEncoder(passwordEncoder)
@@ -215,6 +218,32 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         public void setTokenStore(TokenStore tokenStore) {
             super.setTokenStore(tokenStore);
             this.tokenStore = tokenStore;
+        }
+    }
+
+    static class MyJdbcTokenStore extends JdbcTokenStore {
+        private static final Logger LOG = LoggerFactory.getLogger(MyJdbcTokenStore.class);
+
+        public MyJdbcTokenStore(DataSource dataSource) {
+            super(dataSource);
+        }
+
+        @Override
+        public OAuth2AccessToken readAccessToken(String tokenValue) {
+            OAuth2AccessToken accessToken = null;
+
+            try {
+                accessToken = new DefaultOAuth2AccessToken(tokenValue);
+            } catch (EmptyResultDataAccessException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Failed to find access token for token " + tokenValue);
+                }
+            } catch (IllegalArgumentException e) {
+                LOG.warn("Failed to deserialize access token for " + tokenValue, e);
+                removeAccessToken(tokenValue);
+            }
+
+            return accessToken;
         }
     }
 }

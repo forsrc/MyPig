@@ -24,7 +24,7 @@ import java.security.cert.X509Certificate;
 public class FeignClientConifg {
 
 
-    @Bean
+    // @Bean
     // @ConditionalOnMissingBean
     public Client feignClient(CachingSpringLoadBalancerFactory cachingFactory,
                               SpringClientFactory clientFactory) throws NoSuchAlgorithmException, KeyManagementException {
@@ -57,7 +57,7 @@ public class FeignClientConifg {
     }
 
 
-    @Bean
+    // @Bean
     public Contract feignContract() {
         return new Contract.Default();
     }
