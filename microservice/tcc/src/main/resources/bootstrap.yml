@@ -2,6 +2,10 @@ server:
   port: 10020
   servlet:
     context-path: /tcc
+  tomcat:
+    remote-ip-header: "X-Forwarded-For"
+    protocol-header: "X-Forwarded-Proto"
+    protocol-header-https-value: "https"
 
 spring:
   application:

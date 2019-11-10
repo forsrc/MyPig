@@ -26,6 +26,7 @@ services:
     - 10000:10000
     environment:
     - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+    - SSO_SERVER=https://mypig-nginx
 
   mypig-tcc:
     image: forsrc/mypig-tcc:latest
@@ -35,6 +36,17 @@ services:
     - 10020:10020
     environment:
     - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+    - SSO_SERVER=https://mypig-nginx
+
+  mypig-api-gateway:
+    image: forsrc/mypig-api-gateway:latest
+    container_name: mypig-api-gateway
+    hostname: mypig-api-gateway
+    ports:
+    - 8088:8088
+    environment:
+    - JAVA_OPTS=-server -XX:PermSize=128m -XX:MaxPermSize=128m -Xmn128m -Xms128m -Xmx256m -Dspring.thymeleaf.prefix=file:config/templates/
+    - SSO_SERVER=https://mypig-nginx
 
   redis:
     image: redis:3.2
@@ -45,16 +57,16 @@ services:
     ports:
     - "6379:6379"
 
-#  nginx:
-#    image: nginx
-#    container_name: mypig-nginx
-#    hostname: mypig-sso-server-nginx
-#    volumes:
-#    - "./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
-#    - "./docker/nginx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
-#    - "./docker/nginx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
-#    ports:
-#    - "443:443"
+  nginx:
+    image: nginx
+    container_name: mypig-nginx
+    hostname: mypig-nginx
+    volumes:
+    - "./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+    - "./docker/nginx/conf/forsrc.pem:/etc/nginx/forsrc.pem"
+    - "./docker/nginx/conf/forsrc.crt:/etc/nginx/forsrc.crt"
+    ports:
+    - "443:443"
 
 networks:
   forsrc.mypig:
