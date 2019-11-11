@@ -17,6 +17,10 @@ server:
 #    key-store:            classpath:ssl/mypig-api-gateway.jks
 #    key-store-password:   forsrc
 #    key-alias:            mypig-api-gateway
+  tomcat:
+    remote-ip-header: "X-Forwarded-For"
+    protocol-header: "X-Forwarded-Proto"
+    protocol-header-https-value: "https"
 
 spring:
   application:
@@ -94,10 +98,10 @@ zuul:
 #  sensitive-headers: Cookie,Set-Cookie,Authorization
 #  OAuth2TokenRelayFilter.pre.disable: false
   sensitive-headers: Access-Control-Allow-Origin
-  sslHostnameValidationEnabled: true
+  sslHostnameValidationEnabled: false
   trace-request-body:   true
-  add-host-header: false
-  add-proxy-headers: true
+  add-host-header:      true
+  add-proxy-headers:    true
   ignore-security-headers: false
   routes:
     static:
@@ -108,9 +112,11 @@ zuul:
     mypig-sso-server:   /app/**
     sso:
       path:             /sso/**
-      url:              http://mypig-sso-server:10000/sso
-      stripPrefix:      true
+      url:              https://mypig-nginx/sso
+      stripPrefix:      true  
       custom-sensitive-headers: true
+      sslHostnameValidationEnabled: false
+      
 
 
 

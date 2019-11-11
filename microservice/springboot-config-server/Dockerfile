@@ -1,5 +1,5 @@
 #FROM forsrc/centos-jdk-ssh
-FROM java:8-jre
+FROM openjdk:8-jdk-alpine
 
 VOLUME /tmp
 ARG ARG_JAR_FILE
