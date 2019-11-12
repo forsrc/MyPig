@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import com.forsrc.common.core.tcc.feignclient.TccBaseFeignClient;
 import com.forsrc.sso.domain.entity.UserTcc;
 
-@FeignClient(name = "MYPIG-SSO-SERVER", path = "/sso/api/v1/tcc/user")
+@FeignClient(name = "MYPIG-SSO-SERVER", path = "/sso/api/v1/tcc/user", url = "http://mypig-sso-server:10000")
 public interface UserTccFeignClient extends TccBaseFeignClient<UserTcc> {
 
 /*

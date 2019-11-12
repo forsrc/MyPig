@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import com.forsrc.tcc.domain.entity.Tcc;
 
-@FeignClient(name = "MYPIG-TCC", path = "/tcc/api/v1/tcc")
+@FeignClient(name = "MYPIG-TCC", path = "/tcc/api/v1/tcc", url = "http://mypig-tcc:10020")
 public interface TccFeignClient extends TccBaseFeignClient<Tcc> {
 
 /*
