@@ -1,0 +1,224 @@
+
+apiVersion: v1
+kind:       Namespace
+metadata:
+  name:     mypig
+  labels:
+    name:   mypig
+
+#############################
+
+---
+apiVersion:     v1
+kind:           Service
+metadata:
+  name:         mypig-redis
+  namespace:    mypig
+spec:
+  type:         NodePort
+  selector:
+    app:        mypig-redis
+    release:    latest
+  ports:
+  - name:       tcp
+    targetPort: 6379
+    port:       6379
+
+---
+apiVersion:              apps/v1
+kind:                    Deployment
+metadata:
+  name:                  mypig-redis
+  namespace:             mypig
+spec:
+  replicas:              1
+  selector: 
+    matchLabels:    
+      app:               mypig-redis
+      release:           latest
+  template:       
+    metadata:
+      labels: 
+        app:             mypig-redis
+        release:         latest
+    spec:
+      containers:
+      - name:            mypig-redis
+        image:           redis
+        ports:
+        - name:          tcp
+          containerPort: 6379
+
+############################################
+
+---
+apiVersion:     v1
+kind:           Service
+metadata:
+  name:         mypig-eureka-server
+  namespace:    mypig
+spec:
+  type:         NodePort
+  selector:
+    app:        mypig-eureka-server
+    release:    v1.0
+  ports:
+  - name:       http
+    targetPort: 11100
+    port:       11100
+
+---
+apiVersion:              apps/v1
+kind:                    Deployment
+metadata:
+  name:                  mypig-eureka-server
+  namespace:             mypig
+spec:
+  replicas:              1
+  selector: 
+    matchLabels:    
+      app:               mypig-eureka-server
+      release:           v1.0
+  template:       
+    metadata:
+      labels: 
+        app:             mypig-eureka-server
+        release:         v1.0
+    spec:
+      containers:
+      - name:            mypig-eureka-server
+        image:           forsrc/mypig-eureka-server:latest
+        ports:
+        - name:          http
+          containerPort: 11100
+        livenessProbe:
+          httpGet:
+            path:        /actuator/health
+            port:        11100
+############################################
+
+---
+apiVersion:     v1
+kind:           Service
+metadata:
+  name:         mypig-sso-server
+  namespace:    mypig
+spec:
+  type:         NodePort
+  selector:
+    app:        mypig-sso-server
+    release:    v1.0
+  ports:
+  - name:       http
+    targetPort: 10000
+    port:       10000
+
+---
+apiVersion:              apps/v1
+kind:                    Deployment
+metadata:
+  name:                  mypig-sso-server
+  namespace:             mypig
+spec:
+  replicas:              1
+  selector: 
+    matchLabels:    
+      app:               mypig-sso-server
+      release:           v1.0
+  template:       
+    metadata:
+      labels: 
+        app:             mypig-sso-server
+        release:         v1.0
+    spec:
+      containers:
+      - name:            mypig-sso-server
+        image:           forsrc/mypig-sso-server:latest
+        ports:
+        - name:          http
+          containerPort: 10000
+        env:
+        - name:          SSO_SERVER-
+          value:         https://sso.mypig.com
+        - name:          JAVA_OPTS
+          value:         -Dspring.thymeleaf.prefix=file:config/templates/
+        livenessProbe:
+          httpGet:
+            path:        /sso/actuator/health
+            port:        10000
+---
+apiVersion:              extensions/v1beta1
+kind:                    Ingress
+metadata:
+  name:                  mypig-sso-server
+  namespace:             mypig
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host:                sso.mypig.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName:   mypig-sso-server
+          servicePort:   10000
+  tls:
+  - hosts:
+    - sso.mypig.com
+    secretName:          sso.mypig.com 
+    # openssl genrsa -out sso.mypig.com.key 2048
+    # openssl req -new -x509 -key sso.mypig.com.key -out sso.mypig.com.crt -subj /C=CN/ST=forsrc/L=forsrc/O=devops/CN=sso.mypig.com
+    # kubectl create secret tls sso.mypig.com --cert=sso.mypig.com.crt --key=sso.mypig.com.key
+
+############################################
+
+---
+apiVersion:     v1
+kind:           Service
+metadata:
+  name:         mypig-tcc
+  namespace:    mypig
+spec:
+  type:         NodePort
+  selector:
+    app:        mypig-tcc
+    release:    v1.0
+  ports:
+  - name:       http
+    targetPort: 10020
+    port:       10020
+
+---
+apiVersion:              apps/v1
+kind:                    Deployment
+metadata:
+  name:                  mypig-tcc
+  namespace:             mypig
+spec:
+  replicas:              1
+  selector: 
+    matchLabels:    
+      app:               mypig-tcc
+      release:           v1.0
+  template:       
+    metadata:
+      labels: 
+        app:             mypig-tcc
+        release:         v1.0
+    spec:
+      containers:
+      - name:            mypig-tcc
+        image:           forsrc/mypig-tcc:latest
+        ports:
+        - name:          http
+          containerPort: 10020
+        env:
+        - name:          SSO_SERVER-
+          value:         https://sso.mypig.com
+        - name:          JAVA_OPTS
+          value:         -Dspring.thymeleaf.prefix=file:config/templates/
+        livenessProbe:
+          httpGet:
+            path:        /tcc/actuator/health
+            port:        10020
