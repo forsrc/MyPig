@@ -78,14 +78,6 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-kubernetes-all</artifactId>
-            <version>1.0.0.RELEASE</version>
-        </dependency>
-
     </dependencies>
 
     <dependencyManagement>
@@ -148,10 +140,6 @@
             <id>sonatype-nexus-snapshot</id>
             <name>Sonatype Nexus snapshot repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>JBoss</id>
-            <url>http://repository.jboss.com/maven2</url>
         </repository>
     </repositories>
 

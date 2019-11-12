@@ -9,6 +9,66 @@ metadata:
 #############################
 
 ---
+apiVersion:  v1
+kind:        ServiceAccount
+metadata:
+  name:      mypig-sa
+  namespace: mypig
+
+---
+apiVersion:  rbac.authorization.k8s.io/v1
+kind:        Role
+metadata:
+  name:       mypig-r
+  namespace:  mypig
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs:     ["get", "watch", "list"]
+
+---
+apiVersion:  rbac.authorization.k8s.io/v1
+kind:        ClusterRole
+metadata:
+  name:       mypig-cr
+  namespace:  mypig
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs:     ["get", "watch", "list"]
+
+---
+apiVersion:     rbac.authorization.k8s.io/v1beta1
+kind:           RoleBinding
+metadata:
+  name:         mypig-rb
+  namespace:    mypig
+roleRef:
+  apiGroup:    rbac.authorization.k8s.io
+  kind:        Role
+  name:        mypig-r
+subjects:
+  - kind:      ServiceAccount
+    name:      mypig-sa
+    namespace: mypig
+
+---
+apiVersion:     rbac.authorization.k8s.io/v1beta1
+kind:           ClusterRoleBinding
+metadata:
+  name:         mypig-rb
+  namespace:    mypig
+roleRef:
+  apiGroup:    rbac.authorization.k8s.io
+  kind:        ClusterRole
+  name:        mypig-cr
+subjects:
+  - kind:      ServiceAccount
+    name:      mypig-sa
+    namespace: mypig
+
+#############################
+---
 apiVersion:     v1
 kind:           Service
 metadata:
@@ -42,6 +102,7 @@ spec:
         app:             mypig-redis
         release:         latest
     spec:
+      serviceAccountName: mypig-sa
       containers:
       - name:            mypig-redis
         image:           redis
@@ -85,6 +146,7 @@ spec:
         app:             mypig-eureka-server
         release:         v1.0
     spec:
+      serviceAccountName: mypig-sa
       containers:
       - name:            mypig-eureka-server
         image:           forsrc/mypig-eureka-server:latest
@@ -95,6 +157,7 @@ spec:
           httpGet:
             path:        /actuator/health
             port:        11100
+
 ############################################
 
 ---
@@ -131,6 +194,7 @@ spec:
         app:             mypig-sso-server
         release:         v1.0
     spec:
+      serviceAccountName: mypig-sa
       containers:
       - name:            mypig-sso-server
         image:           forsrc/mypig-sso-server:latest
@@ -171,6 +235,8 @@ spec:
     # openssl req -new -x509 -key sso.mypig.com.key -out sso.mypig.com.crt -subj /C=CN/ST=forsrc/L=forsrc/O=devops/CN=sso.mypig.com
     # kubectl create secret tls sso.mypig.com --cert=sso.mypig.com.crt --key=sso.mypig.com.key
 
+
+
 ############################################
 
 ---
@@ -207,6 +273,7 @@ spec:
         app:             mypig-tcc
         release:         v1.0
     spec:
+      serviceAccountName: mypig-sa
       containers:
       - name:            mypig-tcc
         image:           forsrc/mypig-tcc:latest
@@ -222,3 +289,5 @@ spec:
           httpGet:
             path:        /tcc/actuator/health
             port:        10020
+
+
