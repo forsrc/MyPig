@@ -1,5 +1,6 @@
 package com.forsrc.tcc.schedule;
 
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -32,9 +34,6 @@ public class TccSchedule {
     private String applicationName;
 
     @Autowired
-    private EurekaClient discoveryClient;
- 
-    @Autowired
     private MyWebServerFactoryCustomizer myWebServerFactoryCustomizer;
 
     @Autowired
@@ -51,7 +50,7 @@ public class TccSchedule {
             return microservice;
         }
         try {
-            microservice = discoveryClient.getNextServerFromEureka(applicationName, false).getInstanceId();
+            microservice = (InetAddress.getLocalHost()).getHostName();
             if (!microservice.endsWith(":" + myWebServerFactoryCustomizer.getPort())) {
                 microservice = String.format("%s:%s", microservice, myWebServerFactoryCustomizer.getPort());
             }

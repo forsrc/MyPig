@@ -20,8 +20,8 @@
     </parent>
 
     <modules>
-        <module>gwt</module>
-        <module>ui</module>
+        <!--<module>gwt</module>
+        <module>ui</module> -->
         <module>common</module>
         <module>domain</module>
         <module>service</module>
@@ -133,10 +133,6 @@
             <id>sonatype-nexus-snapshot</id>
             <name>Sonatype Nexus snapshot repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>JBoss</id>
-            <url>http://repository.jboss.com/maven2</url>
         </repository>
     </repositories>
 
