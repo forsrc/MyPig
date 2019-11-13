@@ -106,6 +106,7 @@ spec:
       containers:
       - name:            mypig-redis
         image:           redis
+        imagePullPolicy: IfNotPresent
         ports:
         - name:          tcp
           containerPort: 6379
@@ -150,6 +151,7 @@ spec:
       containers:
       - name:            mypig-eureka-server
         image:           forsrc/mypig-eureka-server:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - name:          http
           containerPort: 11100
@@ -198,6 +200,7 @@ spec:
       containers:
       - name:            mypig-sso-server
         image:           forsrc/mypig-sso-server:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - name:          http
           containerPort: 10000
@@ -277,6 +280,7 @@ spec:
       containers:
       - name:            mypig-tcc
         image:           forsrc/mypig-tcc:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - name:          http
           containerPort: 10020
