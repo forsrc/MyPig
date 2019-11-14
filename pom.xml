@@ -20,8 +20,8 @@
     </parent>
 
     <modules>
-        <!--<module>gwt</module>
-        <module>ui</module> -->
+        <module>gwt</module>
+        <module>ui</module>
         <module>common</module>
         <module>domain</module>
         <module>service</module>
