@@ -215,23 +215,19 @@ public class RestConfig {
 		final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setConnectionRequestTimeout(5000);
 		factory.setReadTimeout(5000);
-		factory.setReadTimeout(5000);
+		factory.setConnectTimeout(5000);
+		SSLContext sslContext = null;
 		final SSLContextBuilder builder = new SSLContextBuilder();
 		try {
-			builder.loadTrustMaterial(null, (X509Certificate[] x509Certificate, String s) -> true);
+			sslContext = builder.loadTrustMaterial(null, (X509Certificate[] x509Certificate, String s) -> true).build();
 		} catch (NoSuchAlgorithmException e) {
 			throw e;
 		} catch (KeyStoreException e) {
 			throw e;
 		}
-		try {
-			sslConnectionSocketFactory = new SSLConnectionSocketFactory(builder.build(),
+		sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext,
 					new String[] { "SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2" }, null, NoopHostnameVerifier.INSTANCE);
-		} catch (NoSuchAlgorithmException e) {
-			throw e;
-		} catch (KeyManagementException e) {
-			throw e;
-		}
+	
 		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
 				.register("http", new PlainConnectionSocketFactory())
 				.register("https", sslConnectionSocketFactory)

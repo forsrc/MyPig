@@ -7,6 +7,17 @@ server:
     protocol-header: "X-Forwarded-Proto"
     protocol-header-https-value: "https"
 
+mypig:
+  feignClient:
+    sso:
+      name: MYPIG-SSO-SERVER
+      path: /sso/api/v1/tcc/user
+      url:  ${SSO_SERVER:https://mypig-sso-server:10000}
+    tcc:
+      name: MYPIG-TCC
+      path: /tcc/api/v1/tcc
+      url:  ${TCC_SERVER:http://mypig-tcc:10020}
+    
 spring:
   application:
     name: mypig-tcc
@@ -66,7 +77,7 @@ com.atomikos:
 
 security:
   oauth2:
-    host:                     ${SSO_SERVER:http://mypig-sso-server:10000}
+    host:                     ${SSO_SERVER:https://mypig-sso-server:10000}
     client:
       access-token-uri:       ${security.oauth2.host}/sso/oauth/token
       user-authorization-uri: ${security.oauth2.host}/sso/oauth/authorize
@@ -106,13 +117,13 @@ springboot-sso-server:
   ribbon:
     eureka:
       enabled: true
-    listOfServers: ${SSO_SERVER:http://mypig-sso-server:10000}
+    listOfServers: ${SSO_SERVER:https://mypig-sso-server:10000}
     ServerListRefreshInterval: 15000
 microservice-tcc:
   ribbon:
     eureka:
       enabled: true
-    listOfServers: ${TCC_SERVER:mypig-tcc:10020}
+    listOfServers: ${TCC_SERVER:http://mypig-tcc:10020}
     ServerListRefreshInterval: 15000
 
 feign:
