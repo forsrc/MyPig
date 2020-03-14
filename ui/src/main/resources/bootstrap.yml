@@ -3,7 +3,7 @@ server:
 #  servlet:
 #    context-path: /ui
   http:
-    port: 9999
+    port: 8889
     http2https: false
   # keytool -genkeypair -keyalg RSA -keysize 2048 -alias mypig-ui -dname "CN=mypig-ui,OU=forsrc,O=forsrc,C=CN" -ext "san=DNS:mypig-ui" -validity 3650 -keystore mypig-ui.jks -storepass forsrc -keypass forsrc -deststoretype pkcs12
   # keytool -alias mypig-ui -exportcert -keystore mypig-ui.jks -file mypig-ui.cer -storepass forsrc
