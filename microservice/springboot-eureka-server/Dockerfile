@@ -21,3 +21,4 @@ RUN chmod -R 777 /app
 EXPOSE ${ARG_PORT}
 
 ENTRYPOINT /entrypoint.sh
+

@@ -14,7 +14,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-
 @SpringBootApplication
 @ComponentScan(basePackages = "com.forsrc")
 @EnableEurekaClient
@@ -26,13 +25,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class MyApplication {
 
-    @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+	@Bean
+	@Primary
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
 
-    public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(MyApplication.class, args);
+	}
 }
