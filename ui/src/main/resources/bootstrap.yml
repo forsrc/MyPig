@@ -47,8 +47,8 @@ spring:
 
 security:
   oauth2:
-#    host:                     ${SSO_SERVER:https://mypig-sso-server-nginx/sso}
-    host:                     ${SSO_SERVER:http://mypig-sso-server:10000/sso}
+#    host:                     ${SSO_SERVER:http://mypig-sso-server-nginx/sso}
+    host:                     ${SSO_SERVER:https://mypig-sso-server:10000/sso}
     client:
       access-token-uri:       ${security.oauth2.host}/oauth/token
       user-authorization-uri: ${security.oauth2.host}/oauth/authorize
@@ -78,7 +78,7 @@ eureka:
     securePort:                    ${server.port}
     secureVirtualHostName:         ${spring.application.name}
     leaseRenewalIntervalInSeconds: 10
-    home-page-url:                 ${HOST_NAME:http://mypig-tcc:${server.port}}${server.servlet.context-path}/actuator
+    home-page-url:                 ${HOST_NAME:http://mypig-ui:${server.port}}${server.servlet.context-path}/actuator
     health-check-url:              ${eureka.instance.home-page-url}/health
     status-page-url:               ${eureka.instance.home-page-url}/info
     metadata-map:
@@ -89,7 +89,7 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
-auth-server: https://mypig-sso-server-nginx/sso
+auth-server: https://mypig-sso-server/sso
 api-gateway: https://mypig-api-gateway:8088/api/app
 
 zuul:

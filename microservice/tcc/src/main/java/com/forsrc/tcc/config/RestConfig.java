@@ -225,6 +225,7 @@ public class RestConfig {
 		} catch (KeyStoreException e) {
 			throw e;
 		}
+
 		sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext,
 					new String[] { "SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2" }, null, NoopHostnameVerifier.INSTANCE);
 	
