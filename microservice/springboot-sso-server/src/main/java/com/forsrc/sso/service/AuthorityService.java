@@ -15,7 +15,7 @@ public interface AuthorityService {
     public List<Authority> getByUsername(String username);
 
     /**
-     * save Authorities<br/>
+     * save Authorities<br>
      * * all the username must be the same
      * 
      * @param list
@@ -24,7 +24,7 @@ public interface AuthorityService {
     public List<Authority> save(List<Authority> list);
 
     /**
-     * update Authorities<br/>
+     * update Authorities<br>
      * * all the username must be the same
      * 
      * @param list
