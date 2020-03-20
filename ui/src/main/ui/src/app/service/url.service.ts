@@ -4,8 +4,7 @@ import {Cookie} from "ng2-cookies";
 
 @Injectable()
 export class UrlService {
-  //host = "http://mypig-ui:8888";
-  host = "https://mypig-api-gateway:8088/api/app";
+  host = "https://mypig-ui:8888";
   url() {
     return {
       users: `${this.host}/sso/api/v1/user/?access_token=${this.getAccessToken()}`,

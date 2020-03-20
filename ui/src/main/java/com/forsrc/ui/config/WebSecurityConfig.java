@@ -22,10 +22,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/**")
             .authorizeRequests()
-            .antMatchers("/login", "/logout", "/oauth/**", "/sso/**", "/mypig/**")
+            .antMatchers("/login", "/logout", "/oauth/**", "/sso/**", "/mypig/**", "/ui/**")
             .permitAll()
             .anyRequest()
             .authenticated()
+            .and()
+            .logout().logoutUrl("/logout")
             .and()
             .csrf()
             .disable()
