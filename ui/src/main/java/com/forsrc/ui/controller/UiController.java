@@ -13,7 +13,7 @@ public class UiController {
 
     @RequestMapping(value={"/"})
     public String index() {
-        return "index.html";
+        return "redirect:/ui/index.html";
     }
 
     @RequestMapping(value = "/user", produces = {MediaType.APPLICATION_JSON_VALUE})

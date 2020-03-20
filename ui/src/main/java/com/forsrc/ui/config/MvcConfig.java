@@ -14,15 +14,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        //registry.addViewController("/").setViewName("/index.html");
+        registry.addViewController("/").setViewName("redirect:/static/ui/index.html");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-            .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/mypig/**")
             .addResourceLocations("classpath:public/mypig/www/");
+        registry.addResourceHandler("/ui/**")
+            .addResourceLocations("classpath:static/ui/");
+        registry.addResourceHandler("/**")
+            .addResourceLocations("classpath:public/");
     }
 
     @Override

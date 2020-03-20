@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
-    "build": "ng build",
+    "build": "ng build --base-href=/ui/",
     "start_": "ng serve --aot",
     "build_": "ng build --prod --aot=true",
     "test": "ng test",

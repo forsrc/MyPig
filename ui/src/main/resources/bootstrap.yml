@@ -89,7 +89,7 @@ eureka:
     serviceUrl:
       defaultZone:                 ${EUREKA_SERVER:http://mypig-eureka-server:11100/eureka}
 
-auth-server: https://mypig-sso-server/sso
+auth-server: https://mypig-sso-server:10000/sso
 api-gateway: https://mypig-api-gateway:8088/api/app
 
 zuul:
@@ -99,7 +99,7 @@ zuul:
   routes:
     mypig-api-gateway:
       stripPrefix: true
-      path: /mypig/**
+      path: /api-gateway/**
       url:  ${api-gateway}
     user:
       path: /me/**
@@ -110,3 +110,8 @@ zuul:
     sso:
       path: /sso/**
       url: ${auth-server}
+
+logging:
+  level:
+    org.springframework.*: INFO
+    org.springframework.security: DEBUG
