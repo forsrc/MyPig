@@ -139,7 +139,7 @@ public class RestConfig {
 			if (!this.sslHostnameValidationEnabled) {
 				httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 			}
-			return httpClientBuilder.setConnectionManager(newConnectionManager()).disableContentCompression()
+			return httpClientBuilder.setConnectionManager(connectionManager()).disableContentCompression()
 					.useSystemProperties().setDefaultRequestConfig(requestConfig)
 					.setRetryHandler(new DefaultHttpRequestRetryHandler(0, false))
 					.setRedirectStrategy(new RedirectStrategy() {
@@ -157,7 +157,7 @@ public class RestConfig {
 					}).build();
 		}
 
-		private PoolingHttpClientConnectionManager newConnectionManager() {
+		private PoolingHttpClientConnectionManager connectionManager() {
 			try {
 
 				final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");

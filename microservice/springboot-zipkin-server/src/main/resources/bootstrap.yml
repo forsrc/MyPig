@@ -45,6 +45,10 @@ spring:
 #    StorageComponent: springboot-zipkin-server
 #    #type: mem
 
+zipkin:
+  ui:
+    enabled: true
+
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10

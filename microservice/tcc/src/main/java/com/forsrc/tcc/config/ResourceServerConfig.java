@@ -33,25 +33,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//             
-//            .and()
-//                .exceptionHandling()
-//                .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-//            .and()
-//                .authorizeRequests()
-//                .antMatchers(HttpMethod.GET,     "/**").access("#oauth2.hasScope('read')")
-//                .antMatchers(HttpMethod.OPTIONS, "/**").access("#oauth2.hasScope('read')")
-//                .antMatchers(HttpMethod.POST,    "/**").access("#oauth2.hasScope('write')")
-//                .antMatchers(HttpMethod.PUT,     "/**").access("#oauth2.hasScope('write')")
-//                .antMatchers(HttpMethod.PATCH,   "/**").access("#oauth2.hasScope('write')")
-//                .antMatchers(HttpMethod.DELETE,  "/**").access("#oauth2.hasScope('write')")
+        http
+        .authorizeRequests()
+        .antMatchers("/api/**").authenticated()
+        .antMatchers(HttpMethod.GET, "/api/**").access("#oauth2.hasScope('read')")
+        .antMatchers(HttpMethod.OPTIONS, "/api/**").access("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.POST, "/api/**").access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.PUT, "/api/**").access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.PATCH, "/api/**").access("#oauth2.hasScope('write')")
+        .antMatchers(HttpMethod.DELETE, "/api/**").access("#oauth2.hasScope('write')")
+         ;
 
-        http.authorizeRequests()
-                .antMatchers("/actuator/**")
-                .authenticated()
-                .anyRequest()
-                .authenticated();
         http.authorizeRequests()
                 .antMatchers("/actuator/**", "/**/test/**")
                 .permitAll()

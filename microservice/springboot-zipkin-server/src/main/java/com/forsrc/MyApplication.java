@@ -1,14 +1,18 @@
 package com.forsrc;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-import zipkin.server.internal.EnableZipkinServer;
+import zipkin2.server.internal.EnableZipkinServer;
+
+
+
 
 @SpringBootApplication
 // @ComponentScan(basePackages = "com.forsrc")
-// @EnableAutoConfiguration
+@EnableAutoConfiguration
 @EnableZipkinServer
 @EnableDiscoveryClient
 // @EnableZipkinStreamServer

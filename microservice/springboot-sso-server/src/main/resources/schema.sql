@@ -82,6 +82,7 @@ CREATE TABLE oauth_refresh_token (
   authentication blob,
   create         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (token_id)
 ) ; -- ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS users;
