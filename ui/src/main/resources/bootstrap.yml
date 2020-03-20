@@ -114,4 +114,4 @@ zuul:
 logging:
   level:
     org.springframework.*: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security.*: INFO
