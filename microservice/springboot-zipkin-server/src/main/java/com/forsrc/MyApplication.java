@@ -1,24 +1,39 @@
 package com.forsrc;
 
-import org.springframework.boot.SpringApplication;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.ComponentScan;
 
-import zipkin2.server.internal.EnableZipkinServer;
+import zipkin.server.EnableZipkinServer;
+import zipkin2.server.internal.ZipkinActuatorImporter;
+import zipkin2.server.internal.ZipkinModuleImporter;
+import zipkin2.server.internal.banner.ZipkinBanner;
 
-
-
-
-@SpringBootApplication
-// @ComponentScan(basePackages = "com.forsrc")
+@SpringBootConfiguration
 @EnableAutoConfiguration
 @EnableZipkinServer
+@ComponentScan(basePackages = "com.forsrc")
+@EnableEurekaClient
 @EnableDiscoveryClient
-// @EnableZipkinStreamServer
 public class MyApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
-    }
+	static {
+	    SLF4JBridgeHandler.removeHandlersForRootLogger();
+	    SLF4JBridgeHandler.install();
+	  }
+
+	  public static void main(String[] args) {
+	    new SpringApplicationBuilder(MyApplication.class)
+	      .banner(new ZipkinBanner())
+	      .initializers(new ZipkinModuleImporter(), new ZipkinActuatorImporter())
+	      .properties(
+	        EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY + "=false"
+	        //, "spring.config.name=zipkin-server"
+	        )
+	      .run(args);
+	  }
 }
