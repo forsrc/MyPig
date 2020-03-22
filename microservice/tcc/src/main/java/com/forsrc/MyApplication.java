@@ -24,7 +24,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableZuulProxy
 @EnableDiscoveryClient
 @EnableOAuth2Sso
-@EnableResourceServer
 //@EnableFeignClients
 @EnableCircuitBreaker
 @EnableScheduling
