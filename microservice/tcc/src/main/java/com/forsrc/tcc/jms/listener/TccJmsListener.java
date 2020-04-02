@@ -20,11 +20,17 @@ public class TccJmsListener {
     @Qualifier("tccOAuth2RestTemplate")
     public OAuth2RestTemplate tccOAuth2RestTemplate;
 
-    @JmsListener(destination = "jms/queues/tcc")
-    public void onMessage(TextMessage message) throws JMSException {
+    @JmsListener(destination = "jms/queues/tcc/confirm")
+    public void onMessageConfirm(TextMessage message) throws JMSException {
         String text = message.getText();
-        LOGGER.info("----> jms/queues/tcc: {}", message);
-        LOGGER.info("  -->               : {}", text);
+        LOGGER.info("----> jms/queues/tcc/confirm: {}", message);
+        LOGGER.info("  -->                       : {}", text);
     }
 
+    @JmsListener(destination = "jms/queues/tcc/cancel")
+    public void onMessageCancel(TextMessage message) throws JMSException {
+        String text = message.getText();
+        LOGGER.info("----> jms/queues/tcc/cancel: {}", message);
+        LOGGER.info("  -->                      : {}", text);
+    }
 }

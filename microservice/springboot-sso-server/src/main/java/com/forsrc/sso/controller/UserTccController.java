@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,14 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import com.forsrc.common.core.sso.feignclient.UserTccFeignClient;
 import com.forsrc.common.core.tcc.exception.TccCancelException;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.exception.TccTryException;
-import com.forsrc.common.core.tcc.functional.TccSupplier;
 import com.forsrc.sso.domain.entity.UserTcc;
 import com.forsrc.sso.service.UserTccService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -39,7 +36,7 @@ public class UserTccController implements UserTccFeignClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTccController.class);
 
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PostMapping("/")
     @HystrixCommand()
     @Override
@@ -64,17 +61,8 @@ public class UserTccController implements UserTccFeignClient {
                 .body(userTcc);
     }
 
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PostMapping("/async")
-    @HystrixCommand()
-    public DeferredResult<ResponseEntity<UserTcc>> tccTryDeferredResult(@RequestBody UserTcc tcc, @RequestHeader("Authorization") String accessToken) throws TccException {
-        final DeferredResult<ResponseEntity<UserTcc>> result = new DeferredResult<>();
 
-        handleCreate(result, () -> tccTry(tcc, accessToken));
-        return result;
-    }
-
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @PutMapping(path = "/confirm/{id}")
     @HystrixCommand()
     @Override
@@ -96,18 +84,7 @@ public class UserTccController implements UserTccFeignClient {
                 .build();
     }
 
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @PutMapping(path = "/async/confirm/{id}")
-    @HystrixCommand()
-    public DeferredResult<ResponseEntity<Void>> confirmDeferredResult(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
-        final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-
-        handle(result, () -> confirm(id, accessToken));
-        return result;
-    }
-
-
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
     @DeleteMapping(path = "/cancel/{id}")
     @HystrixCommand()
     @Override
@@ -126,26 +103,6 @@ public class UserTccController implements UserTccFeignClient {
                 .header("tccLinkId", String.valueOf(id))
                 .header("tccLinkStatus", String.valueOf(userTcc.getStatus()))
                 .build();
-    }
-
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('TCC')")
-    @DeleteMapping(path = "/async/cancel/{id}")
-    @HystrixCommand()
-    public DeferredResult<ResponseEntity<Void>> cancelDeferredResult(@PathVariable("id") Long id, @RequestHeader("Authorization") String accessToken) throws TccException {
-        final DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-
-        handle(result, () -> cancel(id, accessToken));
-        return result;
-    }
-
-    @Async("asyncTccExecutor")
-    protected <T> void handle(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
-        result.setResult(supplier.get());
-    }
-
-    @Async("asyncExecutor")
-    protected <T> void handleCreate(DeferredResult<T> result, TccSupplier<T> supplier) throws TccException {
-        result.setResult(supplier.get());
     }
 
 }
