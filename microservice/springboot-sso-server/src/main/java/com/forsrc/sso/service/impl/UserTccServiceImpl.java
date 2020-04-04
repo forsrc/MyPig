@@ -29,6 +29,7 @@ import com.forsrc.common.core.tcc.dto.WsUserTccDto;
 import com.forsrc.common.core.tcc.exception.TccConfirmException;
 import com.forsrc.common.core.tcc.exception.TccException;
 import com.forsrc.common.core.tcc.status.Status;
+import com.forsrc.common.core.utils.TccWsUtils;
 import com.forsrc.common.core.utils.WebSocketClientUtils;
 import com.forsrc.common.utils.CompletableFutureUtils;
 import com.forsrc.common.utils.SnowflakeIDGenerator;
@@ -49,7 +50,7 @@ public class UserTccServiceImpl implements UserTccService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTccServiceImpl.class);
 
     @Value("${tcc.ws}")
-    private String tccWs;
+    private String tccWsUri;
 
     @Autowired
     private UserService userService;
@@ -105,7 +106,7 @@ public class UserTccServiceImpl implements UserTccService {
             authorityService.save(list);
             userTcc = userTccDao.save(userTcc);
             try {
-                confirm(id, userTcc.getStatus());
+                confirmTcc(id, userTcc.getStatus());
             } catch (Exception e) {
                 throw new TccConfirmException(id, e.getMessage());
             }
@@ -132,53 +133,11 @@ public class UserTccServiceImpl implements UserTccService {
         return userTcc;
     }
 
-    @Transactional(rollbackFor = {Exception.class, TccException.class})
-    private void confirm(Long id, int status) throws InterruptedException, ExecutionException, TimeoutException {
 
-        WsUserTccDto dto = new WsUserTccDto(id, status);
-        final CompletableFuture<WsUserTccDto> completableFuture = CompletableFutureUtils.withTimeout(Duration.ofSeconds(10));
-        WebSocketClientUtils.get(tccWs, new MappingJackson2MessageConverter(), tccOAuth2RestTemplate)
-                .set(String.format("/topic/tccLink/%s", id), new TccStompSessionHandler(completableFuture))
-                .send(String.format("/app/tccLink/%s", id), dto)
-                .handle(new WebSocketClientUtils.Handler() {
-                    @Override
-                    public void handle(StompSession session) throws RuntimeException {
-                        try {
-                            LOGGER.info("--> ws: /topic/tccLink/{} ...", id);
-                            LOGGER.info("--> ws: {}", completableFuture.get());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e.getMessage());
-                        }
-                    }
-                }).disconnect();
+    private void confirmTcc(Long id, int status) throws InterruptedException, ExecutionException, TimeoutException {
+
+        TccWsUtils.confirmTcc(id, status, tccWsUri, tccOAuth2RestTemplate);
     }
 
-    static class TccStompSessionHandler extends StompSessionHandlerAdapter {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(TccStompSessionHandler.class);
-        private CompletableFuture<WsUserTccDto> completableFuture;
-
-        public TccStompSessionHandler(CompletableFuture<WsUserTccDto> completableFuture) {
-            this.completableFuture = completableFuture;
-        }
-
-        @Override
-        public Type getPayloadType(StompHeaders headers) {
-            return WsUserTccDto.class;
-        }
-
-        @Override
-        public void handleFrame(StompHeaders headers, Object payload) {
-            WsUserTccDto dto = (WsUserTccDto) payload;
-            LOGGER.info("Received : {}", dto);
-            if (dto.getTccException() != null) {
-                completableFuture.completeExceptionally(dto.getTccException());
-                return;
-            }
-            if (dto.isEnd()) {
-                completableFuture.complete(dto);
-            }
-
-        }
-    }
 }

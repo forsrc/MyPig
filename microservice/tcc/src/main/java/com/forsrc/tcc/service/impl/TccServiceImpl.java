@@ -167,7 +167,7 @@ public class TccServiceImpl implements TccService {
             tcc4Update.setStatus(Status.CONFIRM.getStatus());
         }
         tccDao.save(tcc4Update);
-        this.jmsTemplate.convertAndSend("jms/queues/tcc", tcc.toString());
+        this.jmsTemplate.convertAndSend("jms/queues/tcc/confirm", tcc.toString());
         return tcc4Update;
     }
 
@@ -261,7 +261,7 @@ public class TccServiceImpl implements TccService {
             }
         }
         this.update(tcc);
-        this.jmsTemplate.convertAndSend("jms/queues/tcc", tcc.toString());
+        this.jmsTemplate.convertAndSend("jms/queues/tcc/cancel", tcc.toString());
         return tcc;
     }
 
