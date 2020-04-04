@@ -23,7 +23,7 @@
         <module>gwt</module>
         <module>ui</module>
         <module>common</module>
-        <module>domain</module>
+        <module>domain</module><<<<<<< branch/java11
         <module>service</module>
         <module>microservice</module>
     </modules>
